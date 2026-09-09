@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "bootstrap_version": "1.0.0",
+  "initialized_as": "project",
+  "profile": "web-nextjs",
+  "contracts": {
+    "agents": "AGENTS.md",
+    "project_state": "PROJECT_STATE.md"
+  },
+  "installed_skills": [
+    ".agents/skills/project-task-init",
+    ".agents/skills/project-delivery-check"
+  ]
+}
