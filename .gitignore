@@ -22,7 +22,15 @@
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
+*.log
+
+# local agent and review output
+/.codex/
+/.claude/settings.local.json
+/screenshots/
+/visualizations/
 
 # debug
 npm-debug.log*

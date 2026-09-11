@@ -1,21 +1,21 @@
 # Peiwen Zhang Portfolio
 
-An English-first personal portfolio for Peiwen Zhang, focused on HCI, AI agents, UX research, and UX engineering.
+An English-first, illustrated spatial portfolio for Peiwen Zhang, focused on HCI × AI Agents, UX research, and UX engineering.
 
-This repository currently contains the project foundation only. The full homepage, visual system, bilingual experience, and Personal AI are planned for later phases.
+The current prototype lets visitors walk with Peiwen along a constrained Experience path. It includes one confirmed landmark: Université Paris-Saclay / Human-Computer Interaction. The visual composition is still under review.
 
-## Stack
+## Start here
 
-- Next.js with the App Router
-- TypeScript
-- Tailwind CSS
-- ESLint
-- npm
+- `CLAUDE_HANDOFF.md` — continuation brief and strict task boundary.
+- `PROJECT_STATE.md` — durable implementation and verification state.
+- `VISUAL_DIRECTION.md` — approved direction and open visual decisions.
+- `ASSET_INDEX.md` — source sheets, runtime derivatives, and usage rules.
+- `AGENTS.md` — repository workflow and engineering rules.
 
 ## Development
 
 ```powershell
-npm install
+npm ci
 npm run dev
 ```
 
@@ -26,8 +26,8 @@ Open [http://localhost:3000](http://localhost:3000).
 ```powershell
 npm run lint
 npm run typecheck
-npm run build
+$env:NEXT_TELEMETRY_DISABLED='1'; npm run build
 git diff --check
 ```
 
-Project status and next steps are maintained in `PROJECT_STATE.md`.
+The external ITom portfolio repository is a technical architecture reference only: <https://github.com/ITomPoland/portfolio-itom>. Study licensed code patterns where useful; do not reuse its artwork, textures, branding, copy, rooms, project content, or visual composition.
