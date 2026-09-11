@@ -1,19 +1,171 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf9f3;
+  --ink: #282722;
+  --muted: #64625b;
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-foreground: var(--ink);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+* { box-sizing: border-box; }
 body {
+  margin: 0;
   background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 7px; }
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.85rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--ink);
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+.world {
+  --scene: max(48rem, 100svh);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.world svg {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.world svg path { vector-effect: non-scaling-stroke; }
+.world .paper-fill, .world .house-roof { fill: var(--background); }
+.world .pencil { stroke-width: 1.3; stroke: #77746b; }
+.world .grass { stroke-width: 2.1; }
+.terrain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+.world .far-ground { stroke: #77746b; stroke-width: 1.8; }
+.world .ground-line { stroke-width: 2.2; }
+.world .path-line { stroke-width: 2; }
+.opening { position: relative; min-height: var(--scene); }
+.opening-name {
+  position: absolute;
+  top: 7%;
+  left: 8%;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.cloud { position: absolute; top: 30%; left: 26%; width: 12%; }
+.world .cloud { stroke-width: 2.5; }
+.seed { position: absolute; width: 2.4rem; }
+.world .seed { stroke-width: 1.5; stroke: #69665e; }
+.seed-air { top: 52%; right: 16%; transform: rotate(12deg); }
+.seed-path { right: 19%; bottom: 18%; width: 2rem; transform: rotate(-13deg); }
+.little-house {
+  position: absolute;
+  top: calc(var(--scene) * 0.86);
+  left: 64%;
+  width: min(30%, 25rem);
+  z-index: 1;
+}
+.world .front-fence { stroke-width: 2.5; }
+.world .flowers { stroke-width: 1.3; }
+.world .flower-rose { fill: #bc9898; stroke: #9c8080; }
+.world .flower-blue { fill: #a0abb1; stroke: #848e95; }
+.world .firefly { stroke-width: 1; }
+.world .firefly-light { fill: #c3b477; stroke: #7d7553; }
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 44px;
+  padding-block: 0.5rem;
+  font-size: 0.9rem;
+  text-underline-offset: 0.45em;
+}
+.text-link span { font-size: 1.2rem; }
+.text-link:hover { text-decoration: underline; }
+.explore-link { position: absolute; left: 43%; bottom: 13%; }
+.hero {
+  position: relative;
+  min-height: calc(var(--scene) * 1.05);
+  padding: calc(var(--scene) * 0.24) 11% 9rem;
+  scroll-margin-top: 2rem;
+}
+.hero-copy { max-width: 31rem; }
+.hero h1 {
+  margin: 0 0 1.8rem;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+.hero-identity { margin: 0; font-size: 1.05rem; }
+.hero-university { margin: 0.5rem 0 0; font-size: 0.96rem; color: var(--muted); }
+.positioning {
+  max-width: 23rem;
+  margin: 2.25rem 0 1.5rem;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+.experience {
+  position: relative;
+  min-height: calc(var(--scene) * 1.45);
+  padding-top: calc(var(--scene) * 0.09);
+  scroll-margin-top: 2rem;
+}
+.section-label { margin: 0 0 0 57%; font-size: 0.95rem; font-weight: 400; color: var(--muted); }
+.landmark { position: relative; min-height: calc(var(--scene) * 0.88); margin-top: calc(var(--scene) * 0.35); }
+.learning-place { position: absolute; top: 0; left: 13%; width: 32%; }
+.landmark-copy { position: relative; margin-left: 57%; width: 36%; padding-top: calc(var(--scene) * 0.22); }
+.landmark-copy h3 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+}
+.landmark-identity { font-size: 0.96rem; line-height: 1.6; }
+.landmark-note { margin-top: 1.75rem; font-size: 0.85rem; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (max-width: 700px) {
+  .world { --scene: max(43rem, 100svh); }
+  .world svg { stroke-width: 2.5; }
+  .terrain { width: 210%; left: -55%; }
+  .opening-name { top: 6%; left: 7%; font-size: 0.9rem; }
+  .cloud { left: 17%; top: 28%; width: 22%; }
+  .seed-air { right: 12%; top: 51%; width: 1.8rem; }
+  .little-house { top: calc(var(--scene) * 0.9); left: 36%; width: 62%; }
+  .world .front-fence { stroke-width: 2; }
+  .world .flowers { stroke-width: 1; }
+  .explore-link { left: 27%; bottom: 17%; }
+  .hero { padding: calc(var(--scene) * 0.3) 7% 8rem; }
+  .hero h1 { font-size: 2rem; }
+  .hero-identity { font-size: 0.96rem; }
+  .hero-university { font-size: 0.9rem; }
+  .positioning { max-width: 20rem; font-size: 1rem; margin-block: 1.8rem 1.3rem; }
+  .seed-path { right: 9%; bottom: 10%; width: 1.6rem; }
+  .experience { padding-top: calc(var(--scene) * 0.05); min-height: calc(var(--scene) * 1.5); }
+  .section-label { margin-left: 55%; font-size: 0.85rem; }
+  .landmark { margin-top: 3rem; }
+  .learning-place { position: relative; left: 7%; width: 70%; max-width: 23rem; }
+  .landmark-copy { margin-left: 22%; width: 71%; padding-top: 2rem; }
+  .landmark-copy h3 { font-size: 1.85rem; }
 }

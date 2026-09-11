@@ -2,7 +2,7 @@
 
 An English-first personal portfolio for Peiwen Zhang, focused on HCI, AI agents, UX research, and UX engineering.
 
-This repository currently contains the project foundation only. The full homepage, visual system, bilingual experience, and Personal AI are planned for later phases.
+The Opening Scene → Hero → first Experience landmark is implemented for visual review. The only Experience landmark is Université Paris-Saclay / Human-Computer Interaction. Hero positioning copy is temporary; no public CV entry is exposed. Projects, bilingual support, and Personal AI remain planned for later phases.
 
 ## Stack
 
