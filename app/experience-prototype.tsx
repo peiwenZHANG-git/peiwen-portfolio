@@ -5,6 +5,11 @@ import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObjec
 import * as THREE from "three";
 
 const MILESTONE_PROGRESS = 0.24;
+const MILESTONE_ACTIVE_RADIUS = 0.055;
+const MILESTONE_APPROACH_RADIUS = 0.105;
+const PROGRESS_MIN = 0.015;
+const PROGRESS_MAX = 0.985;
+const MAX_PROGRESS_LEAD = 0.24;
 const ROAD_HALF_WIDTH = 1.35;
 const PEIWEN_WALK_FRAMES = [1, 2, 3, 4].map(
   (frame) => `/assets/character/peiwen-back-walk-${frame}.webp`,
@@ -34,6 +39,24 @@ type Controls = {
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
+
+function updateProgressTarget(control: Controls, delta: number) {
+  const leadMin = Math.max(PROGRESS_MIN, control.progress - MAX_PROGRESS_LEAD);
+  const leadMax = Math.min(PROGRESS_MAX, control.progress + MAX_PROGRESS_LEAD);
+  let next = clamp(
+    control.targetProgress + clamp(delta, -MAX_PROGRESS_LEAD, MAX_PROGRESS_LEAD),
+    leadMin,
+    leadMax,
+  );
+
+  if (control.progress < MILESTONE_PROGRESS && next >= MILESTONE_PROGRESS) {
+    next = Math.min(next, MILESTONE_PROGRESS + MILESTONE_ACTIVE_RADIUS / 2);
+  } else if (control.progress > MILESTONE_PROGRESS && next <= MILESTONE_PROGRESS) {
+    next = Math.max(next, MILESTONE_PROGRESS - MILESTONE_ACTIVE_RADIUS / 2);
+  }
+
+  control.targetProgress = next;
+}
 
 function makePath() {
   return new THREE.CatmullRomCurve3(
@@ -736,7 +759,7 @@ function ExperienceScene({
     const control = controls.current;
     const near = Math.abs(control.progress - MILESTONE_PROGRESS) < 0.07;
     const movementScale = near ? 0.62 : 1;
-    control.targetProgress = clamp(control.targetProgress + control.forward * delta * 0.048 * movementScale, 0.015, 0.985);
+    updateProgressTarget(control, control.forward * delta * 0.048 * movementScale);
     control.targetLateral = clamp(control.targetLateral + control.sideways * delta * 0.85, -0.78, 0.78);
 
     const previous = control.progress;
@@ -772,9 +795,14 @@ function ExperienceScene({
     // Windows are absolute progress units, so they were retuned along with the shorter
     // run-up: at the old 0.082/0.18 the walker would have been "approaching" almost from
     // the first wheel tick, and the arrival text would have appeared before she arrived.
-    const nextPhase: MilestonePhase = distance < 0.055
+    const crossedMilestone =
+      (previous < MILESTONE_PROGRESS && control.progress >= MILESTONE_PROGRESS) ||
+      (previous > MILESTONE_PROGRESS && control.progress <= MILESTONE_PROGRESS);
+    const remainsActive =
+      milestoneState.current === "active" && distance < MILESTONE_APPROACH_RADIUS;
+    const nextPhase: MilestonePhase = crossedMilestone || remainsActive || distance < MILESTONE_ACTIVE_RADIUS
       ? "active"
-      : distance < 0.105
+      : distance < MILESTONE_APPROACH_RADIUS
         ? "approaching"
         : "distant";
     if (nextPhase !== milestoneState.current) {
@@ -785,7 +813,9 @@ function ExperienceScene({
     const isMoving =
       control.speed > 0.0015 ||
       Math.abs(control.forward) > 0 ||
-      Math.abs(control.targetProgress - control.progress) > 0.002;
+      Math.abs(control.sideways) > 0 ||
+      Math.abs(control.targetProgress - control.progress) > 0.002 ||
+      Math.abs(control.targetLateral - control.lateral) > 0.01;
     if (isMoving !== movingState.current) {
       movingState.current = isMoving;
       onMovingChange(isMoving);
@@ -921,7 +951,7 @@ export default function ExperiencePrototype() {
     <main
       className="prototype-shell"
       onWheel={(event) => {
-        controls.current.targetProgress = clamp(controls.current.targetProgress + event.deltaY * 0.0003, 0.015, 0.985);
+        updateProgressTarget(controls.current, event.deltaY * 0.0003);
       }}
       onPointerDown={(event) => {
         pointer.current = { x: event.clientX, y: event.clientY };
@@ -931,7 +961,7 @@ export default function ExperiencePrototype() {
         if (!pointer.current) return;
         const deltaX = event.clientX - pointer.current.x;
         const deltaY = event.clientY - pointer.current.y;
-        controls.current.targetProgress = clamp(controls.current.targetProgress - deltaY * 0.00055, 0.015, 0.985);
+        updateProgressTarget(controls.current, -deltaY * 0.00055);
         controls.current.targetLateral = clamp(controls.current.targetLateral + deltaX * 0.006, -0.78, 0.78);
         pointer.current = { x: event.clientX, y: event.clientY };
       }}

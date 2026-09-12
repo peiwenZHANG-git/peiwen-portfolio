@@ -13,11 +13,10 @@
 
 ## Current goal
 
-Pass 3A (core composition / pacing / experience) and its follow-up 3A-fix are implemented and were
-visually approved by Peiwen on 2026-09-12 against the live dev render. The next intended scope is
-Pass 3B (entry ritual + ambient life), which has NOT been started. Preserve the path, controls,
-camera behavior, Peiwen movement, semantic text, accessibility, and responsive baseline. Stop
-before CUC, the full Hub, or Project House.
+Pass 3A.1 interaction-contract hardening is implemented and verified. Wheel, keyboard, and swipe
+share one bounded progress-target contract; milestone crossing is retained through the active
+window; lateral-only movement participates in shared movement side effects; and subdued hint text
+meets the normal-text contrast target. Pass 3B and the Saclay-to-CUC slice have NOT been started.
 
 ## Architecture
 
@@ -42,6 +41,7 @@ before CUC, the full Hub, or Project House.
 | Pass 3A + 3A-fix composition and pacing | verified | Visually approved by Peiwen on 2026-09-12. Lint, typecheck, production build, desktop/mobile browser checks, controls, resize, and reduced motion passed in the takeover audit. |
 | Keyboard controls after Pass 3A | verified | Live check 2026-09-12: see Verification baseline. |
 | Reduced motion after Pass 3A | verified | Edge was launched with `prefers-reduced-motion: reduce`; CSS transitions were `0s`, DOM animation count was zero, and the settled Canvas remained unchanged across captures. |
+| Pass 3A.1 interaction contract | verified | Bounded wheel/keyboard/swipe progress, forward and reverse milestone crossing, lateral movement side effects, 4.63:1 subdued-hint contrast, responsive resize, and reduced motion passed on 2026-09-12. |
 | Hub choice point and Project House | planned | World model is recorded, but neither scene is implemented. |
 | CUC milestone | planned | Source sheets exist only. No CUC runtime milestone or content is implemented. |
 | Projects, About, bilingual routing, Personal AI | planned | Outside the current prototype. |
@@ -63,9 +63,7 @@ before CUC, the full Hub, or Project House.
 - The left-vignette / road / right-text composition is strongest at arrival; the existing follow camera moves the vignette across the frame during approach.
 - Mobile uses an explicit portrait framing adjustment and a smaller Eiffel fit to keep Peiwen, text, and the full landmark visible.
 - Real-device performance and touch feel remain unverified; browser emulation is not physical-device testing.
-- A long mobile swipe can cross the narrow Paris-Saclay `active` window: the milestone triggers briefly, then returns to `approaching`. Input deltas need normalization or crossing-aware milestone selection before multiple milestones are added.
-- Lateral-only A/D or Left/Right movement changes Peiwen's position but is omitted from `isMoving`, so it does not trigger `hasMoved` or the related intro, hint, and self-talk side effects.
-- The subdued walking hint uses `opacity: 0.42`; against the warm paper background its effective contrast is approximately 1.81:1, below the normal-text accessibility target.
+- The bounded/crossing-aware contract is verified for the current single milestone. Multiple milestones still require a data-driven milestone registry rather than additional hard-coded constants.
 - Do not fabricate employers, roles, dates, outcomes, or academic details.
 - Do not add free exploration, game pressure, complex 3D, a large animation system, or new dependencies without a demonstrated need.
 
@@ -92,6 +90,21 @@ Checks completed on 2026-09-12 (Pass 3A + 3A-fix takeover audit):
   responsive resize checks completed. No page errors, console errors, or failed requests occurred.
   Three.js emitted its existing `THREE.Clock` deprecation warning.
 
+Checks completed on 2026-09-12 (Pass 3A.1):
+
+- `npm run lint`, `npm run typecheck`, `npm run build`, and `git diff --check`: passed.
+- Wheel, W/S, Up/Down, A/D, Left/Right, vertical swipe, and horizontal swipe: passed through
+  the bounded movement contract and shared movement side effects.
+- An extreme wheel delta and a 560px mobile swipe reached Paris-Saclay and remained `active` after
+  settling. A second input continued past the milestone; reverse crossing returned to `active`.
+- Desktop 1440x900, mobile 390x844, widths 320/768/1440 and repeated resizing: no page overflow or
+  clipped semantic milestone text. The approved Paris-Saclay composition was unchanged.
+- Subdued controls-hint effective contrast: 4.63:1 against the warm paper background.
+- Reduced-motion Edge emulation: matched, all relevant transitions `0s`, zero DOM animations, and
+  stable settled Canvas.
+- No page errors, console errors, or failed requests. The existing `THREE.Clock` deprecation warning
+  remains.
+
 Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 - `npm run lint`: passed.
@@ -105,9 +118,10 @@ Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 ## Next step
 
-1. Before adding more journey content, resolve the recorded input-window, lateral movement-state,
-   and subdued-hint contrast issues with a focused approved pass.
-2. Then start Pass 3B, which Peiwen has scoped as: an entry ritual (Peiwen stands still, a
+1. Wait for Peiwen's approval before beginning another implementation pass. The movement/progress
+   invariant is now safe enough for the Saclay-to-CUC vertical-slice foundation, but CUC content,
+   composition, and runtime derivatives still require explicit approval.
+2. Pass 3B remains separately scoped as: an entry ritual (Peiwen stands still, a
    cluster of fireflies gathers in front of her with a quiet "follow us", click/tap activates the
    journey, some fireflies stay with her while others move ahead, and only then do wheel / keyboard
    / swipe controls become active) and restrained authored ambient life (butterflies drifting,

@@ -59,10 +59,11 @@ on 2026-09-12 from the live dev render. What changed, in short:
   edge plus two short re-traced strokes, irregular tail dots, anchored in the opening whitespace
   (desktop `top: 26%`, mobile `top: 26%`) clear of Peiwen at both breakpoints.
 
-Takeover validation completed on 2026-09-12: lint, typecheck, production build, desktop/mobile
-rendering, keyboard, wheel, resize, and reduced-motion emulation passed. A long mobile swipe can
-cross the narrow active milestone window; lateral-only movement does not update the shared moving
-state; and the subdued walking hint has insufficient contrast. Details are in `PROJECT_STATE.md`.
+Pass 3A.1 validation completed on 2026-09-12: wheel, keyboard, and swipe now share a bounded
+progress-target contract; forward/reverse milestone crossing retains the active state; lateral-only
+movement updates shared movement side effects; and the subdued walking hint measures 4.63:1. Lint,
+typecheck, production build, responsive rendering, and reduced-motion emulation passed. Details are
+in `PROJECT_STATE.md`.
 
 ## Approved constraints
 
@@ -112,9 +113,10 @@ Older Goal 1C, Hero/Experience v2, and rejected v1 drafts remain only in the ori
 Continue on `visual-direction-v2`. Pass 3A / 3A-fix and this takeover audit are preserved in a local
 checkpoint; inspect live Git state before relying on branch or commit status.
 
-1. Resolve the focused interaction/accessibility issues recorded in `PROJECT_STATE.md` before adding
-   more journey milestones.
-2. Then Pass 3B, scoped by Peiwen as the entry ritual plus restrained ambient life. See
+1. Wait for Peiwen's approval. The current movement/progress invariant is technically ready for a
+   Saclay-to-CUC vertical-slice foundation, but do not invent or implement CUC content, composition,
+   or runtime derivatives without explicit approval.
+2. Pass 3B remains separately scoped as the entry ritual plus restrained ambient life. See
    `PROJECT_STATE.md` -> Next step for the full scope, including the fact that butterflies have no
    runtime asset yet.
 

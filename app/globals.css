@@ -82,9 +82,9 @@ a { color: inherit; }
   color: var(--muted);
   font-size: 0.76rem;
   pointer-events: none;
-  transition: opacity 400ms ease;
+  transition: color 400ms ease, opacity 400ms ease;
 }
-.controls-hint[data-subdued="true"] { opacity: 0.42; }
+.controls-hint[data-subdued="true"] { color: var(--ink); opacity: 0.66; }
 .mobile-controls { display: none; }
 
 /* A whisper printed into the page's whitespace, not a UI tooltip: warm paper fill, one
