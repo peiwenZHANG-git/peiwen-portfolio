@@ -54,7 +54,11 @@ a { color: inherit; }
   pointer-events: none;
   transition: opacity 320ms ease;
 }
-.prototype-intro[data-hidden="true"] { opacity: 0; }
+.prototype-intro[data-hidden="true"] {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 320ms ease, visibility 0s linear 320ms;
+}
 .prototype-intro p, .eyebrow {
   margin: 0 0 0.7rem;
   color: var(--muted);
@@ -83,31 +87,72 @@ a { color: inherit; }
 .controls-hint[data-subdued="true"] { opacity: 0.42; }
 .mobile-controls { display: none; }
 
+/* A whisper printed into the page's whitespace, not a UI tooltip: warm paper fill, one
+   thin graphite line, corners uneven so the outline reads as drawn rather than boxed.
+   It is anchored in the open paper to the left of the walker rather than at a fraction of
+   her own position - she sits at very different screen coordinates depending on aspect
+   ratio, and this bubble only ever shows in the fixed opening frame, so a left-hand
+   anchor is safe at every width while a percentage tied to her is not. */
 .self-talk {
   position: absolute;
   z-index: 5;
-  top: 73%;
-  left: 52%;
+  top: 26%;
+  left: 4.5%;
   margin: 0;
-  padding: 0;
-  color: #777267;
+  padding: 0.42rem 0.68rem 0.46rem;
+  max-width: 8.5rem;
+  color: #6f6a5f;
   font-size: 0.72rem;
   font-style: italic;
-  max-width: 9rem;
+  line-height: 1.38;
+  /* Drawn, not bordered. CSS corner radii gave a machine-perfect pill next to pencil artwork,
+     so the contour is an SVG whose ink line deliberately does not hug the paper edge, with two
+     short re-traced strokes for the doubled-over look of a line drawn by hand. */
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 164 38' preserveAspectRatio='none'><path d='M13 4.5C41 1.8 74 3.2 103 2.4C129 1.7 154 5.4 158.5 13.2C162.4 20 158.6 29.4 148 33C119 37 68 35.6 33 34.6C17.5 34.1 5.2 30.2 3.2 21.4C1.6 13.4 5.6 6.6 13 4.5Z' fill='%23fdfaf1'/><path d='M13.5 4.1C41 1.5 74 3 103 2.1C129.6 1.4 154.9 5.1 158.9 13.5C162.7 20.7 157.8 29.9 147.4 33.4C118.4 37.3 67.4 35.9 32.4 34.9C16.8 34.4 4.4 29.9 2.7 21.1C1.1 12.9 5.7 6.3 13.5 4.1Z' fill='none' stroke='%234f4a41' stroke-opacity='.52' stroke-width='1.15' stroke-linecap='round' stroke-linejoin='round'/><path d='M23 35.3C58 36.4 113 36.5 143.6 33.3' fill='none' stroke='%234f4a41' stroke-opacity='.3' stroke-width='.75' stroke-linecap='round'/><path d='M4.3 15.6C6.2 8.4 12.2 4.8 20.6 3.2' fill='none' stroke='%234f4a41' stroke-opacity='.24' stroke-width='.7' stroke-linecap='round'/></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border: 0;
   opacity: 0;
-  transform: translate3d(0, 0.4rem, 0) rotate(-2deg);
-  transition: opacity 280ms ease, transform 320ms ease;
+  transform: translate3d(0, 0.4rem, 0) rotate(-1.6deg);
+  transition: opacity 320ms ease, transform 360ms ease;
   pointer-events: none;
 }
+/* Two dots trailing off toward Peiwen, same paper and line as the bubble. Kept to the
+   bubble's own lower-right corner so the tail points at her without reaching her. */
+.self-talk::before,
+.self-talk::after {
+  content: "";
+  position: absolute;
+  background: #fdfaf1;
+  border: 1px solid rgba(95, 90, 80, 0.32);
+  /* Not quite circles - same reason as the bubble above. */
+  border-radius: 54% 46% 50% 50% / 48% 52% 48% 52%;
+}
+.self-talk::before {
+  right: 1rem;
+  bottom: -0.5rem;
+  transform: rotate(-9deg);
+  width: 0.38rem;
+  height: 0.38rem;
+}
+.self-talk::after {
+  right: 0.4rem;
+  bottom: -0.95rem;
+  transform: rotate(12deg);
+  width: 0.22rem;
+  height: 0.22rem;
+}
 .self-talk[data-visible="true"] {
-  opacity: 0.82;
-  transform: translate3d(0, 0, 0) rotate(-2deg);
+  opacity: 0.96;
+  transform: translate3d(0, 0, 0) rotate(-1.6deg);
 }
 
 .milestone-copy {
   position: absolute;
   z-index: 4;
-  top: 24%;
+  /* Raised from 24%: the shorter journey puts the milestone on a bend where the road's upper
+     edge sweeps higher across the frame and cut straight through the subtitle line. */
+  top: 15%;
   right: clamp(1.6rem, 6vw, 6.5rem);
   width: min(24rem, 32vw);
   padding: 0;
@@ -166,13 +211,36 @@ a { color: inherit; }
     border: 0;
     background: none;
     transform: translate3d(0, 0.65rem, 0);
+    /* Fade in after the intro has finished fading out, so the two text blocks never
+       occupy this band at the same time. */
+    transition: opacity 420ms ease 200ms, transform 520ms ease 200ms;
   }
   .milestone-copy[data-active="true"] { transform: none; }
-  .milestone-copy h2 { font-size: 1.65rem; }
-  .controls-hint { bottom: 1.1rem; }
-  .self-talk { top: 76%; left: 70%; max-width: 26%; font-size: 0.66rem; }
+  .milestone-copy .eyebrow { margin: 0 0 0.45rem; }
+  .milestone-copy h2 {
+    font-size: clamp(1.3rem, 6.4vw, 1.65rem);
+    line-height: 1.2;
+    margin: 0 0 0.7rem;
+  }
+  .milestone-copy p { line-height: 1.5; }
+  /* Centred so it clears the bottom-left corner, where the Next.js dev indicator sits
+     during `next dev` (that badge is not part of the site and never ships). */
+  .controls-hint {
+    bottom: 1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 2rem);
+    text-align: center;
+  }
+  .self-talk { top: 26%; left: 5%; max-width: 54%; font-size: 0.68rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .prototype-intro, .milestone-copy, .controls-hint, .self-talk { transition: none; }
+  /* Attribute selectors above carry higher specificity, so repeat them here or the
+     delayed/visibility transitions would survive a reduced-motion preference. */
+  .prototype-intro[data-hidden="true"],
+  .milestone-copy[data-active="true"],
+  .milestone-copy[data-phase="approaching"] { transition: none; }
 }

@@ -4,7 +4,7 @@ import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import * as THREE from "three";
 
-const MILESTONE_PROGRESS = 0.47;
+const MILESTONE_PROGRESS = 0.24;
 const ROAD_HALF_WIDTH = 1.35;
 const PEIWEN_WALK_FRAMES = [1, 2, 3, 4].map(
   (frame) => `/assets/character/peiwen-back-walk-${frame}.webp`,
@@ -20,6 +20,7 @@ const CLOUD_TEXTURES = [1, 2, 3].map(
 );
 
 type MilestonePhase = "distant" | "approaching" | "active";
+type Vec3 = [number, number, number];
 
 type Controls = {
   progress: number;
@@ -185,6 +186,7 @@ function WorldSprite({
   position,
   scale,
   opacity = 1,
+  tint = "#ffffff",
   motion = "still",
   phase = 0,
   tilt = 0,
@@ -195,6 +197,9 @@ function WorldSprite({
   position: [number, number, number];
   scale: [number, number, number];
   opacity?: number;
+  /** Multiplicative tint. Leave white for full clarity; use a muted warm-gray to push
+   * an element back a depth tier (the simplest available recession cue for raster sprites). */
+  tint?: string;
   motion?: "still" | "float" | "sway";
   phase?: number;
   tilt?: number;
@@ -220,6 +225,7 @@ function WorldSprite({
     <sprite ref={sprite} position={position} scale={scale} renderOrder={renderOrder}>
       <spriteMaterial
         map={texture}
+        color={tint}
         transparent
         alphaTest={0.025}
         depthWrite={false}
@@ -229,6 +235,44 @@ function WorldSprite({
         toneMapped={false}
       />
     </sprite>
+  );
+}
+
+function GroundContact({
+  position,
+  radius = 1,
+  strength = 1,
+}: {
+  position: Vec3;
+  radius?: number;
+  strength?: number;
+}) {
+  // One shared irregular blob silhouette, reused at different sizes under every grounded
+  // object (Eiffel, the vignette, Peiwen). Deliberately local to each object's own footprint
+  // rather than one continuous line, so the milestone doesn't read as objects on a stage.
+  const shape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(-1, -0.12);
+    s.bezierCurveTo(-0.88, -0.36, 0.42, -0.29, 0.94, -0.07);
+    s.bezierCurveTo(1.18, 0.1, 0.32, 0.32, -0.18, 0.23);
+    s.bezierCurveTo(-0.61, 0.32, -1.15, 0.08, -1, -0.12);
+    return s;
+  }, []);
+
+  return (
+    <group position={position}>
+      {[1, 1.2, 1.42].map((spread, index) => (
+        <mesh key={spread} rotation={[-Math.PI / 2, 0, -0.06]} scale={[spread * radius, spread * radius, 1]}>
+          <shapeGeometry args={[shape]} />
+          <meshBasicMaterial
+            color="#8a8069"
+            transparent
+            opacity={(0.09 - index * 0.024) * strength}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
   );
 }
 
@@ -328,8 +372,10 @@ function Peiwen({
     point.addScaledVector(normal, controls.current.lateral);
 
     const walking = controls.current.speed > 0.0015;
-    const nextFrame = walking && !reducedMotion ? Math.floor(clock.elapsedTime * 7) % 4 : 3;
-    const bounce = walking && !reducedMotion ? Math.abs(Math.sin(clock.elapsedTime * 7)) * 0.035 : 0;
+    // Gait rate follows the slower travel speed; at the old 7Hz she read as jogging in
+    // place once the wheel/keyboard steps were softened.
+    const nextFrame = walking && !reducedMotion ? Math.floor(clock.elapsedTime * 5.2) % 4 : 3;
+    const bounce = walking && !reducedMotion ? Math.abs(Math.sin(clock.elapsedTime * 5.2)) * 0.03 : 0;
     if (nextFrame !== frameRef.current) {
       frameRef.current = nextFrame;
       setFrame(nextFrame);
@@ -348,9 +394,11 @@ function Peiwen({
 
   return (
     <group ref={character}>
+      {/* Same warm-gray tone as GroundContact, so Peiwen's shadow belongs to the same
+          shared grounding system as the milestone's, rather than its own separate cue. */}
       <mesh position={[0, 0.052, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={3}>
         <circleGeometry args={[0.34, 20]} />
-        <meshBasicMaterial color="#d7d2c5" transparent opacity={0.3} depthWrite={false} />
+        <meshBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
       </mesh>
       <sprite ref={sprite} position={[0, 0.84, 0]} scale={[1.22, 1.82, 1]} renderOrder={20}>
         <spriteMaterial
@@ -366,22 +414,24 @@ function Peiwen({
   );
 }
 
+// Two by the tower, three around the diagram/lamp, two inviting from the path.
+// Indices 0-1 travel with the tower and 2-4 with the vignette, so the groups stay
+// attached to what they are pointing at; 5-6 stay near Peiwen on the road.
 const MILESTONE_FIREFLY_POSITIONS: [number, number, number][] = [
-  // Two by the tower, three around the diagram/lamp, two inviting from the path.
-  [2.1, 1.08, 1.35],
-  [3.1, 2.45, 1.8],
-  [0.48, 1.5, 1.7],
-  [-0.2, 1.08, 1.05],
-  [-0.08, 1.84, 2.15],
-  [-1.7, 0.68, 0.85],
-  [-1.95, 1.1, 1.5],
+  [1.1, 1.05, 4.65],
+  [2.0, 2.3, 5.1],
+  [-1.2, 1.15, 1.3],
+  [-0.85, 0.78, 1.05],
+  [0.1, 1.32, 1.6],
+  [-0.2, 0.7, 0.95],
+  [-0.42, 1.05, 1.35],
 ];
 const COMPACT_FIREFLY_POSITIONS: [number, number, number][] = [
-  [3.15, 0.95, 1.55],
-  [3.28, 2.1, 2.1],
-  [1.58, 1.3, 1.85],
-  [0.82, 0.88, 1.85],
-  [1.32, 1.68, 2.35],
+  [0.35, 0.95, 8.65],
+  [0.55, 1.95, 9.1],
+  [0.3, 0.95, 7.0],
+  [0.75, 0.7, 6.8],
+  [-0.55, 1.05, 7.25],
   [0.52, 0.66, 1.05],
   [0.27, 1.08, 1.55],
 ];
@@ -414,7 +464,10 @@ function Fireflies({
       const gather = active ? 1 : approaching ? 0.55 : 0;
       const gatherOffset = index >= 5 ? gather * 0.08 : 0;
       const emphasis = index >= 2 && index <= 4 ? 1 : 0.76;
-      const scale = targetScale * emphasis;
+      // On compact the tower and vignette groups sit ~6-8 further down the path, so
+      // their fireflies get the same size compensation the props themselves get.
+      const distanceBoost = compact && index <= 4 ? 1.5 : 1;
+      const scale = targetScale * emphasis * distanceBoost;
       const opacity = targetOpacity * (index >= 5 ? 0.88 : 1);
 
       if (reducedMotion) {
@@ -481,14 +534,6 @@ function Milestone({
   const compositionWidth = gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width;
   const compact = compositionWidth <= 700;
   const portraitScale = compositionWidth < 360 ? 0.9 : 1;
-  const groundWash = useMemo(() => {
-    const shape = new THREE.Shape();
-    shape.moveTo(-1, -0.12);
-    shape.bezierCurveTo(-0.88, -0.36, 0.42, -0.29, 0.94, -0.07);
-    shape.bezierCurveTo(1.18, 0.1, 0.32, 0.32, -0.18, 0.23);
-    shape.bezierCurveTo(-0.61, 0.32, -1.15, 0.08, -1, -0.12);
-    return shape;
-  }, []);
   const groundLine = useMemo(() => new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(-1.15, 0, -0.08), new THREE.Vector3(-0.74, 0, -0.035),
     new THREE.Vector3(-0.66, 0, -0.02), new THREE.Vector3(-0.13, 0, 0.014),
@@ -512,76 +557,151 @@ function Milestone({
     group.current.scale.setScalar(next);
   });
 
+  // Read left-to-right as: sheet, lamp leaning over it, book resting at the lamp's foot.
+  // The order matters and was wrong in the first pass - the sheet sat on the far side, so
+  // the lamp's head (which points screen-left in the artwork) turned away from the thing it
+  // is meant to be lighting, and the sheet ended up pressed against Peiwen's silhouette,
+  // fully hidden behind her through the last stretch of the approach. With the sheet moved
+  // to the lamp-head side, the light now falls across it, the cluster pulls away from the
+  // walker, and the piece nearest her is the small low book rather than a tall pale rectangle.
+  // Every piece sits with its own bottom edge on the ground - y is the rendered half-height,
+  // sunk ~0.02 - so vertical staging comes from depth, not from floating at three altitudes.
+  // Mobile is composed separately rather than scaled down from this: the portrait canvas has
+  // only ~22 degrees of horizontal field of view, so the cluster is parked further down the
+  // path, carries less size compensation (1.18, down from 1.45) to buy real air between the
+  // pieces, and sits well to the left of the tower instead of across its legs.
+  const vignette: {
+    notebook: Vec3;
+    diagram: Vec3;
+    lamp: Vec3;
+    pairAnchor: Vec3;
+    sheetAnchor: Vec3;
+  } = compact
+    ? {
+        // The cluster's local x axis runs close to the view direction at the portrait arrival
+        // camera, so sliding along it swings pieces across the frame and even flips which side
+        // they land on. Mobile therefore keeps the x band that verified clean against the
+        // subtitle and buys its breathing room by carrying less size compensation instead.
+        diagram: [-0.62, 0.39, 7.25],
+        lamp: [0.38, 0.43, 6.95],
+        notebook: [0.9, 0.3, 6.7],
+        pairAnchor: [0.64, 0.04, 6.85],
+        sheetAnchor: [-0.62, 0.04, 7.25],
+      }
+    : {
+        // Same caveat as mobile: this axis is near-parallel to the view direction at the
+        // arrival camera, so sliding the cluster along it is not a safe "move left" - a 0.47
+        // nudge swung the order around and pushed the sheet out of frame entirely. These are
+        // the values verified on screen.
+        diagram: [0.25, 0.385, 1.75],
+        lamp: [-1.25, 0.43, 1.4],
+        notebook: [-0.81, 0.3, 1.1],
+        pairAnchor: [-1.03, 0.04, 1.25],
+        sheetAnchor: [0.25, 0.04, 1.75],
+      };
+  const vignetteScale = compact ? 1.02 : 1;
+  // Eiffel reads as a landmark further down the road rather than a prop she walks
+  // straight past. Parked beside the path it swung out of frame before the arrival
+  // text appeared, and swelled from ~49% to ~112% of viewport height on the way.
+  // Brought down the road AND in toward the walker's side, because distance alone barely
+  // moved it: at z 7.4 it still only gained ~2% of frame height, since the viewing distance
+  // here is dominated by the group's -3.15 lateral offset rather than by z. Desktop now sits
+  // at local x 1.4 / z 4.8 with the sprite trimmed to 4.2 tall, which reads ~51% of viewport
+  // height at arrival (was ~45%) with its base 7% lower in frame - the cue that actually says
+  // "near" - while the tip keeps the same headroom as before. It also holds still: across the
+  // whole run-up it stays within x 17-37% of the frame, where the old placement swung from
+  // the left edge across to 95% (into the text column) and back. y stays derived from the
+  // sprite height so the feet keep meeting the shadow.
+  // Mobile clears the subtitle by trimming ~11% of the tower's height rather than by pushing
+  // it further down the path: depth is not a usable lever here, since on the portrait camera
+  // every unit of z also slides the tower sideways (z 8.8 -> 10.4 moved it ~90px right and
+  // clipped it against the frame edge). Height drops the tip without moving it horizontally.
+  const eiffel: Vec3 = compact
+    ? [0.1, 1.66 * portraitScale, 8.8]
+    : [1.4, 2.08, 4.8];
+  const eiffelBase: Vec3 = compact ? [0.1, 0.045, 8.6] : [1.4, 0.045, 4.6];
+
   return (
     <group ref={group} position={placement.position} rotation={[0, placement.rotation, 0]}>
       <WorldSprite
         src="/assets/world/eiffel-landmark-v1.webp"
-        position={compact ? [2.7, 1.2 * portraitScale, 1.8] : [2.5, 1.65, 1.5]}
-        scale={compact ? [2.436 * portraitScale, 3.78 * portraitScale, 1] : [3.216, 4.98, 1]}
+        position={eiffel}
+        scale={compact ? [2.17 * portraitScale, 3.36 * portraitScale, 1] : [2.71, 4.2, 1]}
         opacity={active ? 0.94 : 0.78}
         renderOrder={4}
         reducedMotion={reducedMotion}
       />
+      {/* The tower artwork fills its sprite frame down to the last 0.4%, so centring it
+          at y=1.65 buried its feet 0.82 below the ground the shadow sits on. The centre
+          height is now derived from that measurement instead of eyeballed. */}
+      <GroundContact position={eiffelBase} radius={0.95} strength={1.1} />
+
       <WorldSprite
         src="/assets/world/saclay-notebook-v1.webp"
-        position={compact ? [0.82, 0.35, 1.7] : [-0.52, 0.36, 1.02]}
-        scale={[0.67, 0.6, 1]}
+        position={vignette.notebook}
+        scale={[0.7 * vignetteScale, 0.63 * vignetteScale, 1]}
         opacity={active ? 0.82 : 0.68}
         tilt={-0.065}
         reducedMotion={reducedMotion}
       />
       <WorldSprite
         src="/assets/world/saclay-research-diagram-v1.webp"
-        position={compact ? [1.65, 0.88, 2.55] : [0.69, 1.0, 1.95]}
-        scale={compact ? [0.85, 0.92, 1] : [1.03, 1.12, 1]}
+        position={vignette.diagram}
+        scale={[0.74 * vignetteScale, 0.8 * vignetteScale, 1]}
         opacity={active ? 0.94 : 0.72}
-        tilt={0.035}
+        tilt={0.05}
         reducedMotion={reducedMotion}
       />
       <WorldSprite
         src="/assets/world/saclay-desk-lamp-v1.webp"
-        position={compact ? [1.22, 0.49, 2.05] : [0.05, 0.56, 1.5]}
-        scale={[0.86, 0.75, 1]}
+        position={vignette.lamp}
+        scale={[1.0 * vignetteScale, 0.88 * vignetteScale, 1]}
         opacity={active ? 0.9 : 0.68}
-        tilt={0.025}
+        tilt={0.015}
         reducedMotion={reducedMotion}
       />
-      {/* A few translucent, uneven washes anchor the fragments without a desk. */}
-      <group position={compact ? [1.17, 0.04, 2.04] : [0.01, 0.04, 1.5]}>
-        {[1, 1.18, 1.4].map((spread, index) => (
-          <mesh key={spread} rotation={[-Math.PI / 2, 0, -0.06]} scale={[spread, spread, 1]}>
-            <shapeGeometry args={[groundWash]} />
-            <meshBasicMaterial color="#8a8069" transparent opacity={0.024 - index * 0.007} depthWrite={false} />
-          </mesh>
-        ))}
-        <lineSegments geometry={groundLine} position={[0, 0.006, 0.2]}>
-          <lineBasicMaterial color="#8a8069" transparent opacity={0.17} depthWrite={false} />
-        </lineSegments>
-      </group>
-      <lineSegments geometry={groundLine} position={compact ? [2.7, 0.045, 1.3] : [2.5, 0.045, 1.3]} scale={[0.7, 1, 1]}>
-        <lineBasicMaterial color="#8a8069" transparent opacity={0.16} depthWrite={false} />
+      {/* Same blob family and tone as Eiffel's, but two footprints rather than one mat:
+          the lamp-and-notebook pair share a contact, the sheet keeps its own smaller one,
+          so the air between the two beats stays real instead of being bridged by shadow. */}
+      <GroundContact position={vignette.pairAnchor} radius={0.82 * vignetteScale} strength={1} />
+      <GroundContact position={vignette.sheetAnchor} radius={0.46 * vignetteScale} strength={0.85} />
+      <lineSegments
+        geometry={groundLine}
+        position={[vignette.pairAnchor[0], vignette.pairAnchor[1] + 0.006, vignette.pairAnchor[2] + 0.2]}
+        scale={[vignetteScale, 1, vignetteScale]}
+      >
+        <lineBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
       </lineSegments>
+      <lineSegments geometry={groundLine} position={eiffelBase} scale={[1.3, 1, 1]}>
+        <lineBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
+      </lineSegments>
+
+      {/* Minor environment details: tinted and dimmed a step further so they sit behind
+          Eiffel, Peiwen, and the vignette in the reading order instead of competing. */}
       <WorldSprite
         src={GRASS_TEXTURES[0]}
         position={compact ? [3.12, 0.12, 1.3] : [3.12, 0.18, 1.45]}
         scale={[0.3, 0.38, 1]}
-        opacity={0.54}
+        opacity={0.44}
+        tint="#d8d2c0"
         motion="sway"
         phase={2.1}
         reducedMotion={reducedMotion}
       />
       <WorldSprite
         src={FLOWER_TEXTURES[0]}
-        position={compact ? [0.59, 0.12, 1.86] : [-0.82, 0.12, 1.15]}
+        position={compact ? [0.59, 0.12, 1.86] : [-2.62, 0.12, 1.68]}
         scale={[0.18, 0.22, 1]}
-        opacity={0.48}
+        opacity={0.38}
+        tint="#d8d2c0"
         reducedMotion={reducedMotion}
       />
       <WorldSprite
         src="/assets/world/dandelion-seeds-v1.webp"
         position={[2.72, 1.72, -0.8]}
         scale={[0.66, 0.42, 1]}
-        opacity={0.26}
+        opacity={0.2}
+        tint="#d8d2c0"
         motion="float"
         phase={2.6}
         renderOrder={4}
@@ -606,7 +726,7 @@ function ExperienceScene({
   onMovingChange: (moving: boolean) => void;
 }) {
   const curve = useMemo(() => makePath(), []);
-  const { camera, size } = useThree();
+  const { camera, size, gl } = useThree();
   const lookAt = useRef(new THREE.Vector3());
   const milestoneState = useRef<MilestonePhase>("distant");
   const movingState = useRef(false);
@@ -614,13 +734,13 @@ function ExperienceScene({
   /* eslint-disable react-hooks/immutability -- R3F frame state is intentionally transient and ref-backed. */
   useFrame((_, delta) => {
     const control = controls.current;
-    const near = Math.abs(control.progress - MILESTONE_PROGRESS) < 0.105;
+    const near = Math.abs(control.progress - MILESTONE_PROGRESS) < 0.07;
     const movementScale = near ? 0.62 : 1;
-    control.targetProgress = clamp(control.targetProgress + control.forward * delta * 0.075 * movementScale, 0.015, 0.985);
+    control.targetProgress = clamp(control.targetProgress + control.forward * delta * 0.048 * movementScale, 0.015, 0.985);
     control.targetLateral = clamp(control.targetLateral + control.sideways * delta * 0.85, -0.78, 0.78);
 
     const previous = control.progress;
-    control.progress = THREE.MathUtils.damp(control.progress, control.targetProgress, near ? 3.2 : 5, delta);
+    control.progress = THREE.MathUtils.damp(control.progress, control.targetProgress, near ? 2.8 : 4, delta);
     control.lateral = THREE.MathUtils.damp(control.lateral, control.targetLateral, 7, delta);
     control.speed = Math.abs(control.progress - previous) / Math.max(delta, 0.001);
 
@@ -629,8 +749,12 @@ function ExperienceScene({
     const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
     const characterPoint = point.clone().addScaledVector(normal, control.lateral);
     const distance = Math.abs(control.progress - MILESTONE_PROGRESS);
-    const editorialFraming = clamp(1 - distance / 0.2, 0, 1);
-    const mobileVerticalRoom = clamp((700 - size.width) / 380, 0, 1) * 0.48;
+    const editorialFraming = clamp(1 - distance / 0.13, 0, 1);
+    // Measure the page, not the canvas: the mobile CSS widens the canvas by 20rem to
+    // buy horizontal field of view, which used to push this over 700 and silently
+    // disable the compact camera lift on exactly the screens that need it.
+    const shellWidth = gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width;
+    const mobileVerticalRoom = clamp((700 - shellWidth) / 380, 0, 1) * 0.48;
     const cameraTarget = characterPoint
       .clone()
       .addScaledVector(tangent, -5.2)
@@ -645,9 +769,12 @@ function ExperienceScene({
     lookAt.current.lerp(ahead, 1 - Math.exp(-4 * delta));
     camera.lookAt(lookAt.current);
 
-    const nextPhase: MilestonePhase = distance < 0.082
+    // Windows are absolute progress units, so they were retuned along with the shorter
+    // run-up: at the old 0.082/0.18 the walker would have been "approaching" almost from
+    // the first wheel tick, and the arrival text would have appeared before she arrived.
+    const nextPhase: MilestonePhase = distance < 0.055
       ? "active"
-      : distance < 0.18
+      : distance < 0.105
         ? "approaching"
         : "distant";
     if (nextPhase !== milestoneState.current) {
@@ -670,8 +797,11 @@ function ExperienceScene({
     <>
       <color attach="background" args={["#faf9f3"]} />
       <fog attach="fog" args={["#faf9f3", 18, 48]} />
-      <ambientLight intensity={2.1} />
-      <directionalLight position={[4, 9, 5]} intensity={1.1} />
+      {/* No lights: the road (meshBasicMaterial), the ground plane (meshBasicMaterial),
+          and every sprite (spriteMaterial) here are unlit by construction, so an
+          ambientLight/directionalLight would affect nothing — removed rather than kept
+          as inert code. Depth and shading come from opacity, tint (WorldSprite's `tint`
+          prop), and GroundContact's shared shadows instead. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.035, -24]} receiveShadow>
         <planeGeometry args={[100, 100]} />
         <meshBasicMaterial color="#faf9f3" />
@@ -730,8 +860,18 @@ export default function ExperiencePrototype() {
   }, []);
 
   useEffect(() => {
+    // Review aid only: ?arrival=1 seeds progress at the Paris-Saclay milestone so the
+    // static arrival composition can be inspected/screenshotted without scrolling in.
+    // Camera and control logic are untouched; the camera still eases to this position
+    // over ~1-2s the same way it would after walking there, it just starts already there.
+    if (new URLSearchParams(window.location.search).get("arrival") !== "1") return;
+    controls.current.progress = MILESTONE_PROGRESS;
+    controls.current.targetProgress = MILESTONE_PROGRESS;
+  }, []);
+
+  useEffect(() => {
     const show = window.setTimeout(() => setSelfTalk("Let's see where this goes..."), 850);
-    const hide = window.setTimeout(() => setSelfTalk(""), 3300);
+    const hide = window.setTimeout(() => setSelfTalk(""), 4200);
     return () => {
       window.clearTimeout(show);
       window.clearTimeout(hide);
@@ -781,7 +921,7 @@ export default function ExperiencePrototype() {
     <main
       className="prototype-shell"
       onWheel={(event) => {
-        controls.current.targetProgress = clamp(controls.current.targetProgress + event.deltaY * 0.00045, 0.015, 0.985);
+        controls.current.targetProgress = clamp(controls.current.targetProgress + event.deltaY * 0.0003, 0.015, 0.985);
       }}
       onPointerDown={(event) => {
         pointer.current = { x: event.clientX, y: event.clientY };
@@ -791,7 +931,7 @@ export default function ExperiencePrototype() {
         if (!pointer.current) return;
         const deltaX = event.clientX - pointer.current.x;
         const deltaY = event.clientY - pointer.current.y;
-        controls.current.targetProgress = clamp(controls.current.targetProgress - deltaY * 0.00085, 0.015, 0.985);
+        controls.current.targetProgress = clamp(controls.current.targetProgress - deltaY * 0.00055, 0.015, 0.985);
         controls.current.targetLateral = clamp(controls.current.targetLateral + deltaX * 0.006, -0.78, 0.78);
         pointer.current = { x: event.clientX, y: event.clientY };
       }}
@@ -803,7 +943,16 @@ export default function ExperiencePrototype() {
         <Canvas
           camera={{ position: [7, 3.5, 10], fov: 39, near: 0.1, far: 90 }}
           dpr={[1, 1.5]}
-          gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+          // No tone mapping: this is a flat, unlit, hand-drawn scene. R3F's default
+          // ACES filmic curve was grading the road and ground plane (the only
+          // non-`toneMapped={false}` materials) from warm paper down to neutral grey,
+          // which is what split the frame into a cream sky over a grey field.
+          gl={{
+            antialias: true,
+            alpha: false,
+            powerPreference: "high-performance",
+            toneMapping: THREE.NoToneMapping,
+          }}
           fallback={<p className="canvas-fallback">The spatial view is unavailable. Experience details remain available.</p>}
         >
           <ExperienceScene
@@ -816,7 +965,10 @@ export default function ExperiencePrototype() {
         </Canvas>
       </div>
 
-      <header className="prototype-intro" data-hidden={milestonePhase !== "distant"}>
+      {/* Hidden as soon as she takes a step, not only once the milestone is near: with the
+          shorter run-up the tower enters frame within a tick or two and used to pass behind
+          this headline. */}
+      <header className="prototype-intro" data-hidden={hasMoved || milestonePhase !== "distant"}>
         <p>Peiwen Zhang</p>
         <h1>Walk with me through my experiences.</h1>
       </header>

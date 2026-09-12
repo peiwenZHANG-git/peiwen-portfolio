@@ -36,7 +36,33 @@ Human-Computer Interaction · 2025–Present
 
 The current vignette contains Eiffel, research diagram, desk lamp, notebook, sparse vegetation, dandelion seeds, grounding washes/lines, and seven designed fireflies. The tree is absent from the milestone core. The papers derivative remains in `public/assets/` but is not rendered.
 
-Technical behavior is verified. The current visual balance is still waiting for Peiwen's manual approval. Known issues are recorded in `PROJECT_STATE.md` and `VISUAL_DIRECTION.md`.
+Pass 3A and its follow-up 3A-fix are implemented on this branch and were visually approved by Peiwen
+on 2026-09-12 from the live dev render. What changed, in short:
+
+- `MILESTONE_PROGRESS` 0.47 -> 0.24 (shorter run-up), with the phase windows retightened to match
+  (active < 0.055, approaching < 0.105, slowdown window 0.07) so the arrival text no longer appears
+  before she arrives.
+- Gentler pacing: wheel 0.00045 -> 0.0003, pointer drag 0.00085 -> 0.00055, keyboard 0.075 -> 0.048,
+  progress damping 5 -> 4 (2.8 near the milestone), walk cycle 7Hz -> 5.2Hz so the gait matches.
+- Eiffel brought nearer and made stable: desktop local x 1.4 / z 4.8, sprite 2.71 x 4.2. It holds
+  within x 17-37% of the frame for the whole approach, where the old placement swept across to 95%
+  and back. Mobile sits at x 0.1 / z 8.8 with the sprite trimmed ~11% (2.17 x 3.36) so the spire
+  clears the subtitle line.
+- Academic vignette recomposed on a shared ground line (each y is the rendered half-height), with
+  the lamp as the vertical anchor, the book at its foot, and the sheet on the lamp-head side.
+  Desktop and mobile carry separate positions and separate size compensation.
+- Milestone copy raised from `top: 24%` to `15%` so the road's upper edge no longer cuts through the
+  subtitle at the new milestone bend.
+- The intro headline now hides on first movement (`hasMoved`), not only once the milestone is near,
+  so the tower no longer passes behind it.
+- Self-talk redrawn as a picture-book whisper: an SVG contour whose ink line does not hug the paper
+  edge plus two short re-traced strokes, irregular tail dots, anchored in the opening whitespace
+  (desktop `top: 26%`, mobile `top: 26%`) clear of Peiwen at both breakpoints.
+
+Takeover validation completed on 2026-09-12: lint, typecheck, production build, desktop/mobile
+rendering, keyboard, wheel, resize, and reduced-motion emulation passed. A long mobile swipe can
+cross the narrow active milestone window; lateral-only movement does not update the shared moving
+state; and the subdued walking hint has insufficient contrast. Details are in `PROJECT_STATE.md`.
 
 ## Approved constraints
 
@@ -83,6 +109,27 @@ Older Goal 1C, Hero/Experience v2, and rejected v1 drafts remain only in the ori
 
 ## Next task
 
-Continue on `visual-direction-v2`. Review the current desktop/mobile arrival composition with the user and adjust only the Experience / Paris-Saclay visual direction they identify. Do not start CUC, Hub, Project House, or a new system.
+Continue on `visual-direction-v2`. Pass 3A / 3A-fix and this takeover audit are preserved in a local
+checkpoint; inspect live Git state before relying on branch or commit status.
 
-Before handing back: run `npm run lint`, `npm run typecheck`, `npm run build`, `git diff --check`, responsive checks, keyboard focus checks, and reduced-motion checks. Do not commit or push unless explicitly requested for that task.
+1. Resolve the focused interaction/accessibility issues recorded in `PROJECT_STATE.md` before adding
+   more journey milestones.
+2. Then Pass 3B, scoped by Peiwen as the entry ritual plus restrained ambient life. See
+   `PROJECT_STATE.md` -> Next step for the full scope, including the fact that butterflies have no
+   runtime asset yet.
+
+Do not start CUC, Hub, Project House, or a new system. Do not commit or push unless explicitly
+requested for that task.
+
+## Working notes for the next agent
+
+Two things cost hours in the previous session and are worth knowing before touching this scene:
+
+- Composition cannot be tuned by reasoning about the coordinates. At the arrival camera the milestone
+  group's local x axis runs close to the view direction on both breakpoints, so moving a piece along
+  x can swing it across the frame or flip which side of the cluster it lands on, and on mobile every
+  unit of z also slides the tower sideways. Change one value, look at a settled frame, measure, repeat.
+- If the scene is inspected through a hosted browser pane: when the pane is hidden the page's
+  `requestAnimationFrame` stops, so the R3F loop freezes, the canvas screenshots come back black, and
+  the camera ease freezes part-way through. Any measurement taken in that state is wrong. Bring the
+  pane to the front and let the camera settle before trusting a frame.
