@@ -45,19 +45,60 @@ All earlier source and runtime assets are preserved as historical or reusable in
 ## Saclay P0 source assets
 
 These originals were copied byte-for-byte from `Milestone-Saclay/source/` into the repository on
-2026-09-13. They are active source art pending alpha, halo, crop, scale, compression and browser QA.
-None is a runtime asset, and no WebP derivative exists yet.
+2026-09-13. Pass 3C.1 created deterministic derivatives without modifying the source PNGs. Cutouts
+were cleared only where source alpha was 1–3, cropped to the resulting alpha bounds, given 12 px
+transparent padding, resized by intended scene role, and encoded as lossless WebP. B1 remains opaque
+and uses high-quality WebP because it is a bounded road surface, not a cutout.
 
 | ID | Repository source path | Type | Milestone | Status | Runtime derivative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `a1-warm-campus-cluster` | `design-assets/source/experience/saclay/a1-warm-campus-cluster.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1086×1448 RGBA; warm-window campus cluster. |
-| `b1-snow-road-surface` | `design-assets/source/experience/saclay/b1-snow-road-surface.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 2508×627 RGB; horizontal painted snow surface, intentionally no alpha. |
-| `b2-snow-edge-left` | `design-assets/source/experience/saclay/b2-snow-edge-left.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1448×1086 RGBA; illustrated left snow edge. |
-| `b3-snow-edge-right` | `design-assets/source/experience/saclay/b3-snow-edge-right.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1448×1086 RGBA; illustrated right snow edge. |
-| `b4-snow-bank` | `design-assets/source/experience/saclay/b4-snow-bank.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1448×1086 RGBA; standalone snow bank. |
-| `c1-winter-vegetation` | `design-assets/source/experience/saclay/c1-winter-vegetation.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1024×1536 RGBA; bare tree and evergreen cluster. |
-| `c2-left-foreground-snow-bush` | `design-assets/source/experience/saclay/c2-left-foreground-snow-bush.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1536×1024 RGBA; left foreground framing cluster. |
-| `c3-upper-right-snow-branch` | `design-assets/source/experience/saclay/c3-upper-right-snow-branch.png` | source asset | Paris-Saclay | generated; pending runtime QA | pending | 1774×887 RGBA; upper-right foreground framing branch. |
+| `a1-warm-campus-cluster` | `design-assets/source/experience/saclay/a1-warm-campus-cluster.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/campus-cluster.webp` | Campus, snow and vegetation remain one grounded cluster. |
+| `b1-snow-road-surface` | `design-assets/source/experience/saclay/b1-snow-road-surface.png` | source asset | Paris-Saclay | usable with limitation | `public/assets/world/saclay/snow-road-surface.webp` | Opaque, non-seamless 4:1 texture; bounded/stretched UV only, never repeat. |
+| `b2-snow-edge-left` | `design-assets/source/experience/saclay/b2-snow-edge-left.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/snow-edge-left.webp` | Independent left edge; not mirrored. |
+| `b3-snow-edge-right` | `design-assets/source/experience/saclay/b3-snow-edge-right.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/snow-edge-right.webp` | Independent right edge; not mirrored. |
+| `b4-snow-bank` | `design-assets/source/experience/saclay/b4-snow-bank.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/snow-bank.webp` | Local snow-bank cutout, not a road-edge strip. |
+| `c1-winter-vegetation` | `design-assets/source/experience/saclay/c1-winter-vegetation.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/winter-vegetation.webp` | Tree, evergreen and shared snow base remain one cluster. |
+| `c2-left-foreground-snow-bush` | `design-assets/source/experience/saclay/c2-left-foreground-snow-bush.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/foreground-left.webp` | Transparent foreground framing art; intentional top/left/bottom edge entry retained. |
+| `c3-upper-right-snow-branch` | `design-assets/source/experience/saclay/c3-upper-right-snow-branch.png` | source asset | Paris-Saclay | runtime-ready | `public/assets/world/saclay/foreground-upper-right.webp` | Transparent camera-near branch; intentional top/right edge entry retained. |
+
+### Pass 3C.1 alpha and edge QA
+
+All eight sources are sRGB. The seven cutouts have real, effective alpha; none contains a baked
+black, gray or white rectangle. Their subject pixels are predominantly alpha 240–254, so the near
+absence of exact alpha 255 in C1/C2 is not fake transparency. The `alpha >= 4` bounds below were used
+for cleanup/cropping; the wider raw `alpha > 0` bounds were caused by sparse alpha 1–3 residue.
+
+| ID | Source size / mode | Exact opaque pixels / bbox | Effective bbox (`alpha >= 4`) | Effective source margin T/R/B/L | Edge and artifact result |
+| --- | --- | --- | --- | --- | --- |
+| A1 | 1086×1448 RGBA | 167 / `50,579,1015,460` | `13,517,1061,527` | `517/12/404/13` | 11,952 dirty-alpha pixels cleared; clean silhouette and shared ground line. |
+| B1 | 2508×627 RGB | 1,572,516 / full image | full image | `0/0/0/0` | No alpha expected; no obvious generation defect. Edge mismatch confirms non-seamless use. |
+| B2 | 1448×1086 RGBA | 64 / `40,258,1341,644` | `14,252,1420,674` | `252/14/160/14` | 31,135 dirty-alpha pixels cleared; snow edge remains intact. |
+| B3 | 1448×1086 RGBA | 27 / `63,270,1302,701` | `8,250,1432,745` | `250/8/91/8` | 22,215 dirty-alpha pixels cleared; distinct right-hand shape retained. |
+| B4 | 1448×1086 RGBA | 20 / `40,341,1371,480` | `12,335,1425,525` | `335/11/226/12` | 15,174 dirty-alpha pixels cleared; isolated bank remains intact. |
+| C1 | 1024×1536 RGBA | 0; maximum alpha 254 | `39,204,956,1138` | `204/29/194/39` | 85,152 dirty-alpha pixels cleared; cluster and snow base remain intact. |
+| C2 | 1536×1024 RGBA | 0; maximum alpha 254 | `0,0,1501,1024` | `0/35/0/0` | 48,644 dirty-alpha pixels cleared; no baked gradient; intentional framing crop retained. |
+| C3 | 1774×887 RGBA | 259 / `263,10,1482,804` | `229,0,1545,848` | `0/0/39/229` | 56,893 dirty-alpha pixels cleared; no visible halo; snow and branch edges remain intact. |
+
+Blue/purple edge pixels visible in the statistics and dark-background review are part of the
+approved illustration shading, not a removable fringe. No subject was split, mirrored, recolored,
+redrawn, inpainted or content-aware filled. No asset needs regeneration.
+
+### Runtime dimensions and memory
+
+| Source | Source dimensions / file | Runtime | Runtime dimensions / file | Estimated decoded memory | Resolution reason |
+| --- | --- | --- | --- | --- | --- |
+| `a1-warm-campus-cluster.png` | 1086×1448 / 943.9 KiB | `campus-cluster.webp` | 1048×533 / 615.1 KiB | 2.13 MiB | 1024 px content width plus padding suits a midground campus cluster. |
+| `b1-snow-road-surface.png` | 2508×627 / 2507.2 KiB | `snow-road-surface.webp` | 2048×512 / 306.7 KiB | 4.00 MiB | GPU-friendly 4:1 bounded/stretched road surface; not seamless. |
+| `b2-snow-edge-left.png` | 1448×1086 / 831.9 KiB | `snow-edge-left.webp` | 1304×632 / 447.2 KiB | 3.14 MiB | 1280 px content width plus padding preserves a long road edge. |
+| `b3-snow-edge-right.png` | 1448×1086 / 665.2 KiB | `snow-edge-right.webp` | 1304×690 / 352.6 KiB | 3.43 MiB | 1280 px content width plus padding preserves its distinct contour. |
+| `b4-snow-bank.png` | 1448×1086 / 845.5 KiB | `snow-bank.webp` | 984×378 / 272.2 KiB | 1.42 MiB | 960 px content width is sufficient for a local midground prop. |
+| `c1-winter-vegetation.png` | 1024×1536 / 2033.0 KiB | `winter-vegetation.webp` | 924×1095 / 800.0 KiB | 3.86 MiB | 900 px content width retains fine branches at midground scale. |
+| `c2-left-foreground-snow-bush.png` | 1536×1024 / 2243.6 KiB | `foreground-left.webp` | 1525×1048 / 1043.0 KiB | 6.10 MiB | Near-camera foreground retains source-scale detail. |
+| `c3-upper-right-snow-branch.png` | 1774×887 / 816.0 KiB | `foreground-upper-right.webp` | 1560×867 / 528.0 KiB | 5.16 MiB | Near-camera branch retains a 1536 px content width plus padding. |
+
+Runtime files total 4,364.8 KiB on disk. The conservative simultaneous decoded-memory estimate is
+29.24 MiB at four bytes per pixel; actual residency must be assessed during Pass 3C.2 integration.
+B1 left/right edge mean absolute RGB difference is 14.47 (maximum 110), so it must not use repeating UVs.
 
 Source SHA-256, in the table order above: `B9DB726D544C8CA124EC14B7E1D95827EAB4FED181B282D1849013CD7692B95C`,
 `CE189D3B601A77152312B0FEADDC911B3B227B5D1ED53FBCD427D13BC111D9FC`,
@@ -79,9 +120,9 @@ Source SHA-256, in the table order above: `B9DB726D544C8CA124EC14B7E1D95827EAB4F
   duplicates of the existing approved targets as documented above.
 - The Desktop directory remains untouched. The repository has no parallel `image/` directory.
 
-This consolidation supersedes the pre-import asset audit that found the P0 layers missing. Runtime
-readiness is still pending: source availability does not imply alpha/halo/crop/scale/compression QA.
-No Experience code, journey registry, character, runtime derivative or visual integration changed.
+This consolidation supersedes the pre-import asset audit that found the P0 layers missing. Pass 3C.1
+completed source QA and derivative preparation; visual integration remains intentionally unstarted.
+No Experience code, journey registry, character, camera or road geometry changed.
 
 ## Character sources
 

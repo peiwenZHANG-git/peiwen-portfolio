@@ -129,6 +129,10 @@ It is MIT-licensed and may be studied for scene state, camera organization, prel
 - New keyframes are original PNG copies; SHA-256 equality with the supplied attachments was checked.
   They are flattened images: missing/occluded layers cannot be recovered by alpha extraction alone.
   No winter trees, campus clocktower or other new runtime derivatives were generated in Pass 3B.
+- Pass 3C.1 prepared eight deterministic Saclay derivatives under `public/assets/world/saclay/`.
+  Seven transparent cutouts are runtime-ready. `snow-road-surface.webp` is usable only with
+  bounded/stretched UVs because it is not seamless. Source originals remain unchanged; see
+  `ASSET_INDEX.md` for alpha QA, dimensions, file sizes and decoded-memory estimates.
 
 ## Historical recovery
 
@@ -143,14 +147,11 @@ Older Goal 1C, Hero/Experience v2, and rejected v1 drafts remain only in the ori
 
 ## Next task
 
-Inspect live Git state first. Pass 3B is accepted and Pass 3C (Saclay-only winter biome conversion)
-is authorized. Eight P0 originals are now consolidated under `design-assets/source/experience/saclay/`.
-They are source assets pending alpha/halo/crop/resize/compression and browser QA; no runtime WebP or
-scene integration was created during consolidation. See `ASSET_INDEX.md` for exact files and hashes.
-
-Resume with deterministic runtime-asset QA, then establish the static desktop/mobile composition.
-Preserve the movement/registry contract and approved keyframe style. Do not load source PNGs as
-production runtime assets, regenerate missing artwork, or start CUC runtime/visual transition.
+Inspect live Git state first. Pass 3B and Pass 3C.1 are complete. Pass 3C.2 visual integration has not
+started and requires explicit authorization. When authorized, establish the static Saclay
+desktop/mobile composition using the prepared runtime derivatives; do not load source PNGs. Preserve
+the movement/registry contract and approved keyframe style. Do not regenerate artwork or start CUC
+runtime/visual transition.
 
 The historical "Pass 3B entry ritual + ambient life" proposal remains deferred; this pass is named
 Journey Registry Foundation. Do not start an entry ritual, Hub, Project House, visual transition or
