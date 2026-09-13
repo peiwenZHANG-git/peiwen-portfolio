@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #faf9f3;
-  --ink: #2c2b27;
-  --muted: #69675f;
+  --paper: #929ac3;
+  --ink: #292d45;
+  --muted: #414765;
 }
 
 @theme inline {
@@ -40,7 +40,7 @@ a { color: inherit; }
   z-index: 20;
   padding: 0.75rem 1rem;
   border: 1px solid var(--ink);
-  background: var(--paper);
+  background: #f3f1f4;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }

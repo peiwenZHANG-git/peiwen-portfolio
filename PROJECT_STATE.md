@@ -21,8 +21,21 @@ no runtime scene, new narration, visual transition, or new runtime assets have b
 Pass 3C.1 — Saclay Runtime Asset QA & Derivatives is complete. The eight source originals remain
 unchanged under `design-assets/source/experience/saclay/`; seven transparent lossless WebP cutouts
 and one opaque road-surface WebP are verified under `public/assets/world/saclay/`. B1 is intentionally
-limited to bounded/stretched UV use because it is not seamless. Scene integration has not begun, and
-the approved keyframe remains a target rather than a description of the currently rendered scene.
+limited to bounded/stretched UV use because it is not seamless.
+
+Pass 3C.2 — the prepared Saclay derivatives are integrated as a static desktop/mobile winter
+composition. The existing S-road geometry, camera, milestone registry, movement controls, Peiwen
+frames and DOM narration contract are unchanged. Automated and browser-emulated checks pass;
+manual visual approval is still pending.
+
+Pass 3C.2-fix A — the first spatial-hierarchy correction is implemented. Road texture, desktop
+Peiwen scale, Eiffel/campus recession, C2 placement and C3 foreground framing were tuned without
+changing source art or interaction contracts. The pass is intended to expose remaining asset-level
+problems; manual visual judgment is still pending.
+
+Pass 3C.2 cleanup — all B2/B3/B4 runtime placements are disabled because they crossed or visually
+blocked the road. Their source and runtime files remain preserved. The clean baseline retains B1,
+Peiwen, campus, C1, C2, C3 and the current Eiffel treatment while awaiting P1 environment assets.
 
 ## Architecture
 
@@ -46,14 +59,14 @@ the approved keyframe remains a target rather than a description of the currentl
 | Next.js / TypeScript foundation | verified | Lint, typecheck, and production build passed on 2026-09-11. |
 | Constrained R3F Experience path | verified | Forward/backward and lateral keyboard controls, wheel input, mobile swipe, camera follow, and responsive viewport checks passed. |
 | Peiwen walking presentation | verified | Approved Peiwen source identity is represented by four runtime walking frames; reduced motion disables idle movement. |
-| Paris-Saclay Experience milestone | implemented | Eiffel and academic vignette, semantic DOM text, approach/arrival behavior, fireflies, grounding, and mobile composition exist. |
+| Paris-Saclay Experience milestone | implemented | Winter campus, Eiffel, snowy path/edges, vegetation and foreground framing now form the runtime vignette; semantic DOM text, approach/arrival behavior, fireflies and mobile composition remain. Manual visual approval is pending. |
 | Pass 3A + 3A-fix composition and pacing | verified | Visually approved by Peiwen on 2026-09-12. Lint, typecheck, production build, desktop/mobile browser checks, controls, resize, and reduced motion passed in the takeover audit. |
 | Keyboard controls after Pass 3A | verified | Live check 2026-09-12: see Verification baseline. |
 | Reduced motion after Pass 3A | verified | Edge was launched with `prefers-reduced-motion: reduce`; CSS transitions were `0s`, DOM animation count was zero, and the settled Canvas remained unchanged across captures. |
 | Pass 3A.1 interaction contract | verified | Bounded wheel/keyboard/swipe progress, forward and reverse milestone crossing, lateral movement side effects, 4.63:1 subdued-hint contrast, responsive resize, and reduced motion passed on 2026-09-12. |
 | Pass 3B journey foundation | verified | Deterministic checks, lint, typecheck, production build, diff check, desktop/mobile regression, controls and accessibility checks passed; evidence is recorded below. |
-| New Saclay/CUC visual targets | designed | Approved original PNG keyframes are preserved under `design-assets/keyframes/experience/`. No winter/autumn runtime layers are implemented. |
-| Pass 3C winter Saclay conversion | designed | Source art and verified runtime derivatives exist; scene integration has not begun. |
+| New Saclay/CUC visual targets | designed | Approved original PNG keyframes are preserved under `design-assets/keyframes/experience/`. Saclay has a first runtime conversion; CUC remains unimplemented. |
+| Pass 3C winter Saclay conversion | implemented | Pass 3C.2 plus fix A establish bounded road UVs, explicit depth tiers and separate desktop/mobile composition. B2/B3/B4 placements are disabled in the cleanup baseline; their files remain available. Manual visual approval remains. |
 | Pass 3C.1 runtime asset QA | verified | Eight sources decoded and were inspected by pixel/alpha statistics plus checkerboard and light/dark review; seven assets are runtime-ready and B1 is usable with its documented non-seamless limitation. |
 | Experience asset consolidation | verified | Six approved keyframes and eight Saclay P0 source PNGs are indexed in-repo; imported files matched their external sources by byte count and SHA-256. |
 | Hub choice point and Project House | planned | World model is recorded, but neither scene is implemented. |
@@ -74,22 +87,57 @@ the approved keyframe remains a target rather than a description of the currentl
 
 ## Known constraints and open issues
 
-- The preserved Saclay runtime composition is the 3A.1 regression baseline. The large Eiffel / paper academic vignette is historical composition, superseded as a future target by the approved winter keyframe.
-- The left-vignette / road / right-text composition is strongest at arrival; the existing follow camera moves the vignette across the frame during approach.
-- Mobile uses an explicit portrait framing adjustment and a smaller Eiffel fit to keep Peiwen, text, and the full landmark visible.
+- The Pass 3A.1 large-Eiffel / paper-academic composition remains recoverable in Git history; the live runtime now uses the Pass 3C.2 winter composition.
+- The static winter composition is strongest at arrival. The existing follow camera deliberately reveals it from a smaller distant grouping during approach.
+- Mobile keeps the existing widened Canvas/camera behavior and uses a separate compact sprite arrangement so Peiwen, Eiffel, campus and DOM text remain visible.
 - Real-device performance and touch feel remain unverified; browser emulation is not physical-device testing.
 - Keyframes are flattened images with text and occluded backgrounds, not runtime assets. Use the
   prepared Saclay runtime derivatives for integration; do not load source PNGs directly or
   regenerate/reconstruct missing artwork without an approved asset-production scope.
 - The B1 snow-road surface is not seamless and must use bounded/stretched UVs, not repeating UVs.
-- Loading all eight Saclay P0 derivatives simultaneously represents a conservative 29.24 MiB decoded
-  texture footprint before mipmaps; integration should load only what the composition needs.
+- The clean baseline no longer loads B2/B3/B4. Their preserved source/runtime files remain available
+  for reference, but they should not be placed across the road again without a new composition need.
+- No approved separate moon, path-lamp or milestone-sign runtime asset exists, so Pass 3C.2 does not
+  reconstruct those flattened keyframe details.
+- Fix A substantially reduces the road's river-like texture direction and corrects desktop Peiwen's
+  scale. Eiffel still reads as an isolated icon and the A1 campus asset's self-contained snow base
+  still reads as a floating cutout, especially while leaving; those are now treated as asset-level
+  findings rather than reasons for further placement-only tuning. C1 remains usable.
 - CUC identity, period and summary are unconfirmed. The movement/transition reference video has not been supplied for this pass.
 - `THREE.Clock` emits its existing deprecation warning. Node 22's deterministic script emits type-stripping/module-detection warnings; it runs without a new dependency or package module-mode change.
 - Do not fabricate employers, roles, dates, outcomes, or academic details.
 - Do not add free exploration, game pressure, complex 3D, a large animation system, or new dependencies without a demonstrated need.
 
 ## Verification baseline
+
+Pass 3C.2 cleanup checks (2026-09-13):
+
+- B2/B3/B4 have no runtime JSX placement; their constants and source/runtime files remain intact.
+- No road, Peiwen, campus, C1, C2, C3, Eiffel, input, camera or registry parameter changed in this cleanup.
+
+Pass 3C.2-fix A checks (2026-09-13):
+
+- `npm.cmd run lint`, `npm.cmd run typecheck`, production build with telemetry disabled, and
+  `git diff --check`: passed. The existing ignored contact-sheet utility warning remains.
+- Browser-emulated 1440×900 approaching, arrival and leaving captures reported the expected
+  `approaching`, `active` and `passed` phases; the 390×844 arrival capture reported `active`.
+  No browser runtime/log exceptions were observed.
+- No journey, input, registry, source asset, dependency or CUC implementation changed.
+
+Pass 3C.2 checks (2026-09-13):
+
+- `npm.cmd run lint`, `npm.cmd run typecheck`, production build with telemetry disabled, and
+  `git diff --check`: passed. Lint reports one pre-existing warning in the ignored Saclay contact-sheet
+  utility; application code has no lint error. The homepage remains statically prerendered.
+- Production browser captures at desktop 1440×900 approach/arrival and mobile 390×844 arrival show
+  Eiffel, the warm campus cluster, snowy road/edges, Peiwen and readable DOM narration without overlap.
+  These are implementation review captures, not manual visual approval.
+- Real browser input reached the active Saclay milestone by wheel, W key and vertical touch swipe.
+  Reduced-motion emulation matched, all four relevant DOM transition durations were `0s`, and the
+  skip link received keyboard focus with the expected Experience target. No runtime/log exceptions
+  were observed by the validation probe.
+- The road uses one bounded UV span over the existing Catmull-Rom ribbon; the non-seamless B1 texture
+  is not repeated. No dependency, CUC scene, transition art, camera behavior or movement constant was added.
 
 Pass 3C.1 checks (2026-09-13):
 
@@ -167,12 +215,9 @@ Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 ## Next step
 
-1. Begin Pass 3C.2 only when authorized: integrate the prepared Saclay runtime derivatives into a
-   static desktop/mobile composition first. Use B1 only with bounded/stretched UVs and load only the
-   assets the composition needs. Existing Eiffel and Peiwen may be reused.
-2. Add sparse ambient movement only after the static composition is accepted. Preserve
-   registry/input semantics; do not begin CUC or the Saclay-to-CUC visual transition. Run the complete
-   Pass 3C validation matrix after integration; Pass 3C.1 verifies assets, not the rendered scene.
+1. Wait for the new P1 environment assets before adding another visual layer. Preserve the clean
+   B2/B3/B4-free baseline and do not continue placement-only tuning by default.
+2. Preserve registry/input/camera semantics; do not begin CUC or the Saclay-to-CUC visual transition.
 3. Use the existing transition samples only when visual transitions are authorized. No BiomeChunk,
    full JourneyController, independent JourneyCamera, shader weather, streaming framework, Hub or
    Project House has been introduced.

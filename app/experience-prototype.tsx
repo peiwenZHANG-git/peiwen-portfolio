@@ -13,15 +13,16 @@ const ROAD_HALF_WIDTH = 1.35;
 const PEIWEN_WALK_FRAMES = [1, 2, 3, 4].map(
   (frame) => `/assets/character/peiwen-back-walk-${frame}.webp`,
 );
-const GRASS_TEXTURES = [1, 2, 3, 4].map(
-  (index) => `/assets/world/grass-tuft-${index}.webp`,
-);
-const FLOWER_TEXTURES = [1, 2, 3].map(
-  (index) => `/assets/world/flowers-${index}.webp`,
-);
-const CLOUD_TEXTURES = [1, 2, 3].map(
-  (index) => `/assets/world/cloud-${index}.webp`,
-);
+const SACLAY_ASSETS = {
+  campus: "/assets/world/saclay/campus-cluster.webp",
+  road: "/assets/world/saclay/snow-road-surface.webp",
+  edgeLeft: "/assets/world/saclay/snow-edge-left.webp",
+  edgeRight: "/assets/world/saclay/snow-edge-right.webp",
+  snowBank: "/assets/world/saclay/snow-bank.webp",
+  vegetation: "/assets/world/saclay/winter-vegetation.webp",
+  foregroundLeft: "/assets/world/saclay/foreground-left.webp",
+  foregroundUpperRight: "/assets/world/saclay/foreground-upper-right.webp",
+} as const;
 
 type Vec3 = [number, number, number];
 
@@ -84,6 +85,7 @@ function roadSample(curve: THREE.CatmullRomCurve3, index: number, segments: numb
 function makeRoadGeometry(curve: THREE.CatmullRomCurve3) {
   const segments = 220;
   const vertices: number[] = [];
+  const uvs: number[] = [];
   const indices: number[] = [];
   const edges: number[] = [];
   const echoEdges: number[] = [];
@@ -92,6 +94,8 @@ function makeRoadGeometry(curve: THREE.CatmullRomCurve3) {
   for (let index = 0; index <= segments; index += 1) {
     const { left, right } = roadSample(curve, index, segments);
     vertices.push(left.x, 0.025, left.z, right.x, 0.025, right.z);
+    const progress = index / segments;
+    uvs.push(progress, 0, progress, 1);
 
     if (index < segments) {
       const offset = index * 2;
@@ -135,6 +139,7 @@ function makeRoadGeometry(curve: THREE.CatmullRomCurve3) {
 
   const ribbon = new THREE.BufferGeometry();
   ribbon.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+  ribbon.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   ribbon.setIndex(indices);
   ribbon.computeVertexNormals();
 
@@ -149,6 +154,7 @@ function makeRoadGeometry(curve: THREE.CatmullRomCurve3) {
 
 function Road({ curve }: { curve: THREE.CatmullRomCurve3 }) {
   const geometry = useMemo(() => makeRoadGeometry(curve), [curve]);
+  const texture = useLoader(THREE.TextureLoader, SACLAY_ASSETS.road);
 
   useEffect(() => () => {
     geometry.ribbon.dispose();
@@ -160,16 +166,24 @@ function Road({ curve }: { curve: THREE.CatmullRomCurve3 }) {
   return (
     <group>
       <mesh geometry={geometry.ribbon} receiveShadow renderOrder={0}>
-        <meshBasicMaterial color="#f5f1e7" polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
+        <meshBasicMaterial
+          map={texture}
+          color="#ececef"
+          transparent
+          opacity={0.1}
+          polygonOffset
+          polygonOffsetFactor={1}
+          polygonOffsetUnits={1}
+        />
       </mesh>
       <lineSegments geometry={geometry.edgeLines} renderOrder={1}>
-        <lineBasicMaterial color="#4b4942" />
+        <lineBasicMaterial color="#858bab" transparent opacity={0.2} />
       </lineSegments>
       <lineSegments geometry={geometry.echoLines} renderOrder={2}>
-        <lineBasicMaterial color="#77736a" transparent opacity={0.22} depthWrite={false} />
+        <lineBasicMaterial color="#9da2bd" transparent opacity={0.1} depthWrite={false} />
       </lineSegments>
       <lineSegments geometry={geometry.markLines} renderOrder={2}>
-        <lineBasicMaterial color="#77736a" transparent opacity={0.28} depthWrite={false} />
+        <lineBasicMaterial color="#959ab8" transparent opacity={0.08} depthWrite={false} />
       </lineSegments>
     </group>
   );
@@ -245,44 +259,6 @@ function WorldSprite({
   );
 }
 
-function GroundContact({
-  position,
-  radius = 1,
-  strength = 1,
-}: {
-  position: Vec3;
-  radius?: number;
-  strength?: number;
-}) {
-  // One shared irregular blob silhouette, reused at different sizes under every grounded
-  // object (Eiffel, the vignette, Peiwen). Deliberately local to each object's own footprint
-  // rather than one continuous line, so the milestone doesn't read as objects on a stage.
-  const shape = useMemo(() => {
-    const s = new THREE.Shape();
-    s.moveTo(-1, -0.12);
-    s.bezierCurveTo(-0.88, -0.36, 0.42, -0.29, 0.94, -0.07);
-    s.bezierCurveTo(1.18, 0.1, 0.32, 0.32, -0.18, 0.23);
-    s.bezierCurveTo(-0.61, 0.32, -1.15, 0.08, -1, -0.12);
-    return s;
-  }, []);
-
-  return (
-    <group position={position}>
-      {[1, 1.2, 1.42].map((spread, index) => (
-        <mesh key={spread} rotation={[-Math.PI / 2, 0, -0.06]} scale={[spread * radius, spread * radius, 1]}>
-          <shapeGeometry args={[shape]} />
-          <meshBasicMaterial
-            color="#8a8069"
-            transparent
-            opacity={(0.09 - index * 0.024) * strength}
-            depthWrite={false}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
 function PathsideEnvironment({
   curve,
   reducedMotion,
@@ -294,31 +270,13 @@ function PathsideEnvironment({
   const compact = (gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width) <= 700;
   return (
     <group>
-      {/* Distant sky layer */}
-      <WorldSprite src={CLOUD_TEXTURES[0]} position={pathPosition(curve, 0.08, 5.4, 3.45)} scale={[2.35, 1.12, 1]} opacity={0.32} reducedMotion={reducedMotion} />
-      <WorldSprite src={CLOUD_TEXTURES[1]} position={pathPosition(curve, 0.27, -5.8, 3.75)} scale={[2.6, 1.2, 1]} opacity={0.3} reducedMotion={reducedMotion} />
-      {!compact && <WorldSprite src={CLOUD_TEXTURES[2]} position={pathPosition(curve, 0.47, -6.1, 3.6)} scale={[2.9, 1.28, 1]} opacity={0.32} reducedMotion={reducedMotion} />}
-
-      {/* Immediate invitation: one small garden patch, opposite the intro copy. */}
-      <WorldSprite src={GRASS_TEXTURES[1]} position={pathPosition(curve, 0.065, 2.25, 0.34)} scale={[0.7, 0.82, 1]} motion="sway" phase={0.5} opacity={0.76} reducedMotion={reducedMotion} />
-      <WorldSprite src={FLOWER_TEXTURES[0]} position={pathPosition(curve, 0.078, 2.72, 0.27)} scale={[0.38, 0.46, 1]} opacity={0.72} reducedMotion={reducedMotion} />
-      <WorldSprite src={GRASS_TEXTURES[0]} position={pathPosition(curve, 0.135, -2.35, 0.29)} scale={[0.52, 0.62, 1]} motion="sway" phase={1.8} opacity={0.58} reducedMotion={reducedMotion} />
-
-      {/* First bend: wind on one side, a grounded cluster on the other. */}
-      <WorldSprite src={GRASS_TEXTURES[2]} position={pathPosition(curve, 0.215, -2.5, 0.4)} scale={[0.78, 0.9, 1]} motion="sway" phase={2.4} opacity={0.72} reducedMotion={reducedMotion} />
-      <WorldSprite src={FLOWER_TEXTURES[1]} position={pathPosition(curve, 0.225, -2.88, 0.3)} scale={[0.42, 0.5, 1]} opacity={0.7} reducedMotion={reducedMotion} />
-      <WorldSprite src="/assets/world/dandelion-seeds-v1.webp" position={pathPosition(curve, 0.235, 2.9, 1.85)} scale={[1.25, 0.8, 1]} opacity={0.44} motion="float" phase={0.4} reducedMotion={reducedMotion} />
-
-      {/* Paris-Saclay approach: vegetation stays left, preserving right-side text space. */}
-      <WorldSprite src={GRASS_TEXTURES[3]} position={pathPosition(curve, 0.39, -2.25, 0.36)} scale={[0.78, 0.88, 1]} motion="sway" phase={0.8} opacity={0.72} reducedMotion={reducedMotion} />
-      <WorldSprite src={FLOWER_TEXTURES[2]} position={pathPosition(curve, 0.405, -2.7, 0.32)} scale={[0.44, 0.54, 1]} opacity={0.72} reducedMotion={reducedMotion} />
-
-      {/* The path continues without implying another Experience milestone. */}
-      <WorldSprite src={GRASS_TEXTURES[1]} position={pathPosition(curve, 0.57, 2.35, 0.36)} scale={[0.64, 0.76, 1]} motion="sway" phase={2.8} opacity={0.62} reducedMotion={reducedMotion} />
-      <WorldSprite src="/assets/world/dandelion-seeds-v1.webp" position={pathPosition(curve, 0.63, -3.1, 1.75)} scale={[1.02, 0.68, 1]} opacity={0.38} motion="float" phase={2.2} reducedMotion={reducedMotion} />
-
-      {/* One deliberate foreground edge, allowed to occlude only when spatially closer. */}
-      <WorldSprite src={GRASS_TEXTURES[3]} position={pathPosition(curve, 0.018, -3.25, 0.58)} scale={[1.05, 1.3, 1]} motion="sway" phase={1.1} opacity={0.38} renderOrder={25} reducedMotion={reducedMotion} />
+      <WorldSprite
+        src={SACLAY_ASSETS.vegetation}
+        position={pathPosition(curve, 0.12, -3.4, compact ? 1.1 : 1.35)}
+        scale={compact ? [1.7, 2.02, 1] : [2.25, 2.67, 1]}
+        opacity={0.72}
+        reducedMotion={reducedMotion}
+      />
     </group>
   );
 }
@@ -367,6 +325,8 @@ function Peiwen({
 }) {
   const character = useRef<THREE.Group>(null);
   const sprite = useRef<THREE.Sprite>(null);
+  const { size, gl } = useThree();
+  const compact = (gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width) <= 700;
   const textures = useLoader(THREE.TextureLoader, PEIWEN_WALK_FRAMES);
   const [frame, setFrame] = useState(3);
   const frameRef = useRef(3);
@@ -389,7 +349,7 @@ function Peiwen({
     }
     character.current.position.set(point.x, 0.08, point.z);
     if (sprite.current) {
-      sprite.current.position.y = 0.84 + bounce;
+      sprite.current.position.y = (compact ? 0.84 : 0.62) + bounce;
       const reaction = milestoneActive && !walking && !reducedMotion ? -0.045 : 0;
       sprite.current.material.rotation = THREE.MathUtils.lerp(
         sprite.current.material.rotation,
@@ -401,13 +361,16 @@ function Peiwen({
 
   return (
     <group ref={character}>
-      {/* Same warm-gray tone as GroundContact, so Peiwen's shadow belongs to the same
-          shared grounding system as the milestone's, rather than its own separate cue. */}
       <mesh position={[0, 0.052, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={3}>
-        <circleGeometry args={[0.34, 20]} />
-        <meshBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
+        <circleGeometry args={[compact ? 0.34 : 0.25, 20]} />
+        <meshBasicMaterial color="#6d7397" transparent opacity={0.22} depthWrite={false} />
       </mesh>
-      <sprite ref={sprite} position={[0, 0.84, 0]} scale={[1.22, 1.82, 1]} renderOrder={20}>
+      <sprite
+        ref={sprite}
+        position={[0, compact ? 0.84 : 0.62, 0]}
+        scale={compact ? [1.22, 1.82, 1] : [0.9, 1.34, 1]}
+        renderOrder={20}
+      >
         <spriteMaterial
           map={textures[frame]}
           transparent
@@ -425,20 +388,20 @@ function Peiwen({
 // Indices 0-1 travel with the tower and 2-4 with the vignette, so the groups stay
 // attached to what they are pointing at; 5-6 stay near Peiwen on the road.
 const MILESTONE_FIREFLY_POSITIONS: [number, number, number][] = [
-  [1.1, 1.05, 4.65],
-  [2.0, 2.3, 5.1],
-  [-1.2, 1.15, 1.3],
-  [-0.85, 0.78, 1.05],
-  [0.1, 1.32, 1.6],
-  [-0.2, 0.7, 0.95],
-  [-0.42, 1.05, 1.35],
+  [2.35, 1.2, 4.4],
+  [1.75, 2.1, 4.8],
+  [-1.9, 1.15, 4.4],
+  [-0.9, 0.82, 3.75],
+  [-0.25, 1.42, 3.9],
+  [0.15, 0.72, 1.15],
+  [-0.35, 1.08, 1.65],
 ];
 const COMPACT_FIREFLY_POSITIONS: [number, number, number][] = [
-  [0.35, 0.95, 8.65],
-  [0.55, 1.95, 9.1],
-  [0.3, 0.95, 7.0],
-  [0.75, 0.7, 6.8],
-  [-0.55, 1.05, 7.25],
+  [1.3, 0.95, 7.9],
+  [0.8, 1.8, 8.2],
+  [-0.65, 1.05, 7.8],
+  [-0.15, 0.72, 7.1],
+  [0.5, 1.18, 7.3],
   [0.52, 0.66, 1.05],
   [0.27, 1.08, 1.55],
 ];
@@ -544,12 +507,6 @@ function Milestone({
   const compact = compositionWidth <= 700;
   const portraitScale = compositionWidth < 360 ? 0.9 : 1;
   const framing = getFraming(milestone, compact)!;
-  const groundLine = useMemo(() => new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(-1.15, 0, -0.08), new THREE.Vector3(-0.74, 0, -0.035),
-    new THREE.Vector3(-0.66, 0, -0.02), new THREE.Vector3(-0.13, 0, 0.014),
-    new THREE.Vector3(0.03, 0, 0.008), new THREE.Vector3(0.7, 0, 0.055),
-  ]), []);
-  useEffect(() => () => groundLine.dispose(), [groundLine]);
   const placement = useMemo(() => {
     const point = curve.getPointAt(milestone.progress.center);
     const tangent = curve.getTangentAt(milestone.progress.center).normalize();
@@ -567,156 +524,75 @@ function Milestone({
     group.current.scale.setScalar(next);
   });
 
-  // Read left-to-right as: sheet, lamp leaning over it, book resting at the lamp's foot.
-  // The order matters and was wrong in the first pass - the sheet sat on the far side, so
-  // the lamp's head (which points screen-left in the artwork) turned away from the thing it
-  // is meant to be lighting, and the sheet ended up pressed against Peiwen's silhouette,
-  // fully hidden behind her through the last stretch of the approach. With the sheet moved
-  // to the lamp-head side, the light now falls across it, the cluster pulls away from the
-  // walker, and the piece nearest her is the small low book rather than a tall pale rectangle.
-  // Every piece sits with its own bottom edge on the ground - y is the rendered half-height,
-  // sunk ~0.02 - so vertical staging comes from depth, not from floating at three altitudes.
-  // Mobile is composed separately rather than scaled down from this: the portrait canvas has
-  // only ~22 degrees of horizontal field of view, so the cluster is parked further down the
-  // path, carries less size compensation (1.18, down from 1.45) to buy real air between the
-  // pieces, and sits well to the left of the tower instead of across its legs.
-  const vignette: {
-    notebook: Vec3;
-    diagram: Vec3;
-    lamp: Vec3;
-    pairAnchor: Vec3;
-    sheetAnchor: Vec3;
-  } = compact
+  const composition = compact
     ? {
-        // The cluster's local x axis runs close to the view direction at the portrait arrival
-        // camera, so sliding along it swings pieces across the frame and even flips which side
-        // they land on. Mobile therefore keeps the x band that verified clean against the
-        // subtitle and buys its breathing room by carrying less size compensation instead.
-        diagram: [-0.62, 0.39, 7.25],
-        lamp: [0.38, 0.43, 6.95],
-        notebook: [0.9, 0.3, 6.7],
-        pairAnchor: [0.64, 0.04, 6.85],
-        sheetAnchor: [-0.62, 0.04, 7.25],
+        campus: [0.9, 0.82, 9.6] as Vec3,
+        campusScale: [3.1 * portraitScale, 1.58 * portraitScale, 1] as Vec3,
+        eiffel: [2.45, 0.68, 9.5] as Vec3,
+        eiffelScale: [0.72 * portraitScale, 1.3 * portraitScale, 1] as Vec3,
+        vegetation: [2.85, 1.38, 7.7] as Vec3,
+        vegetationScale: [1.95, 2.31, 1] as Vec3,
+        foregroundLeft: [3.5, 1.42, 4] as Vec3,
+        foregroundUpperRight: [-3.8, 3.8, 6.6] as Vec3,
       }
     : {
-        // Same caveat as mobile: this axis is near-parallel to the view direction at the
-        // arrival camera, so sliding the cluster along it is not a safe "move left" - a 0.47
-        // nudge swung the order around and pushed the sheet out of frame entirely. These are
-        // the values verified on screen.
-        diagram: [0.25, 0.385, 1.75],
-        lamp: [-1.25, 0.43, 1.4],
-        notebook: [-0.81, 0.3, 1.1],
-        pairAnchor: [-1.03, 0.04, 1.25],
-        sheetAnchor: [0.25, 0.04, 1.75],
+        campus: [1, 0.72, 12] as Vec3,
+        campusScale: [4.4, 2.24, 1] as Vec3,
+        eiffel: [5.5, 0.56, 14] as Vec3,
+        eiffelScale: [0.7, 1.28, 1] as Vec3,
+        vegetation: [3.3, 1.6, 3.7] as Vec3,
+        vegetationScale: [2.35, 2.79, 1] as Vec3,
+        foregroundLeft: [4, 1.65, 0.5] as Vec3,
+        foregroundUpperRight: [-7.2, 4.65, 1.2] as Vec3,
       };
-  const vignetteScale = compact ? 1.02 : 1;
-  // Eiffel reads as a landmark further down the road rather than a prop she walks
-  // straight past. Parked beside the path it swung out of frame before the arrival
-  // text appeared, and swelled from ~49% to ~112% of viewport height on the way.
-  // Brought down the road AND in toward the walker's side, because distance alone barely
-  // moved it: at z 7.4 it still only gained ~2% of frame height, since the viewing distance
-  // here is dominated by the group's -3.15 lateral offset rather than by z. Desktop now sits
-  // at local x 1.4 / z 4.8 with the sprite trimmed to 4.2 tall, which reads ~51% of viewport
-  // height at arrival (was ~45%) with its base 7% lower in frame - the cue that actually says
-  // "near" - while the tip keeps the same headroom as before. It also holds still: across the
-  // whole run-up it stays within x 17-37% of the frame, where the old placement swung from
-  // the left edge across to 95% (into the text column) and back. y stays derived from the
-  // sprite height so the feet keep meeting the shadow.
-  // Mobile clears the subtitle by trimming ~11% of the tower's height rather than by pushing
-  // it further down the path: depth is not a usable lever here, since on the portrait camera
-  // every unit of z also slides the tower sideways (z 8.8 -> 10.4 moved it ~90px right and
-  // clipped it against the frame edge). Height drops the tip without moving it horizontally.
-  const eiffel: Vec3 = compact
-    ? [0.1, 1.66 * portraitScale, 8.8]
-    : [1.4, 2.08, 4.8];
-  const eiffelBase: Vec3 = compact ? [0.1, 0.045, 8.6] : [1.4, 0.045, 4.6];
 
   return (
     <group ref={group} position={placement.position} rotation={[0, placement.rotation, 0]}>
       <WorldSprite
         src="/assets/world/eiffel-landmark-v1.webp"
-        position={eiffel}
-        scale={compact ? [2.17 * portraitScale, 3.36 * portraitScale, 1] : [2.71, 4.2, 1]}
-        opacity={active ? 0.94 : 0.78}
+        position={composition.eiffel}
+        scale={composition.eiffelScale}
+        opacity={active ? 0.3 : 0.22}
+        tint="#b7bacb"
         renderOrder={4}
         reducedMotion={reducedMotion}
       />
-      {/* The tower artwork fills its sprite frame down to the last 0.4%, so centring it
-          at y=1.65 buried its feet 0.82 below the ground the shadow sits on. The centre
-          height is now derived from that measurement instead of eyeballed. */}
-      <GroundContact position={eiffelBase} radius={0.95} strength={1.1} />
-
       <WorldSprite
-        src="/assets/world/saclay-notebook-v1.webp"
-        position={vignette.notebook}
-        scale={[0.7 * vignetteScale, 0.63 * vignetteScale, 1]}
-        opacity={active ? 0.82 : 0.68}
-        tilt={-0.065}
+        src={SACLAY_ASSETS.campus}
+        position={composition.campus}
+        scale={composition.campusScale}
+        opacity={active ? 0.7 : 0.58}
+        tint="#ced0dc"
+        renderOrder={5}
         reducedMotion={reducedMotion}
       />
       <WorldSprite
-        src="/assets/world/saclay-research-diagram-v1.webp"
-        position={vignette.diagram}
-        scale={[0.74 * vignetteScale, 0.8 * vignetteScale, 1]}
-        opacity={active ? 0.94 : 0.72}
-        tilt={0.05}
+        src={SACLAY_ASSETS.vegetation}
+        position={composition.vegetation}
+        scale={composition.vegetationScale}
+        opacity={0.72}
+        tint="#d0d3e0"
+        renderOrder={7}
         reducedMotion={reducedMotion}
       />
       <WorldSprite
-        src="/assets/world/saclay-desk-lamp-v1.webp"
-        position={vignette.lamp}
-        scale={[1.0 * vignetteScale, 0.88 * vignetteScale, 1]}
-        opacity={active ? 0.9 : 0.68}
-        tilt={0.015}
+        src={SACLAY_ASSETS.foregroundLeft}
+        position={composition.foregroundLeft}
+        scale={compact ? [4.1, 2.82, 1] : [4.8, 3.3, 1]}
+        opacity={compact ? 0.72 : 0.86}
+        renderOrder={22}
         reducedMotion={reducedMotion}
       />
-      {/* Same blob family and tone as Eiffel's, but two footprints rather than one mat:
-          the lamp-and-notebook pair share a contact, the sheet keeps its own smaller one,
-          so the air between the two beats stays real instead of being bridged by shadow. */}
-      <GroundContact position={vignette.pairAnchor} radius={0.82 * vignetteScale} strength={1} />
-      <GroundContact position={vignette.sheetAnchor} radius={0.46 * vignetteScale} strength={0.85} />
-      <lineSegments
-        geometry={groundLine}
-        position={[vignette.pairAnchor[0], vignette.pairAnchor[1] + 0.006, vignette.pairAnchor[2] + 0.2]}
-        scale={[vignetteScale, 1, vignetteScale]}
-      >
-        <lineBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
-      </lineSegments>
-      <lineSegments geometry={groundLine} position={eiffelBase} scale={[1.3, 1, 1]}>
-        <lineBasicMaterial color="#8a8069" transparent opacity={0.22} depthWrite={false} />
-      </lineSegments>
-
-      {/* Minor environment details: tinted and dimmed a step further so they sit behind
-          Eiffel, Peiwen, and the vignette in the reading order instead of competing. */}
-      <WorldSprite
-        src={GRASS_TEXTURES[0]}
-        position={compact ? [3.12, 0.12, 1.3] : [3.12, 0.18, 1.45]}
-        scale={[0.3, 0.38, 1]}
-        opacity={0.44}
-        tint="#d8d2c0"
-        motion="sway"
-        phase={2.1}
-        reducedMotion={reducedMotion}
-      />
-      <WorldSprite
-        src={FLOWER_TEXTURES[0]}
-        position={compact ? [0.59, 0.12, 1.86] : [-2.62, 0.12, 1.68]}
-        scale={[0.18, 0.22, 1]}
-        opacity={0.38}
-        tint="#d8d2c0"
-        reducedMotion={reducedMotion}
-      />
-      <WorldSprite
-        src="/assets/world/dandelion-seeds-v1.webp"
-        position={[2.72, 1.72, -0.8]}
-        scale={[0.66, 0.42, 1]}
-        opacity={0.2}
-        tint="#d8d2c0"
-        motion="float"
-        phase={2.6}
-        renderOrder={4}
-        reducedMotion={reducedMotion}
-      />
+      {!compact && (
+        <WorldSprite
+          src={SACLAY_ASSETS.foregroundUpperRight}
+          position={composition.foregroundUpperRight}
+          scale={[5.4, 3, 1]}
+          opacity={0.92}
+          renderOrder={24}
+          reducedMotion={reducedMotion}
+        />
+      )}
       <Fireflies active={active} approaching={approaching} compact={compact} reducedMotion={reducedMotion} />
     </group>
   );
@@ -803,8 +679,8 @@ function ExperienceScene({
 
   return (
     <>
-      <color attach="background" args={["#faf9f3"]} />
-      <fog attach="fog" args={["#faf9f3", 18, 48]} />
+      <color attach="background" args={["#929ac3"]} />
+      <fog attach="fog" args={["#929ac3", 24, 62]} />
       {/* No lights: the road (meshBasicMaterial), the ground plane (meshBasicMaterial),
           and every sprite (spriteMaterial) here are unlit by construction, so an
           ambientLight/directionalLight would affect nothing — removed rather than kept
@@ -812,7 +688,7 @@ function ExperienceScene({
           prop), and GroundContact's shared shadows instead. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.035, -24]} receiveShadow>
         <planeGeometry args={[100, 100]} />
-        <meshBasicMaterial color="#faf9f3" />
+        <meshBasicMaterial color="#c9cee6" />
       </mesh>
       <Road curve={curve} />
       <PathsideEnvironment curve={curve} reducedMotion={reducedMotion} />
