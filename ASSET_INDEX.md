@@ -8,6 +8,24 @@
 - Do not overwrite a source sheet while extracting runtime assets. Create deterministic derivatives by crop, background removal, alpha feathering, resize, and WebP/PNG optimization only.
 - `design-assets/references/` is for composition study only. Do not copy visual content from those images into production.
 
+## Approved Experience target keyframes
+
+These are visual source of truth, distinct from the older reference-only moodboards. They are
+original PNG copies, not runtime assets. No compression, cropping, background removal or editing
+was applied; SHA-256 equality with both attachment originals was verified in Pass 3B.
+
+| Repository file | Attachment source | Target |
+| --- | --- | --- |
+| `design-assets/keyframes/experience/paris-saclay-approved.png` | `7d91280b-d942-42cd-9562-71faa6b1e59e/image-1.png` | Blue-violet winter night, snowy campus path, warm windows and distant Eiffel. Supersedes the old large-Eiffel / white-paper academic composition. |
+| `design-assets/keyframes/experience/cuc-approved.png` | `7d91280b-d942-42cd-9562-71faa6b1e59e/image-2.png` | Autumn sunset, ginkgo, campus clocktower and name stone. |
+
+SHA-256: Saclay `DFB286F58252C4858C5053E77E76E7C2EC9D53AA7BFAF1E1C55F209B3147607C`;
+CUC `E4C1EBA2B671FC73D125D344C1A8452C31497589C94D167AA443D7C7B4947EBC`.
+
+The sources are flattened images; hidden backgrounds and separate seasonal layers are not
+available through deterministic alpha extraction alone. No new runtime derivative was created.
+All earlier source and runtime assets are preserved as historical or reusable ingredients.
+
 ## Character sources
 
 | File | Role |
@@ -44,9 +62,9 @@ Available runtime derivatives include clouds, flowers, grass, dandelion seeds, f
 | --- | --- | --- |
 | `design-assets/milestones/paris-saclay/eiffel-landmark-v1.jpg` | Eiffel source landmark. | Runtime derivative in use. |
 | `design-assets/milestones/paris-saclay/saclay-academic-props-v1.jpg` | Notebook, lamp, diagram, and paper source sheet. | Selected runtime derivatives in use. |
-| `design-assets/milestones/cuc/tiananmen-landmark-v1.jpg` | CUC landmark source. | Source only; no approved milestone implementation. |
+| `design-assets/milestones/cuc/tiananmen-landmark-v1.jpg` | Distant city-memory source. Not the target campus clocktower. | Source only; no runtime implementation. |
 | `design-assets/milestones/cuc/cuc-media-props-v1.jpg` | CUC media prop source sheet. | Source only. |
-| `design-assets/milestones/cuc/cuc-signpost-v1.jpg` | CUC signpost source. | Source only. |
+| `design-assets/milestones/cuc/cuc-signpost-v1.jpg` | Historical wooden signpost source. Not the target campus name stone. | Source only. |
 
 Paris-Saclay runtime derivatives:
 

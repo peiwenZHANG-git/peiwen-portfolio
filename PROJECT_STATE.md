@@ -13,15 +13,21 @@
 
 ## Current goal
 
-Pass 3A.1 interaction-contract hardening is implemented and verified. Wheel, keyboard, and swipe
-share one bounded progress-target contract; milestone crossing is retained through the active
-window; lateral-only movement participates in shared movement side effects; and subdued hint text
-meets the normal-text contrast target. Pass 3B and the Saclay-to-CUC slice have NOT been started.
+Pass 3B — Journey Registry Foundation is implemented and verified within the checks recorded below. Paris-Saclay and CUC now share a data-driven
+milestone contract and pure progress queries; the transition is sampled as data only. The current
+Saclay runtime composition and the 3A.1 input/movement contract are preserved. CUC is logical only:
+no runtime scene, new narration, visual transition, or new runtime assets have been added.
+
+The approved winter-night Saclay and autumn-sunset CUC keyframes are the next visual targets,
+not descriptions of the currently rendered scene. Wait for the next scoped visual implementation task.
 
 ## Architecture
 
 - Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, Three.js, and React Three Fiber; npm manages dependencies and scripts.
 - `app/page.tsx` renders the client-side Experience prototype in `app/experience-prototype.tsx`; global page and overlay styles live in `app/globals.css`.
+- `lib/journey.ts` owns milestone/transition contracts, registry, directional crossing, bounded targets, phase retention, slowdown and framing queries, and transition/reveal sampling. No global store or separate controller was introduced.
+- Centers are Saclay `0.24` and CUC `0.64`; stable/transition boundaries are `0.015 / 0.345 / 0.535 / 0.985`. These are foundation parameters, not final visual timing. Transition reveal sampling spans `0.41–0.535` and does not reveal any runtime art yet.
+- The existing scene still renders only Saclay art. CUC narration fields and desktop/mobile framing are null; no CUC camera emphasis or character reaction is introduced. Its logical approach, active, passed, hysteresis, and slowdown are available.
 - The Experience road is a `THREE.CatmullRomCurve3` ribbon. Peiwen is constrained to progress along the curve with a small lateral offset.
 - Wheel, W/S, and Up/Down control path progress. A/D and Left/Right control lateral offset. Pointer swipes provide the mobile equivalent.
 - A restrained third-person camera follows behind and above Peiwen and looks ahead along the path.
@@ -42,8 +48,11 @@ meets the normal-text contrast target. Pass 3B and the Saclay-to-CUC slice have 
 | Keyboard controls after Pass 3A | verified | Live check 2026-09-12: see Verification baseline. |
 | Reduced motion after Pass 3A | verified | Edge was launched with `prefers-reduced-motion: reduce`; CSS transitions were `0s`, DOM animation count was zero, and the settled Canvas remained unchanged across captures. |
 | Pass 3A.1 interaction contract | verified | Bounded wheel/keyboard/swipe progress, forward and reverse milestone crossing, lateral movement side effects, 4.63:1 subdued-hint contrast, responsive resize, and reduced motion passed on 2026-09-12. |
+| Pass 3B journey foundation | verified | Deterministic checks, lint, typecheck, production build, diff check, desktop/mobile regression, controls and accessibility checks passed; evidence is recorded below. |
+| New Saclay/CUC visual targets | designed | Approved original PNG keyframes are preserved under `design-assets/keyframes/experience/`. No winter/autumn runtime layers are implemented. |
 | Hub choice point and Project House | planned | World model is recorded, but neither scene is implemented. |
-| CUC milestone | planned | Source sheets exist only. No CUC runtime milestone or content is implemented. |
+| CUC logical milestone | verified | Center, windows, bidirectional crossing, slowdown and hysteresis passed deterministic/browser checks; narration and framing are null. |
+| CUC visual milestone | designed | Approved autumn keyframe exists. No runtime scene or additional Experience copy is implemented. |
 | Projects, About, bilingual routing, Personal AI | planned | Outside the current prototype. |
 | Public CV entry | planned | No updated public CV is available. Do not expose a download or availability notice. |
 | Final positioning copy | planned | Any current positioning sentence is temporary and must remain easy to replace. |
@@ -52,24 +61,38 @@ meets the normal-text contrast target. Pass 3B and the Saclay-to-CUC slice have 
 
 - Preserve the organic long S-shaped road, generous whitespace, alternating landmark opportunities, and continuous journey rhythm.
 - Experience should feel like walking with Peiwen through her experiences: playful and spatial, while still reading as a portfolio.
-- The world is light, airy, personal, mostly monochrome, and hand-drawn. Accent color appears sparingly as life, focus, or guidance.
+- The current visual targets are the approved 2.5D hand-drawn picture-book keyframes: Saclay winter night (blue-violet, snow, moon, warm windows) and CUC autumn sunset (pink/orange sky, ginkgo, campus clocktower). These supersede the earlier mostly-monochrome art direction.
+- Three.js/R3F supplies space, path, camera and runtime transitions; illustration layers supply the visual style; semantic DOM supplies Experience narration. Do not convert the artwork into realistic or game-style 3D.
 - Experience milestones are illustrated places with readable DOM text in nearby negative space, not cards or a conventional CV timeline.
 - Only confirmed facts may appear. Current confirmed content is Peiwen Zhang, HCI × AI Agents, Université Paris-Saclay, Human-Computer Interaction, and 2025–Present.
 
 ## Known constraints and open issues
 
-- The latest Paris-Saclay composition is a reviewable prototype, not approved final art direction.
-- On the sampled desktop arrival, Eiffel occupies roughly 37–40% of viewport height, above the earlier 20–28% suggestion. Manual judgment is needed.
+- The preserved Saclay runtime composition is the 3A.1 regression baseline. The large Eiffel / paper academic vignette is historical composition, superseded as a future target by the approved winter keyframe.
 - The left-vignette / road / right-text composition is strongest at arrival; the existing follow camera moves the vignette across the frame during approach.
 - Mobile uses an explicit portrait framing adjustment and a smaller Eiffel fit to keep Peiwen, text, and the full landmark visible.
 - Real-device performance and touch feel remain unverified; browser emulation is not physical-device testing.
-- The bounded/crossing-aware contract is verified for the current single milestone. Multiple milestones still require a data-driven milestone registry rather than additional hard-coded constants.
+- Keyframes are flattened images with text and occluded backgrounds, not ready-to-use environment layers. Do not regenerate or reconstruct missing artwork without an approved asset-production scope.
+- CUC identity, period and summary are unconfirmed. The movement/transition reference video has not been supplied for this pass.
+- `THREE.Clock` emits its existing deprecation warning. Node 22's deterministic script emits type-stripping/module-detection warnings; it runs without a new dependency or package module-mode change.
 - Do not fabricate employers, roles, dates, outcomes, or academic details.
 - Do not add free exploration, game pressure, complex 3D, a large animation system, or new dependencies without a demonstrated need.
 
 ## Verification baseline
 
-Checks completed on 2026-09-12 (Pass 3A + 3A-fix takeover audit):
+Pass 3B checks (2026-09-13):
+
+- `npm.cmd run lint`, `npm.cmd run typecheck`, production build with telemetry disabled, and `git diff --check`: passed. The homepage remains statically prerendered.
+- `node --experimental-strip-types scripts/check-journey.mjs`: 1222 assertions passed, including both milestones' boundaries, bidirectional crossing and retention, departure, lead/global bounds, transition/reveal sampling, registry consistency, and frozen 3A.1 target-formula parity around Saclay.
+- Browser: desktop 1440×900 and mobile 390×844, plus repeated 320/768/1440/390 resizing, passed without overflow or clipped narration.
+- Six controlled reduced-motion screenshots (desktop/mobile × approach `0.16`, arrival `0.24`, retained departure `0.32`) matched the pre-migration checkpoint pixel-for-pixel. This is sampled visual equivalence, not a claim about every possible frame.
+- Real browser input: wheel, all eight movement keys, horizontal/vertical emulated touch, forward/reverse crossings, and hysteresis retention/release for both milestones passed. Repeated input can continue through a milestone; no forced stop was added.
+- Lateral input still hides the intro, subdues the hint and clears self-talk. Skip-link and Canvas keyboard focus passed. CUC exposes only `main` data attributes, no new narration or debug UI; confirmed Saclay details remain accessible through the skip link.
+- Legacy `?arrival=1`, named `?arrival=paris-saclay` / `?arrival=cuc`, and unknown-ID fallback passed. Saclay aria-live text is unchanged; CUC has no invented announcement.
+- Reduced-motion checks at both centers: zero relevant DOM animations, `0s` transitions, and identical settled Canvas captures 1.2 seconds apart. No page errors, console errors, failed requests or HTTP errors were observed.
+- Both repository keyframe copies match their attachment originals by SHA-256. CSS, runtime assets, character, road geometry and rendering constants were not edited.
+
+Historical checks on 2026-09-12 (Pass 3A + 3A-fix takeover audit; issues below were addressed by 3A.1):
 
 - Live visual review at desktop ~900px and mobile 390px: opening frame, approach frames, arrival
   frame, and the self-talk bubble. Approved by Peiwen.
@@ -118,22 +141,18 @@ Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 ## Next step
 
-1. Wait for Peiwen's approval before beginning another implementation pass. The movement/progress
-   invariant is now safe enough for the Saclay-to-CUC vertical-slice foundation, but CUC content,
-   composition, and runtime derivatives still require explicit approval.
-2. Pass 3B remains separately scoped as: an entry ritual (Peiwen stands still, a
-   cluster of fireflies gathers in front of her with a quiet "follow us", click/tap activates the
-   journey, some fireflies stay with her while others move ahead, and only then do wheel / keyboard
-   / swipe controls become active) and restrained authored ambient life (butterflies drifting,
-   fireflies hovering and guiding, dandelion seeds floating) with no particle-like chaos or
-   path-wide random animation.
+1. Review the completed registry foundation before starting the first visual biome implementation.
+2. Prepare approved illustration layers for the winter Saclay target, then the CUC autumn target;
+   preserve originals and keep runtime derivatives separate. Confirm missing CUC narration and the
+   mobile composition when that work is scoped. Do not substitute old source props for the new target.
+3. Use the existing transition samples only when visual transitions are authorized. No BiomeChunk,
+   full JourneyController, independent JourneyCamera, shader weather, streaming framework, Hub or
+   Project House has been introduced.
 
-Note for Pass 3B: butterflies are NOT implemented anywhere in the runtime today. The source sheet
-`design-assets/ambient-life/butterfly-ambient-set-v1.jpg` exists but no runtime WebP derivative has
-been produced, so adding them requires an asset pass first.
-
-Do not begin CUC, the full Hub, Project House, or new systems.
+Historical naming: the earlier proposed "Pass 3B entry ritual + ambient life" was not implemented.
+The current Pass 3B means Journey Registry Foundation. The entry ritual and butterfly runtime
+derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-12
+2026-09-13

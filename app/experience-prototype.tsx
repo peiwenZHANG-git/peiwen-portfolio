@@ -3,13 +3,12 @@
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import * as THREE from "three";
+import {
+  getFraming, getJourneyState, getMilestone, getNearestMilestone, getProgressTarget,
+  getSlowdownWeight, type JourneyState, type MilestonePhase, type Milestone as JourneyMilestone,
+} from "@/lib/journey";
 
-const MILESTONE_PROGRESS = 0.24;
-const MILESTONE_ACTIVE_RADIUS = 0.055;
-const MILESTONE_APPROACH_RADIUS = 0.105;
-const PROGRESS_MIN = 0.015;
-const PROGRESS_MAX = 0.985;
-const MAX_PROGRESS_LEAD = 0.24;
+const SACLAY = getMilestone("paris-saclay")!;
 const ROAD_HALF_WIDTH = 1.35;
 const PEIWEN_WALK_FRAMES = [1, 2, 3, 4].map(
   (frame) => `/assets/character/peiwen-back-walk-${frame}.webp`,
@@ -24,7 +23,6 @@ const CLOUD_TEXTURES = [1, 2, 3].map(
   (index) => `/assets/world/cloud-${index}.webp`,
 );
 
-type MilestonePhase = "distant" | "approaching" | "active";
 type Vec3 = [number, number, number];
 
 type Controls = {
@@ -41,21 +39,7 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
 function updateProgressTarget(control: Controls, delta: number) {
-  const leadMin = Math.max(PROGRESS_MIN, control.progress - MAX_PROGRESS_LEAD);
-  const leadMax = Math.min(PROGRESS_MAX, control.progress + MAX_PROGRESS_LEAD);
-  let next = clamp(
-    control.targetProgress + clamp(delta, -MAX_PROGRESS_LEAD, MAX_PROGRESS_LEAD),
-    leadMin,
-    leadMax,
-  );
-
-  if (control.progress < MILESTONE_PROGRESS && next >= MILESTONE_PROGRESS) {
-    next = Math.min(next, MILESTONE_PROGRESS + MILESTONE_ACTIVE_RADIUS / 2);
-  } else if (control.progress > MILESTONE_PROGRESS && next <= MILESTONE_PROGRESS) {
-    next = Math.max(next, MILESTONE_PROGRESS - MILESTONE_ACTIVE_RADIUS / 2);
-  }
-
-  control.targetProgress = next;
+  control.targetProgress = getProgressTarget(control.progress, control.targetProgress, delta);
 }
 
 function makePath() {
@@ -542,11 +526,13 @@ function Fireflies({
 
 function Milestone({
   curve,
+  milestone,
   active,
   approaching,
   reducedMotion,
 }: {
   curve: THREE.CatmullRomCurve3;
+  milestone: JourneyMilestone;
   active: boolean;
   approaching: boolean;
   reducedMotion: boolean;
@@ -557,6 +543,7 @@ function Milestone({
   const compositionWidth = gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width;
   const compact = compositionWidth <= 700;
   const portraitScale = compositionWidth < 360 ? 0.9 : 1;
+  const framing = getFraming(milestone, compact)!;
   const groundLine = useMemo(() => new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(-1.15, 0, -0.08), new THREE.Vector3(-0.74, 0, -0.035),
     new THREE.Vector3(-0.66, 0, -0.02), new THREE.Vector3(-0.13, 0, 0.014),
@@ -564,14 +551,14 @@ function Milestone({
   ]), []);
   useEffect(() => () => groundLine.dispose(), [groundLine]);
   const placement = useMemo(() => {
-    const point = curve.getPointAt(MILESTONE_PROGRESS);
-    const tangent = curve.getTangentAt(MILESTONE_PROGRESS).normalize();
+    const point = curve.getPointAt(milestone.progress.center);
+    const tangent = curve.getTangentAt(milestone.progress.center).normalize();
     const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
     return {
-      position: point.addScaledVector(normal, -3.15),
+      position: point.addScaledVector(normal, framing.landmarkLateral),
       rotation: Math.atan2(tangent.x, tangent.z),
     };
-  }, [curve]);
+  }, [curve, milestone.progress.center, framing.landmarkLateral]);
 
   useFrame((_, delta) => {
     if (!group.current) return;
@@ -738,26 +725,27 @@ function Milestone({
 function ExperienceScene({
   controls,
   reducedMotion,
-  milestonePhase,
-  onMilestonePhaseChange,
+  journeyState,
+  onJourneyStateChange,
   onMovingChange,
 }: {
   controls: MutableRefObject<Controls>;
   reducedMotion: boolean;
-  milestonePhase: MilestonePhase;
-  onMilestonePhaseChange: (phase: MilestonePhase) => void;
+  journeyState: JourneyState;
+  onJourneyStateChange: (state: JourneyState) => void;
   onMovingChange: (moving: boolean) => void;
 }) {
   const curve = useMemo(() => makePath(), []);
   const { camera, size, gl } = useThree();
   const lookAt = useRef(new THREE.Vector3());
-  const milestoneState = useRef<MilestonePhase>("distant");
+  const milestoneState = useRef<JourneyState>(journeyState);
   const movingState = useRef(false);
+  const saclayPhase: MilestonePhase = journeyState.milestoneId === SACLAY.id ? journeyState.phase : "distant";
 
   /* eslint-disable react-hooks/immutability -- R3F frame state is intentionally transient and ref-backed. */
   useFrame((_, delta) => {
     const control = controls.current;
-    const near = Math.abs(control.progress - MILESTONE_PROGRESS) < 0.07;
+    const near = getSlowdownWeight(control.progress) > 0;
     const movementScale = near ? 0.62 : 1;
     updateProgressTarget(control, control.forward * delta * 0.048 * movementScale);
     control.targetLateral = clamp(control.targetLateral + control.sideways * delta * 0.85, -0.78, 0.78);
@@ -771,17 +759,19 @@ function ExperienceScene({
     const tangent = curve.getTangentAt(control.progress).normalize();
     const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
     const characterPoint = point.clone().addScaledVector(normal, control.lateral);
-    const distance = Math.abs(control.progress - MILESTONE_PROGRESS);
-    const editorialFraming = clamp(1 - distance / 0.13, 0, 1);
     // Measure the page, not the canvas: the mobile CSS widens the canvas by 20rem to
     // buy horizontal field of view, which used to push this over 700 and silently
     // disable the compact camera lift on exactly the screens that need it.
     const shellWidth = gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width;
+    const nearestMilestone = getNearestMilestone(control.progress);
+    const framing = getFraming(nearestMilestone, shellWidth <= 700);
+    const distance = Math.abs(control.progress - nearestMilestone.progress.center);
+    const editorialFraming = framing ? clamp(1 - distance / framing.cameraEmphasisRadius, 0, 1) : 0;
     const mobileVerticalRoom = clamp((700 - shellWidth) / 380, 0, 1) * 0.48;
     const cameraTarget = characterPoint
       .clone()
       .addScaledVector(tangent, -5.2)
-      .addScaledVector(normal, 2.2 + editorialFraming * 0.34)
+      .addScaledVector(normal, 2.2 + editorialFraming * (framing?.cameraLateralBias ?? 0))
       .add(new THREE.Vector3(0, 3.35 + mobileVerticalRoom, 0));
     const ahead = curve
       .getPointAt(Math.min(0.995, control.progress + 0.035))
@@ -792,22 +782,10 @@ function ExperienceScene({
     lookAt.current.lerp(ahead, 1 - Math.exp(-4 * delta));
     camera.lookAt(lookAt.current);
 
-    // Windows are absolute progress units, so they were retuned along with the shorter
-    // run-up: at the old 0.082/0.18 the walker would have been "approaching" almost from
-    // the first wheel tick, and the arrival text would have appeared before she arrived.
-    const crossedMilestone =
-      (previous < MILESTONE_PROGRESS && control.progress >= MILESTONE_PROGRESS) ||
-      (previous > MILESTONE_PROGRESS && control.progress <= MILESTONE_PROGRESS);
-    const remainsActive =
-      milestoneState.current === "active" && distance < MILESTONE_APPROACH_RADIUS;
-    const nextPhase: MilestonePhase = crossedMilestone || remainsActive || distance < MILESTONE_ACTIVE_RADIUS
-      ? "active"
-      : distance < MILESTONE_APPROACH_RADIUS
-        ? "approaching"
-        : "distant";
-    if (nextPhase !== milestoneState.current) {
-      milestoneState.current = nextPhase;
-      onMilestonePhaseChange(nextPhase);
+    const nextState = getJourneyState(control.progress, previous, milestoneState.current);
+    if (nextState.milestoneId !== milestoneState.current.milestoneId || nextState.phase !== milestoneState.current.phase) {
+      milestoneState.current = nextState;
+      onJourneyStateChange(nextState);
     }
 
     const isMoving =
@@ -841,15 +819,16 @@ function ExperienceScene({
       <GuideFireflies curve={curve} reducedMotion={reducedMotion} />
       <Milestone
         curve={curve}
-        active={milestonePhase === "active"}
-        approaching={milestonePhase === "approaching"}
+        milestone={SACLAY}
+        active={saclayPhase === "active"}
+        approaching={saclayPhase === "approaching"}
         reducedMotion={reducedMotion}
       />
       <Peiwen
         curve={curve}
         controls={controls}
         reducedMotion={reducedMotion}
-        milestoneActive={milestonePhase === "active"}
+        milestoneActive={saclayPhase === "active"}
       />
     </>
   );
@@ -867,7 +846,12 @@ export default function ExperiencePrototype() {
   });
   const pressed = useRef(new Set<string>());
   const pointer = useRef<{ x: number; y: number } | null>(null);
-  const [milestonePhase, setMilestonePhase] = useState<MilestonePhase>("distant");
+  const [journeyState, setJourneyState] = useState<JourneyState>(() => getJourneyState(0.03));
+  const milestone = getMilestone(journeyState.milestoneId)!;
+  const hasNarration = Boolean(milestone.narration.organization);
+  // Keep confirmed details reachable by the existing skip link while CUC has no narration.
+  const narrationMilestone = hasNarration ? milestone : SACLAY;
+  const narration = narrationMilestone.narration;
   const [moving, setMoving] = useState(false);
   const [hasMoved, setHasMoved] = useState(false);
   const [selfTalk, setSelfTalk] = useState("");
@@ -890,13 +874,12 @@ export default function ExperiencePrototype() {
   }, []);
 
   useEffect(() => {
-    // Review aid only: ?arrival=1 seeds progress at the Paris-Saclay milestone so the
-    // static arrival composition can be inspected/screenshotted without scrolling in.
-    // Camera and control logic are untouched; the camera still eases to this position
-    // over ~1-2s the same way it would after walking there, it just starts already there.
-    if (new URLSearchParams(window.location.search).get("arrival") !== "1") return;
-    controls.current.progress = MILESTONE_PROGRESS;
-    controls.current.targetProgress = MILESTONE_PROGRESS;
+    // Preserve ?arrival=1; named IDs also allow logical milestone review without debug UI.
+    const arrival = new URLSearchParams(window.location.search).get("arrival");
+    const reviewMilestone = getMilestone(arrival === "1" ? SACLAY.id : arrival ?? "");
+    if (!reviewMilestone) return;
+    controls.current.progress = reviewMilestone.progress.center;
+    controls.current.targetProgress = reviewMilestone.progress.center;
   }, []);
 
   useEffect(() => {
@@ -950,6 +933,8 @@ export default function ExperiencePrototype() {
   return (
     <main
       className="prototype-shell"
+      data-milestone={journeyState.milestoneId}
+      data-phase={journeyState.phase}
       onWheel={(event) => {
         updateProgressTarget(controls.current, event.deltaY * 0.0003);
       }}
@@ -988,8 +973,8 @@ export default function ExperiencePrototype() {
           <ExperienceScene
             controls={controls}
             reducedMotion={reducedMotion}
-            milestonePhase={milestonePhase}
-            onMilestonePhaseChange={setMilestonePhase}
+            journeyState={journeyState}
+            onJourneyStateChange={setJourneyState}
             onMovingChange={handleMovingChange}
           />
         </Canvas>
@@ -998,7 +983,7 @@ export default function ExperiencePrototype() {
       {/* Hidden as soon as she takes a step, not only once the milestone is near: with the
           shorter run-up the tower enters frame within a tick or two and used to pass behind
           this headline. */}
-      <header className="prototype-intro" data-hidden={hasMoved || milestonePhase !== "distant"}>
+      <header className="prototype-intro" data-hidden={hasMoved || journeyState.phase === "approaching" || journeyState.phase === "active"}>
         <p>Peiwen Zhang</p>
         <h1>Walk with me through my experiences.</h1>
       </header>
@@ -1015,17 +1000,18 @@ export default function ExperiencePrototype() {
       <article
         id="experience-content"
         className="milestone-copy"
-        data-active={milestonePhase === "active"}
-        data-phase={milestonePhase}
-        data-side="right"
+        data-active={hasNarration && journeyState.phase === "active"}
+        data-phase={hasNarration ? journeyState.phase : "distant"}
+        data-side={getFraming(narrationMilestone, false)?.textSide}
         tabIndex={-1}
       >
         <p className="eyebrow">Experience</p>
-        <h2>Université Paris-Saclay</h2>
-        <p>Human-Computer Interaction · 2025–Present</p>
+        <h2>{narration.organization}</h2>
+        <p>{[narration.identity, narration.period].filter(Boolean).join(" · ")}</p>
+        {narration.summary && <p>{narration.summary}</p>}
       </article>
       <p className="arrival-status" aria-live="polite">
-        {milestonePhase === "active" ? "You have reached the Université Paris-Saclay experience landmark." : ""}
+        {journeyState.phase === "active" ? milestone.narration.arrivalAnnouncement ?? "" : ""}
       </p>
     </main>
   );
