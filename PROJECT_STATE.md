@@ -18,8 +18,10 @@ milestone contract and pure progress queries; the transition is sampled as data 
 Saclay runtime composition and the 3A.1 input/movement contract are preserved. CUC is logical only:
 no runtime scene, new narration, visual transition, or new runtime assets have been added.
 
-The approved winter-night Saclay and autumn-sunset CUC keyframes are the next visual targets,
-not descriptions of the currently rendered scene. Wait for the next scoped visual implementation task.
+Pass 3B is accepted. The Pass 3C asset-readiness blocker has been cleared at source level: eight
+Saclay P0 originals are consolidated under `design-assets/source/experience/saclay/`. They remain
+pending runtime QA and derivatives. Runtime implementation has not begun; the approved keyframes
+remain targets, not descriptions of the currently rendered scene.
 
 ## Architecture
 
@@ -50,6 +52,8 @@ not descriptions of the currently rendered scene. Wait for the next scoped visua
 | Pass 3A.1 interaction contract | verified | Bounded wheel/keyboard/swipe progress, forward and reverse milestone crossing, lateral movement side effects, 4.63:1 subdued-hint contrast, responsive resize, and reduced motion passed on 2026-09-12. |
 | Pass 3B journey foundation | verified | Deterministic checks, lint, typecheck, production build, diff check, desktop/mobile regression, controls and accessibility checks passed; evidence is recorded below. |
 | New Saclay/CUC visual targets | designed | Approved original PNG keyframes are preserved under `design-assets/keyframes/experience/`. No winter/autumn runtime layers are implemented. |
+| Pass 3C winter Saclay conversion | designed | Campus, snow-road/edge/bank and winter-vegetation source art is present; runtime QA, derivatives and integration have not begun. |
+| Experience asset consolidation | verified | Six approved keyframes and eight Saclay P0 source PNGs are indexed in-repo; imported files matched their external sources by byte count and SHA-256. |
 | Hub choice point and Project House | planned | World model is recorded, but neither scene is implemented. |
 | CUC logical milestone | verified | Center, windows, bidirectional crossing, slowdown and hysteresis passed deterministic/browser checks; narration and framing are null. |
 | CUC visual milestone | designed | Approved autumn keyframe exists. No runtime scene or additional Experience copy is implemented. |
@@ -72,7 +76,9 @@ not descriptions of the currently rendered scene. Wait for the next scoped visua
 - The left-vignette / road / right-text composition is strongest at arrival; the existing follow camera moves the vignette across the frame during approach.
 - Mobile uses an explicit portrait framing adjustment and a smaller Eiffel fit to keep Peiwen, text, and the full landmark visible.
 - Real-device performance and touch feel remain unverified; browser emulation is not physical-device testing.
-- Keyframes are flattened images with text and occluded backgrounds, not ready-to-use environment layers. Do not regenerate or reconstruct missing artwork without an approved asset-production scope.
+- Keyframes are flattened images with text and occluded backgrounds, not runtime assets. Use the
+  consolidated Saclay source layers for deterministic derivative work; do not load source PNGs
+  directly or regenerate/reconstruct missing artwork without an approved asset-production scope.
 - CUC identity, period and summary are unconfirmed. The movement/transition reference video has not been supplied for this pass.
 - `THREE.Clock` emits its existing deprecation warning. Node 22's deterministic script emits type-stripping/module-detection warnings; it runs without a new dependency or package module-mode change.
 - Do not fabricate employers, roles, dates, outcomes, or academic details.
@@ -141,10 +147,13 @@ Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 ## Next step
 
-1. Review the completed registry foundation before starting the first visual biome implementation.
-2. Prepare approved illustration layers for the winter Saclay target, then the CUC autumn target;
-   preserve originals and keep runtime derivatives separate. Confirm missing CUC narration and the
-   mobile composition when that work is scoped. Do not substitute old source props for the new target.
+1. Resume the authorized Saclay-only conversion with a runtime-asset QA pass for the eight imported
+   P0 sources: inspect alpha/halos, crop, resize, compress and browser-validate derivatives while
+   preserving the original PNGs. Existing Eiffel and Peiwen may be reused.
+2. Establish static
+   desktop/mobile composition first, then sparse ambient movement. Preserve registry/input semantics;
+   do not begin CUC or the Saclay-to-CUC visual transition. Run the complete Pass 3C validation matrix
+   after implementation; no new visual verification is claimed by the asset audit.
 3. Use the existing transition samples only when visual transitions are authorized. No BiomeChunk,
    full JourneyController, independent JourneyCamera, shader weather, streaming framework, Hub or
    Project House has been introduced.

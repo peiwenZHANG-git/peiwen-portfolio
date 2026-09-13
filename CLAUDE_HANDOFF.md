@@ -143,9 +143,14 @@ Older Goal 1C, Hero/Experience v2, and rejected v1 drafts remain only in the ori
 
 ## Next task
 
-Inspect live Git state first. Review the completed foundation, then scope the first visual biome
-implementation around the approved keyframes and available illustration layers. Preserve the
-movement contract. Confirm missing assets, CUC narration and mobile framing without inventing them.
+Inspect live Git state first. Pass 3B is accepted and Pass 3C (Saclay-only winter biome conversion)
+is authorized. Eight P0 originals are now consolidated under `design-assets/source/experience/saclay/`.
+They are source assets pending alpha/halo/crop/resize/compression and browser QA; no runtime WebP or
+scene integration was created during consolidation. See `ASSET_INDEX.md` for exact files and hashes.
+
+Resume with deterministic runtime-asset QA, then establish the static desktop/mobile composition.
+Preserve the movement/registry contract and approved keyframe style. Do not load source PNGs as
+production runtime assets, regenerate missing artwork, or start CUC runtime/visual transition.
 
 The historical "Pass 3B entry ritual + ambient life" proposal remains deferred; this pass is named
 Journey Registry Foundation. Do not start an entry ritual, Hub, Project House, visual transition or
