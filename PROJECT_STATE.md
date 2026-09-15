@@ -11,7 +11,176 @@
 - `implemented`: working code exists; required verification or visual approval is incomplete.
 - `verified`: implementation exists and the recorded checks passed.
 
-## Current goal
+## Current goal — About me page (`/about`)
+
+- **Implemented, repository checks unrun, visual approval pending.** `/about` is a hybrid
+  illustrated page: Peiwen's watercolour artwork is the visual shell, every readable
+  element is DOM on top of it. Two earlier CSS-only attempts at the picture-book look were
+  rejected; that approach is abandoned and must not return.
+- Route files: `app/about/page.tsx` (server entry, metadata), `app/about/about-page.tsx`
+  (composition, a Server Component — no `"use client"`, no state), `app/about/fonts.ts`
+  (route-scoped webfonts) and `app/about/about.module.css`.
+- **Visual shell is image assets, never CSS.** `desk-scene.webp` carries the desk AND the
+  open notebook; `photo-frame.webp` frames the portrait; `paper-wide/block.webp` are torn
+  paper used as `mask-image` so one greyish asset yields every tint; `place-*.webp` are the
+  three travel fragments; `tape.webp` is used exactly twice; `brush-swipe.webp` is masked
+  and tinted behind each heading. `ASSET_INDEX.md` lists sources, derivatives and the
+  measured geometry. No gradient, `border-radius`, `feTurbulence`, inline-SVG illustration
+  or drawn shape re-creates any of it.
+- **Desktop is a fixed illustrated stage, with ordinary flow inside it.** Because the
+  notebook is baked into `desk-scene.webp`, content cannot grow the book. `.stage` locks
+  `aspect-ratio: 1672/941`, fits inside the viewport, and declares
+  `container-type: inline-size`. Only the two page panels are positioned (over the painted
+  sheets, at percentages measured from the artwork); **inside a panel everything is plain
+  grid/flex flow in document order** — no absolute coordinates, no auto margins or
+  `space-between` pushing blocks apart — so real font metrics and line wrapping cannot make
+  content drift.
+- Type is anchored to readable pixel values, not to the illustration: heading ~29px, section
+  heading ~21px, body ~14.5px, captions ~12.5px at a 1420px stage, each written as
+  `clamp(floor, Ncqw, ceiling)`. **Type is never reduced to make content fit** — density
+  (gaps, card and note padding) absorbs the difference instead.
+- **Three layout modes.** `min-width: 1400px and min-height: 870px` → the two-page spread.
+  `min-width: 720px` → one wide notebook page, capped at 46rem, with the paired blocks in
+  two columns. Below that → the vertical scrapbook column. The spread's threshold is
+  measured, not guessed: the right page needs ~460px of panel height, and a 16:9 stage only
+  supplies that above roughly 1400×870. At 1280×800 the wide-page layout is used instead —
+  that is deliberate, and preferable to shrinking the type.
+- Verified by browser probe at 1400×870 / 1440×900 / 1680×1050 / 1920×1080: both panels fit
+  with 13–41px of slack and nothing spills past the painted paper. No horizontal overflow at
+  320/390/500/719/720/1024/1280/1399/1440/1920px.
+- Typography: Patrick Hand for headings, captions and annotations; Nunito for body,
+  details, languages and contact values. Both via `next/font/google`, scoped to this route.
+  Courier Prime was tried and rejected; it is gone.
+- All copy, contact entries, the CV target and the portrait path live in `lib/about.ts`.
+  Contact entries carry a `placeholder` flag; while true the value renders as inert text
+  with a visible "to add" marker, so no link is broken. `cv.href` is `null` until
+  `public/peiwen-zhang-cv.pdf` exists; the same paper label renders in a pending state.
+- The About header is a deliberate route-local copy of the Home navigation. Nothing in
+  `app/home-hub.tsx` or `app/home-hub.module.css` was touched; `globals.css` is unchanged,
+  so `body { overflow: hidden }` still serves Home and Experience and About scrolls inside
+  its own shell (`height: 100svh`, `tabIndex={0}` to keep the region keyboard-reachable).
+- `scripts/preview-about.mjs` renders a static mirror of the route from the real CSS and
+  the real content into the ignored `visualizations/about/`, for headless review without a
+  dev server. It is not imported by the app.
+- **Not verified:** `npm run lint`, `npm run typecheck` and `npm run build` have not been
+  run against this change — the npm registry was unreachable from the authoring
+  environment. What was run: no horizontal overflow at 320/390/500/768/1023/1100/1280/
+  1440/1920px; the new files pass `tsc --noEmit` against minimal ambient shims; CSS module
+  classes cross-checked against the component. Treat the repository checks as unrun.
+- **New build-time dependency:** `next/font/google` fetches Patrick Hand and Nunito during
+  `next build`. If the build machine cannot reach fonts.gstatic.com, switch
+  `app/about/fonts.ts` to `next/font/local`. No npm package was added.
+- **Placeholders to replace in `lib/about.ts`:** all three contact values and hrefs, and
+  `cv.href` once the PDF is added.
+
+## Current goal — Home / Hero / Hub
+
+- **Static Master approved and frozen by the user (2026-09-15).**
+  `/?static-reconstruction=1` preserves `app/home-master.tsx` and its frozen CSS/art.
+  Do not change scene, typography, Idle character position/scale, or rebuild the master.
+  `public/peiwen-phase1/frozen-master-sha256.json` records protected asset/CSS checksums.
+- **Peiwen overlay Phase 1 implemented; manual visual approval pending.**
+  `/?peiwen-phase1=1` adds ONLY left preview and return to the same Master component.
+  `app/peiwen-phase-one.tsx` / CSS provide 220ms left intent, 420ms return intent,
+  54px left / 8px down travel over 1080ms, three restrained alternating foot strides,
+  keyboard ArrowLeft/Escape, native button activation/touch and reduced-motion timing.
+  Mid-walk input keeps only latest intent and finishes at a planted-foot checkpoint.
+  No Opening, right preview, About, lighting, entering, title change or scene movement.
+- Original character pixels are masked into a local sprite, not replaced with a redrawn
+  character. A generated local inpaint supplies ONLY the origin silhouette/contact-shadow
+  clean plate. New derivatives live in `public/peiwen-phase1/`; source/prompt in
+  `design-assets/peiwen-phase1/`. Existing home-v2 assets are preserved and unused here.
+- Phase 1 browser checks: initial Idle and Return Idle exactly match the frozen 1536×1024
+  baseline; Left Preview changes zero RGB channels outside the local character region.
+  Keyboard/latest-intent/reduced-motion checks pass; no browser console/runtime errors.
+  390px emulated touch left/return passed, retaining the frozen horizontally scrollable
+  desktop stage. Real-device touch and mobile art adaptation are NOT verified/delivered.
+  Evidence: `visualizations/peiwen-phase1/`, runnable check `scripts/check-peiwen-phase1.mjs`.
+- Lint/typecheck/production build passed for this pass; lint retains one unrelated warning
+  in `visualizations/build-saclay-contact-sheet.mjs`. Human acceptance remains required
+  for exposed background, same-character feeling, grounding and the overlay/master handoff.
+- The default `/` still uses the older HomeHub below; this review pass does not switch it.
+
+### Historical HomeHub implementation (not the approved master)
+
+- **Implemented / technically verified, visual approval pending:** `/` now renders Peiwen's Little
+  World as the Home Hub. `/experience` preserves the existing Experience prototype without changing
+  its internals; Projects, About and Playground internal pages remain out of scope.
+- The Home state machine supports IDLE, LEFT_PREVIEW, RIGHT_PREVIEW, ABOUT_HOVER and ENTERING, with
+  220ms desktop intent, 420ms return, direct click entry, ArrowLeft/ArrowRight/Enter/Space/Escape,
+  mobile swipe/tap, session-only Opening and exploration hint, and reduced-motion timing.
+- The picture-book scene uses existing cloud/tree/flower/grass runtime art, the repository's prior
+  hand-drawn SVG language, and three deterministic character cutouts under `public/assets/hub/`.
+- Projects and About play distinct Home transitions and settle at `#projects` / `#about`; destination
+  page implementation is deliberately deferred rather than adding placeholder pages.
+
+## Parallel goal — Minimal Experience World Prototype
+
+- **Active / designed:** one continuous illustrated 3D path, small Peiwen, restrained vegetation and
+  atmosphere. Walking remains the narrative backbone; real-place/landmark reconstruction is abandoned.
+- **Implemented / technically verified, visual approval pending:** `/?world=minimal` adds ONLY a winter-night visual state.
+  It shares the existing character, Catmull-Rom geometry, movement, lateral control, camera follow,
+  registry, crossing/hysteresis, narration and responsive foundation. These core algorithms are unchanged.
+- The minimal branch renders a pale untextured road, lavender ground/sky/fog, eight main tree/grass/
+  bare-branch placements and sparse low roadside grass/twigs. Continuous pale mountain silhouettes
+  and a winter tree line replace the detached cloud washes. A larger left foreground trunk, static
+  paper grain, six sky points, crescent and sparse warm fireflies provide restrained depth/atmosphere.
+- The enrichment pass reduces Peiwen and her existing contact shadow uniformly to 80% on desktop
+  and mobile, only in Minimal mode. Movement, camera, path and milestone registry remain unchanged.
+- Existing tree, grass and firefly WebPs are reused. Bare branches are flat line segments, not
+  full 3D vegetation. No new raster asset, dependency, shader, PBR or dynamic shadow was introduced.
+- In this mode, old campus, Eiffel, snowbank/edge placements, heavy winter cutouts, B1 road texture and
+  landmark-specific firefly groups do not mount. Their files remain intact. Plain `/` preserves 3C.
+- `/storybook` and its uncommitted code remain preserved as a superseded plate-transition experiment;
+  they are not the active direction. Existing approved keyframes are palette/atmosphere references,
+  not runtime composition blueprints. No existing source image or runtime derivative was edited.
+- **Planned only:** winter → autumn interpolation and the longer six-chapter journey. Neither an autumn
+  environment nor any transition, new chapter, building or landmark is implemented in this pass.
+- **Visual approval pending:** the aim is a comfortable static/walking picture-book frame, not a
+  completed Saclay scene. Existing confirmed DOM copy is unchanged; CUC fields remain null.
+
+## Historical Pass 4A Storybook Journey Pivot — superseded
+
+The following active/abandoned labels describe the earlier Pass 4A decision only. The Minimal World
+direction above supersedes them: the walking core is active again, without complex spatial biomes.
+
+- **Active / designed:** a continuous-feeling illustrated journey composed of discrete storybook scenes.
+- **Abandoned:** continuous 2.5D spatial biome world. This is an art-production decision, not a
+  technical impossibility: continuity costs and intermediate-asset needs were too high; cutout/sticker
+  composition fought the static-frame-first strengths of the approved artwork.
+- **Implemented / technically verified, visual review pending:** `/storybook` is a review-only Saclay → transition → CUC POC.
+  `/` still serves the preserved 3C experiment, not the future approved default.
+- **Planned only:** Intro → Saclay → transition → CUC → transition → Japan → Tantan → Huashun →
+  Yundao → Projects bridge. No later chapter, Hub or Project House is implemented by this pass.
+
+## Historical Pass 4A architecture
+
+- `app/storybook/page.tsx` exposes the review entry; optional `?progress=` is finite-checked and bounded.
+- `lib/storybook.ts` defines two scenes and a pure progress sampler. `lib/journey.ts` remains unchanged:
+  milestone registry, bounded targets, directional crossing, hysteresis, slowdown and narration are reused.
+- Progress means storybook position, not 3D coordinates: Saclay `0.015–0.345`, transition `0.345–0.535`,
+  CUC `0.535–0.985`. Existing centers remain `0.24 / 0.64`.
+- `app/storybook/storybook-review.tsx` uses DOM/Image layers with local responsive CSS. No R3F Canvas,
+  road geometry, campus cutouts, snowbanks, separate Eiffel, or extra Peiwen is mounted on this route.
+- Only the two current/adjacent plates are decoded; inputs activate after both have decoded. Incoming
+  opacity equals transition progress over an opaque outgoing plate, giving contributions `1-t / t`
+  without exposing the page background. Progress controls both scale and opacity; reverse is symmetric.
+- Normal scales stay within `0.98–1.04`; reduced motion forces scale 1 and a midpoint scene switch.
+- Wheel, W/S, Up/Down and vertical pointer swipe retain bounded bidirectional progress. Lateral movement
+  is intentionally absent: the flattened Peiwen cannot move independently. No character overlay is added.
+- Accessible details, skip link, focus styling and polite confirmed-milestone announcements exist.
+  CUC narration fields remain null. No CV, fabricated career copy or duplicate visible headline is added.
+- Static imports of the two unchanged approved keyframes are a **temporary review-plate exception**,
+  not production art. Baked UI/headline/Peiwen can ghost during crossfade; portrait cover cropping is
+  configurable but not approved final mobile composition. Production clean plates and Peiwen continuity
+  are deferred, with no choice locked between clean/shared-character and baked/bridge options.
+- No dependencies, original artwork or runtime derivatives were changed. The old 3C files were saved
+  in an explicitly requested local checkpoint before implementation; the storybook POC awaits review.
+
+## Historical 3B / 3C record — superseded direction
+
+The following records describe the preserved spatial experiment only. Any old instruction to wait
+for P1, repair the spatial world, or prohibit temporary review plates is superseded by Pass 4A above.
 
 Pass 3B — Journey Registry Foundation is implemented and verified within the checks recorded below. Paris-Saclay and CUC now share a data-driven
 milestone contract and pure progress queries; the transition is sampled as data only. The current
@@ -37,7 +206,7 @@ Pass 3C.2 cleanup — all B2/B3/B4 runtime placements are disabled because they 
 blocked the road. Their source and runtime files remain preserved. The clean baseline retains B1,
 Peiwen, campus, C1, C2, C3 and the current Eiffel treatment while awaiting P1 environment assets.
 
-## Architecture
+## Historical architecture
 
 - Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, Three.js, and React Three Fiber; npm manages dependencies and scripts.
 - `app/page.tsx` renders the client-side Experience prototype in `app/experience-prototype.tsx`; global page and overlay styles live in `app/globals.css`.
@@ -51,7 +220,7 @@ Peiwen, campus, C1, C2, C3 and the current Eiffel treatment while awaiting P1 en
 - Experience information remains semantic DOM content beside the Canvas. A skip link, visible focus treatment, screen-reader arrival status, and reduced-motion behavior are present.
 - Optimized runtime assets live under `public/assets/`. Approved source sheets and composition references live separately under `design-assets/`.
 
-## Delivery status
+## Historical delivery status
 
 | Scope | Status | Evidence |
 | --- | --- | --- |
@@ -85,7 +254,7 @@ Peiwen, campus, C1, C2, C3 and the current Eiffel treatment while awaiting P1 en
 - Experience milestones are illustrated places with readable DOM text in nearby negative space, not cards or a conventional CV timeline.
 - Only confirmed facts may appear. Current confirmed content is Peiwen Zhang, HCI × AI Agents, Université Paris-Saclay, Human-Computer Interaction, and 2025–Present.
 
-## Known constraints and open issues
+## Historical constraints and open issues
 
 - The Pass 3A.1 large-Eiffel / paper-academic composition remains recoverable in Git history; the live runtime now uses the Pass 3C.2 winter composition.
 - The static winter composition is strongest at arrival. The existing follow camera deliberately reveals it from a smaller distant grouping during approach.
@@ -109,6 +278,76 @@ Peiwen, campus, C1, C2, C3 and the current Eiffel treatment while awaiting P1 en
 - Do not add free exploration, game pressure, complex 3D, a large animation system, or new dependencies without a demonstrated need.
 
 ## Verification baseline
+
+Minimal winter visual enrichment (2026-09-14):
+
+- Lint, typecheck, production build, original journey assertions and diff checks passed. The existing
+  ignored contact-sheet lint warning remains; no dependency, source-art or registry changes occurred.
+- Comparison with the pre-enrichment local snapshot confirms identical path/road geometry, bounded
+  input helper and movement/camera frame loop. Peiwen's presentation is scaled to 80%, not rewritten.
+- Browser regression passed keyboard, wheel, touch, milestone arrival, skip-link focus, reduced-motion
+  settled-frame equality and network/runtime health. Final visual captures are checked separately
+  after the foreground trunk and distant-tree spacing adjustment; no application runtime errors arose.
+- Review evidence is under ignored `visualizations/minimal-enrichment/`; `before/` preserves the previous
+  source/CSS/state without changing Git history. Final walking recording includes the full browser page,
+  including DOM narration, paper grain and celestial overlay, rather than Canvas alone.
+- Visual approval is pending. No building, landmark, props, seasonal transition, new asset file,
+  dependency, animation system, commit or push is introduced by this pass.
+
+Minimal winter world checks (2026-09-14):
+
+- Lint, independent typecheck, production build and `git diff --check` passed. Lint retains one
+  pre-existing warning in the ignored contact-sheet helper; no application lint errors were found.
+- The existing journey suite passes 1,222 assertions. Direct source comparison confirms makePath,
+  roadSample, makeRoadGeometry, Peiwen and updateProgressTarget are unchanged; the existing frame loop
+  for movement, camera follow and journey-state updates is byte-identical to the pre-pass version.
+- Production Edge checks passed W/S forward/back, Up/Down, A/D, wheel arrival, mobile touch with
+  vertical/lateral input, milestone activation, no horizontal overflow, first-tab skip link, and
+  reduced-motion zero DOM transitions with identical settled screenshots. Physical-device touch feel
+  and actual assistive-technology reading remain unverified.
+- Final 1440×900 desktop and 390×844 mobile start/arrival captures were visually inspected. A final
+  mobile-only vegetation adjustment brings the left tree and grass into the existing cropped view;
+  camera, path and character size were not changed. Final production captures/asset loading pass.
+- Browser runtime/network checks report no errors or warnings; only four existing world textures
+  and the four Peiwen frames load. No old Saclay/eiffel texture is requested by the minimal branch.
+- `visualizations/minimal-winter/` holds ignored local screenshots, the browser check script/results,
+  and a 14.2-second 1440×900 WebM walking capture. All 397 video frames decode; samples were inspected.
+  The recording captures the live Canvas (walking/sideways/reverse), not the separate DOM text/moon.
+- No source/runtime asset, dependency, registry or Storybook implementation file changed. Existing
+  uncommitted historical work remains protected; this pass makes no commit or push.
+- Manual visual review remains: whether this pale winter mood and sparse environment feel comfortable
+  during walking on both sizes. No claim is made of completed Saclay art, autumn or six chapters.
+
+Pass 4A Storybook Journey POC checks (2026-09-13):
+
+- Lint, independent typecheck, production build and diff whitespace checks passed. One pre-existing
+  lint warning remains in the ignored `visualizations/build-saclay-contact-sheet.mjs` helper.
+- The unchanged journey suite passes 1,222 assertions. The new `scripts/check-storybook.mjs`
+  checks mapping, 1,001 forward/reverse samples, opaque composite coverage, scale limits, reduced
+  motion, finite/bounded review parameters, null CUC narration, extreme deltas and phase retention.
+- Clean Edge browser emulation passed wheel forward/reverse across both scenes; W/S and Up/Down;
+  large wheel delta protection; vertical touch swipe forward/reverse; desktop-to-mobile resize with
+  preserved progress; no horizontal overflow; skip-link first-tab focus and focus transfer into
+  Experience details; semantic article and polite confirmed-Saclay announcement.
+- Reduced-motion emulation forces all plate transforms to none, permits forward/reverse midpoint
+  handoff and produces identical idle screenshots. No independent DOM animations run.
+- Five 1440×900 desktop and three 390×844 mobile production screenshots were captured and visually
+  inspected: Saclay/CUC stable frames and transition 25/50/75% on desktop, midpoint on mobile.
+  Both unique adjacent plates are decoded, cover the viewport and have no duplicate instances.
+  The review route mounts zero Canvas elements and requests no old world/character runtime assets.
+- No console/runtime errors, failed network requests or browser warnings occurred in the clean
+  browser run or final production captures. The first extension-enabled run detected a hydration
+  mismatch caused by Immersive Translate injecting `data-immersive-translate-page-theme`; disabling
+  extensions in an isolated test profile removed it without an application workaround.
+- Old homepage, spatial runtime/CSS, journey registry, dependencies, source images and runtime assets
+  remain unchanged from the preservation checkpoint. Both approved keyframe SHA-256 hashes match
+  their recorded originals. The generated AGENTS.md instructions were not edited by this pass.
+- Evidence: ignored local `visualizations/pass-4a/results.json`, `captures-final.json` and eight PNGs.
+  These are technical review results, not visual approval or production-asset acceptance.
+- Remaining manual checks: the user's assessment of the half-continuous journey, physical-device
+  touch/performance and actual assistive-technology reading. Mobile cropping clips baked text/landmarks
+  and produces a larger character double-image at midpoint; production mobile art and character
+  continuity remain explicitly unresolved. No additional art or Pass 4B work was started.
 
 Pass 3C.2 cleanup checks (2026-09-13):
 
@@ -215,12 +454,11 @@ Checks completed on 2026-09-11 (pre-Pass-3A baseline):
 
 ## Next step
 
-1. Wait for the new P1 environment assets before adding another visual layer. Preserve the clean
-   B2/B3/B4-free baseline and do not continue placement-only tuning by default.
-2. Preserve registry/input/camera semantics; do not begin CUC or the Saclay-to-CUC visual transition.
-3. Use the existing transition samples only when visual transitions are authorized. No BiomeChunk,
-   full JourneyController, independent JourneyCamera, shader weather, streaming framework, Hub or
-   Project House has been introduced.
+1. Review `/?world=minimal` at desktop 1440×900 and mobile 390×844, including the walking recording.
+2. Stop before any commit, autumn transition, new chapter or additional asset production. First decide
+   whether the existing walking feel and this simpler winter environment are visually comfortable.
+3. Preserve the old 3C checkpoint, Storybook experiment and all source/runtime assets. Do not resume
+   Eiffel/campus/snowbank tuning or flattened-plate art production by default.
 
 Historical naming: the earlier proposed "Pass 3B entry ritual + ambient life" was not implemented.
 The current Pass 3B means Journey Registry Foundation. The entry ritual and butterfly runtime
@@ -228,4 +466,4 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-13
+2026-09-14

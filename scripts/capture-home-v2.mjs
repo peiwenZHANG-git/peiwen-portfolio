@@ -1,0 +1,10 @@
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
+const browser = await chromium.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true });
+const page = await browser.newPage({ viewport: { width: 1536, height: 1024 } });
+await page.goto(process.env.HOME_TEST_URL || "http://localhost:3000/?static-reconstruction=1");
+await page.waitForTimeout(700);
+await page.screenshot({ path: "visualizations/home-v2/static-idle-1536.png" });
+console.log({ opening: await page.locator("main").getAttribute("data-opening"), visual: await page.locator("main").getAttribute("data-visual"), state: await page.locator("main").getAttribute("data-state") });
+await browser.close();

@@ -1,0 +1,25 @@
+.viewport { width: 100vw; height: 100svh; overflow: auto; background: #f7f3e9; color: #3b3837; }
+.stage { position: relative; width: 1536px; height: 1024px; overflow: hidden; margin-inline: auto; }
+.plate { position: absolute; inset: 0; width: 1536px; height: 1024px; max-width: none; pointer-events: none; }
+.stage p, .stage h1 { margin: 0; font-weight: 400; }
+.stage a { color: inherit; text-decoration: none; }
+.stage a:focus-visible { outline: 2px solid #655847; outline-offset: 5px; }
+.logo { position: absolute; left: 111px; top: 18px; font-size: 32px; letter-spacing: 3px; line-height: 42px; }
+.tagline { position: absolute; left: 112px; top: 67px; font: 9px/12px Arial, sans-serif; letter-spacing: 3.1px; color: #76716c; }
+.navigation { position: absolute; left: 495px; top: 30px; width: 550px; height: 40px; font-size: 20px; line-height: 30px; letter-spacing: 1.4px; }
+.navigation a { position: absolute; white-space: nowrap; }
+.navigation a:nth-child(2) { left: 98px; }
+.navigation a:nth-child(3) { left: 233px; }
+.navigation a:nth-child(4) { left: 347px; }
+.navigation a:nth-child(5) { left: 489px; }
+.navigation a[aria-current] { border-bottom: 1.5px solid #494542; padding-bottom: 2px; }
+.language { position: absolute; left: 1276px; top: 36px; font: 21px/29px Arial, sans-serif; letter-spacing: 2px; }
+.language span { color: #d74b3c; border-bottom: 1px solid; padding-bottom: 3px; }
+.title { position: absolute; left: 600px; top: 224px; width: 330px; text-align: center; font-size: 50px; line-height: 62px; letter-spacing: 4.9px; }
+.subtitle { position: absolute; left: 581px; top: 301px; width: 377px; text-align: center; font-size: 29px; line-height: 42px; letter-spacing: 3.3px; color: #837d78; transform: skewX(-5deg); }
+.prompt { position: absolute; left: 629px; top: 413px; width: 280px; text-align: center; font-size: 22px; line-height: 36px; letter-spacing: 1.85px; color: #7b7772; transform: skewX(-4deg); }
+.footerLeft { position: absolute; left: 102px; top: 928px; font-size: 16px; line-height: 22px; letter-spacing: 1px; transform: rotate(-7deg); }
+.footerLeft span { margin-left: 22px; }
+.footerRight { position: absolute; left: 1346px; top: 929px; font-size: 16px; line-height: 24px; letter-spacing: 1.1px; transform: rotate(-7deg); }
+.skip { position: absolute; left: 16px; top: 10px; z-index: 10; padding: 8px 12px; background: #fffaf0; transform: translateY(-150%); }
+.skip:focus { transform: none; }

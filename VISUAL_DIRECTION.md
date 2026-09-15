@@ -1,99 +1,163 @@
 # Visual Direction
 
-## Product intent
+## Site-wide style standard — STYLE_GUIDE.md (approved 2026-09-15)
 
-The portfolio should feel like entering Peiwen's small illustrated world and then walking with her through her experiences. It serves internship recruiters and research advisors, so atmosphere supports clear identity and readable evidence rather than replacing it.
+`STYLE_GUIDE.md` is the approved acceptance standard for every page and every new asset.
+It is merged here in summary; the file itself remains authoritative. English scope only.
+**It does not override the Home freeze stated in the next section, which is reproduced verbatim
+and unchanged.** Home is the thing referenced, never the thing modified.
 
-Long-term world model:
+**"Home" means the Static Master** (`app/home-master.tsx` + `public/home-master/master.png`),
+reviewable at `/?static-reconstruction=1` and `/?peiwen-phase1=1`. Those two routes are also the
+pixel-invariance baseline. `HomeHub`, which `/` renders by default, is the earlier implementation:
+it is neither the standard nor touched in this pass.
 
-```text
-HubScene
-├── Experience Path
-└── Project House
-```
+- **One sentence:** fine graphite/ink linework, very thin transparent watercolor, large areas of
+  warm ivory paper. No frame — edges dissolve into the paper. If it reads louder, busier, brighter
+  or more real than Home, it fails.
+- **Palette** (STYLE_GUIDE §2): values that exist in Master code come from `home-master.module.css`;
+  illustration-internal values stay as `master.png` samples. All variables use the `--pw-*`
+  namespace. `--pw-paper #F7F3E9`, `--pw-ink #3B3837`, `--pw-ink-soft #837D78`,
+  `--pw-ink-faint #76716C`, `--pw-accent #D74B3C`, plus sage / dust-blue / straw / butter /
+  rose-brown from sampling. **Do not redefine `--paper` / `--ink` / `--muted` in
+  `app/globals.css :root`** — those belong to the old Experience prototype and overriding them
+  would corrupt `/experience`. Saturation ceiling ~35%; the accent colour marks current state only.
+- **Type** (STYLE_GUIDE §6): three tiers — handwriting **Patrick Hand** (`next/font/google`,
+  weight 400), body **Nunito** 400/600, eyebrow Nunito 600 uppercase `letter-spacing: .18em`.
+  No serif anywhere, no text glow/stroke/shadow, no handwriting for paragraphs over two lines.
+- **Shell** (STYLE_GUIDE §7): one shared Header for every page, templated on **Master's** header
+  (`.logo` / `.tagline` / `.navigation` / `.language`), not HomeHub's; extraction must leave Master
+  pixel-identical. Page numbers are `01 / 02` with the denominator read from real chapter data
+  (`STORYBOOK_SCENES.length`). Monochrome line icons only. No cards, panels, glass or HUD overlays.
+- **Illustration** (STYLE_GUIDE §3–§5, §8): visible linework and visible paper, ≥40% whitespace,
+  flat light, no glow/bloom/specular/cast shadows, no cut-out or leafy borders, no decorative text
+  beyond landmarks. Peiwen has exactly one identity — the Home one.
+- **Experience filter** (STYLE_GUIDE §11, measured 2026-09-15 on the real runtime plates,
+  HSV-saturation mean): Home reference 0.1189 (lower illustration band). Saclay raw 0.1191 already
+  matches it, so **Saclay uses `saturate(1.00)`** plus a slight warm shift and a weakened paper
+  multiply — its problem is hue, not saturation. **CUC keeps `saturate(.50)`** (measured 0.2578);
+  reaching 0.13–0.15 would need `.19`, which greys out autumn. **0.13–0.15 is the post-repaint
+  end goal, not this pass's filter target.**
 
-The current visual implementation covers only the Experience Path and the preserved Paris-Saclay
-prototype. CUC exists as a logical registry milestone, with no runtime scene or narration.
+Scope limits carried over from the guide: it unifies style, type and interface shell only. It does
+not change information architecture, Hero spatial logic, Experience interaction, or the approved
+Peiwen character. Chinese-language typography is deferred until the English pass is complete.
 
-## Current visual source of truth
+## Active — Peiwen's Little World Home Hub
 
-- `design-assets/keyframes/experience/paris-saclay-approved.png`: winter night, blue-violet painted
-  sky, snow, crescent moon, warm campus windows and path lamps, distant Eiffel, foreground snow branches.
-- `design-assets/keyframes/experience/cuc-approved.png`: late-autumn sunset, pink/gold/orange painted
-  sky, ginkgo, fallen leaves, campus clocktower, campus name stone and distant city memory.
+**2026-09-15 freeze:** Static Master has passed human approval. Scene, typography and Idle
+Peiwen anchor/scale are frozen. Current Phase 1 is ONLY original-pixel Peiwen walking a
+restrained 54px left and returning, plus the smallest origin clean plate. Review at
+`/?peiwen-phase1=1`; no other dynamic state or layout changes are authorized. Older
+pending-static-approval and split-crop descriptions below are superseded.
 
-Both PNGs are approved target keyframes, preserved byte-for-byte from the supplied attachments.
-They are not ordinary moodboards and are not runtime textures. Their artwork style must not be
-reinterpreted as a realistic or generic 3D game environment.
+The active approach is **Master Plate + Minimal Dynamic Overlays**, superseding the split-layer
+attempt below. Keep the full 1536×1024 target composition. Cover baked text with original-paper
+patches and render real DOM text. Static approval comes first; only then add local Peiwen/clean
+background, window, door/light or foreground transition overlays and regional Opening reveals.
+Do not independently extract/reposition the landscape, house, tree or dense plants.
 
-The Saclay keyframe supersedes the old large-Eiffel / white-paper academic-prop composition as
-the next target. The CUC keyframe is the next CUC visual target. Neither biome is visually implemented.
+### Static target reconstruction — pending manual approval
 
-## Approved foundations
+The supplied 1536×1024 Home image is the sole visual truth for the current asset rebuild. The
+review route `/?static-reconstruction=1` uses deterministic pixel crops from
+`design-assets/home-v2/home-visual-target.png`; header and central copy remain DOM. It is a static
+checkpoint only. Do not continue into interaction-layer production, mobile adaptation, or old-asset
+cleanup until the static composition is approved.
 
-- Preserve the long organic S-shaped road as the spatial and narrative backbone.
-- Keep generous negative space and alternating left/right opportunities around the road.
-- Use the approved keyframes' hand-drawn, painterly picture-book atmosphere, paper texture and
-  authored seasonal colors. The earlier mostly-monochrome palette is historical guidance only.
-- Keep a 2.5D boundary: Three.js/R3F supplies space, path, camera and runtime transitions;
-  illustration layers supply final visual character; DOM supplies accessible narration.
-- Treat Peiwen as a gentle companion rather than a game avatar. Movement can feel light and playful without score, failure, missions, or free exploration.
-- Keep the third-person camera soft, stable, and readable, with space for upcoming landmarks and DOM text.
-- Keep milestones as places or memory fragments. Information sits in nearby whitespace rather than inside cards, signs, HUD panels, or modals.
-- Keep the world mostly still. Use sparse idle movement and let spatial motion come primarily from walking.
-- Respect `prefers-reduced-motion`; the static composition must work without motion.
+Home is a quiet warm-paper world entrance: left road for Experience, Peiwen at the center for About,
+and the warm-window house on the right for Projects. The composition stays sparse and hand-drawn;
+preview states wake one destination at a time without large signs, cards, cursor tricks or free movement.
 
-## Historical Paris-Saclay runtime composition, preserved for regression
+Opening uses a short layered reveal. The 2026-09-14 reference correction supersedes the old
+identity-disappears rule: Idle retains “Peiwen Zhang / A small world of curiosity.” above the sky
+prompt “Where would you like to go?”. The world occupies the lower half, with restrained foreground
+plants, existing house/fence art, and Peiwen centered at 50% (Preview 42% / 58% on desktop and mobile).
+Preview dims the Hero identity and uses road/house-adjacent handwritten annotations without CTA verbs.
+Peiwen moves in discrete steps, not with pointer coordinates. Mobile uses swipe/tap;
+reduced motion uses a short fade. Visual approval is still required for scale, spacing and color balance.
+The reference is a composition benchmark, not a runtime background. Existing assets do not provide
+its full watercolor town and dense botanical detail; no new town/building or generated art was added.
 
-Existing source ingredients (not a substitute for the new keyframe):
+## Parallel — Minimal 3D Picture-book Journey
 
-- Eiffel landmark as the France / Paris memory anchor.
-- Research diagram, desk lamp, and notebook as an asymmetrical academic vignette.
-- Sparse grass, flowers, dandelion seeds, and warm fireflies.
-- Peiwen walking into the page on the road.
-- Semantic text: `Université Paris-Saclay` and `Human-Computer Interaction · 2025–Present`.
+One World, One Road, Six Chapters is the long-term direction: Peiwen walks along the existing
+continuous road; seasons, light and sparse vegetation express emotional states, not geography.
+The current prototype at `/?world=minimal` implements **winter night only**. No autumn transition,
+six-scene implementation or new biographical content is authorized in this pass.
 
-The 3A/3A-fix visual baseline was approved for that iteration and preserved through 3A.1 and 3B:
+Preserve small Peiwen, existing movement/camera/path and generous whitespace. Use restrained pale
+blue-violet, graphite lines, simple ground/sky, very faint distance, a few existing plants and sparse
+fireflies. Judge static and walking comfort, depth, grounding and road/character readability — not
+asset count or resemblance to the large Saclay keyframe. Mobile keeps the existing framing foundation.
 
-- Eiffel is the first environmental object after Peiwen and sits in the left rear-midground.
-- Diagram → lamp → notebook descends toward the road; the optional papers are omitted to reduce clutter.
-- Pale irregular washes and broken ground lines keep the source fragments from reading as floating stickers.
-- Seven milestone fireflies form three designed groups: two around Eiffel, three around the academic vignette, and two inviting from the path.
-- Desktop text sits in upper-right whitespace and appears at arrival. Mobile text stays at the top.
-- Self-talk is a small hand-drawn SVG bubble in the opening whitespace.
+Do not pursue Eiffel, campuses, real places, snowbank collage, complex biomes or full illustration
+reconstruction. Existing keyframes now guide palette/atmosphere/handmade style only. No new image
+generation, complex shader, PBR, dynamic shadows or dependency is needed.
 
-Historical observations, not new target requirements:
+Old 3C and `/storybook` stay recoverable; the text below is historical and no longer the active plan.
+Stop for visual review before committing, adding autumn or switching the default homepage.
 
-- Eiffel currently appears larger than the earlier 20–28% viewport-height target on desktop.
-- The old Eiffel prominence and academic-prop balance must not override the winter target keyframe.
-- Approach and arrival produce different placements because the existing follow camera travels along the curve.
-- Mobile has a separate composition fit rather than a crop of desktop.
+## Historical — Storybook Journey
 
-## Future direction, not current implementation
+**A continuous-feeling illustrated journey composed of discrete storybook scenes.**
 
-- Saclay → CUC: blue-violet winter night → dusty pink → warm autumn orange. Use authored layers
-  with progress-based crossfade/interpolation, not procedural seasons or shader weather.
-- Snow, moon and winter vegetation gradually leave; autumn vegetation and sparse falling leaves
-  enter; CUC's landmark should appear in the distance before arrival. These are approved direction,
-  not implemented effects. Pass 3B only samples transition/reveal values.
-- Hub: Peiwen at a choice point; Experience path outward/left, Project House toward home/right, cottage on the right, subtle firefly guidance.
-- Project House: planned only; no room design or navigation behavior is approved.
-- CUC visual target is approved, and logical milestone behavior is implemented. Runtime artwork,
-  identity, dates and summary are not implemented/confirmed. Existing Tiananmen and wooden-sign
-  source sheets must not stand in for the target's campus clocktower and name stone.
-- Birds and butterflies are global ambient-life sources, not exclusive to any milestone.
-- Personal AI, bilingual routing, Projects, About, and Playground remain later decisions.
+Each milestone is a complete, static-frame-first illustration. Continuity comes from input, progress,
+gentle framing and transitions, eventually Peiwen continuity — not a continuous 3D map.
+Atmosphere supports Peiwen's English-first HCI × AI Agents portfolio and readable confirmed facts.
 
-## Asset and responsive limits
+Planned: Intro → Saclay → transition → CUC → transition → Japan → Tantan → Huashun → Yundao →
+Projects bridge. Pass 4A implements only Saclay → transition → CUC in /storybook.
+The original / remains available until approval; it is not the active visual target.
 
-The two keyframes are flattened illustrations containing text, a character and occluded scenery.
-Do not extract the whole image as a walking background or invent hidden pixels. A separately scoped
-asset pass must supply appropriate layers while preserving source drawings. Keep large painted
-details baked; use transparent planes for depth and only sparse sprites for ambient motion.
+## Abandoned — continuous 2.5D spatial biome world
 
-No portrait keyframe or new movement/transition video was supplied. Mobile framing and exact
-transition pacing still need validation against the approved direction in the visual pass.
+Not a technical impossibility: continuity costs, too many intermediate drawings and cutout/sticker
+compositions undermined static-frame-first artwork. Old 3C roads, snowbanks, spatial campus cutouts and
+Eiffel placements are preserved, not repaired. Do not continue P1 spatial-environment integration.
+The long path remains a narrative motif, not a physically continuous map/camera-coordinate requirement.
 
-## Originality and reference boundary
+## Approved targets / temporary review plates
 
-ITom's public portfolio (<https://github.com/ITomPoland/portfolio-itom>) may be inspected under its MIT license for technical patterns such as scene state, camera organization, preload strategy, DOM/Canvas layering, and device-aware performance. Do not copy personal artwork, textures, branding, copywriting, room design, project content, or visual composition. Peiwen's illustration system and world must remain original.
+- design-assets/keyframes/experience/paris-saclay-approved.png: winter night, blue-violet sky,
+  snow, moon, warm campus windows/lamps, distant Eiffel and winter foreground framing.
+- design-assets/keyframes/experience/cuc-approved.png: autumn sunset, pink/gold sky, ginkgo,
+  leaves, clocktower, name stone and city memory.
+
+Approved visual targets, not generic moodboards. Pass 4A uses the unchanged PNGs via Next Image as
+**temporary review plates**, NOT production backgrounds: Peiwen, headline, hints and signs are baked in.
+No extra character/headline, cutout, background reconstruction, AI fill or source modification.
+
+## POC composition and handoff
+
+- Full-viewport cover, configurable desktop/mobile object-position.
+- Stable push-in at most 1→1.02, no independent idle motion.
+- Saclay 0.015–0.345; transition 0.345–0.535; CUC 0.535–0.985.
+- Progress t yields visual contributions 1-t / t; scales 1.02→1.04 and 0.98→1.
+  Opaque-base compositing prevents a background flash. Reverse retraces exactly.
+- Reduced motion: no push-in/parallax/ambient, immediate midpoint handoff.
+- Optional midground/foreground/ambient fields are contract slots, not implemented systems.
+- DOM narration remains accessible through details/skip link without another large headline.
+- CUC career fields remain null. Only the existing confirmed Saclay facts are exposed.
+
+## Deliberately unresolved
+
+Baked character/title differences ghost during crossfade. This is not finished character continuity
+or the final snow-to-leaf artistic transition. Later options: clean plates plus shared Peiwen OR
+baked stable scenes plus shared walking bridge. Neither is chosen or implemented by Pass 4A.
+
+Mobile 390×844 uses controlled landscape cropping, with some baked content clipped. This is a
+functional architecture check, NOT final mobile composition. Baked sideways hints are stale;
+the review's real controls are vertical journey progress only.
+
+No new art, clean plates, shader dissolve, particles, later chapters, Hub or Project House.
+Stop for POC review before Pass 4B or switching the default.
+
+## Preservation / originality
+
+All old source and runtime art remains in design-assets/ and public/assets/. Birds, butterflies,
+fireflies and dandelions remain global reusable sources, not a new ambient system in this pass.
+Do not fabricate biographical facts, publish an outdated CV or finalize temporary copy.
+
+ITom (https://github.com/ITomPoland/portfolio-itom) is a technical reference only. Study MIT code under
+its license; do not reuse artwork, textures, branding, copy, room designs, project content or composition.

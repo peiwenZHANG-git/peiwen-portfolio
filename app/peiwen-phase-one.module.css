@@ -1,0 +1,15 @@
+.root { position: absolute; inset: 120px 0 0; pointer-events: none; }
+.layer { position: absolute; inset: -120px 0 0; visibility: hidden; pointer-events: none; }
+.patch, .walker { position: absolute; left: 800px; top: 608px; width: 120px; height: 230px; }
+.walker img { position: absolute; inset: 0; width: 120px; height: 230px; max-width: none; }
+.body { clip-path: inset(0 0 55px 0); }
+.leftFoot { clip-path: inset(175px 55px 0 0); }
+.rightFoot { clip-path: inset(175px 0 0 65px); }
+.shadow { position: absolute; left: 40px; top: 212px; width: 49px; height: 9px; border-radius: 50%; background: #64564024; filter: blur(2px); }
+.leftIntent, .returnIntent, .rightIntent { position: absolute; top: 0; bottom: 0; border: 0; padding: 0; background: transparent; pointer-events: auto; cursor: default; }
+.leftIntent { left: 0; width: 34%; }
+.returnIntent { left: 34%; right: 0; }
+.root[data-phase-two] .returnIntent { right: 34%; }
+.rightIntent { right: 0; width: 34%; }
+.leftIntent:focus-visible, .returnIntent:focus-visible, .rightIntent:focus-visible { outline: 1px dashed #736653; outline-offset: -14px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

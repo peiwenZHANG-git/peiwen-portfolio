@@ -1,8 +1,8 @@
 # Peiwen Zhang Portfolio
 
-An English-first, illustrated spatial portfolio for Peiwen Zhang, focused on HCI × AI Agents, UX research, and UX engineering.
+An English-first, illustrated portfolio for Peiwen Zhang, focused on HCI × AI Agents, UX research, and UX engineering.
 
-The current prototype lets visitors walk with Peiwen along a constrained Experience path. It includes one confirmed landmark: Université Paris-Saclay / Human-Computer Interaction. The visual composition is still under review.
+The default route is Peiwen's Little World Home Hub. The preserved walking Experience prototype is available at `/experience`; both visual compositions remain under review.
 
 ## Start here
 

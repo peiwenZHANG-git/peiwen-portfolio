@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type MutableRefObject } from "react";
 import * as THREE from "three";
 import {
   getFraming, getJourneyState, getMilestone, getNearestMilestone, getProgressTarget,
@@ -152,9 +152,13 @@ function makeRoadGeometry(curve: THREE.CatmullRomCurve3) {
   return { ribbon, edgeLines, echoLines, markLines };
 }
 
-function Road({ curve }: { curve: THREE.CatmullRomCurve3 }) {
-  const geometry = useMemo(() => makeRoadGeometry(curve), [curve]);
+function LegacyRoadMaterial() {
   const texture = useLoader(THREE.TextureLoader, SACLAY_ASSETS.road);
+  return <meshBasicMaterial map={texture} color="#ececef" transparent opacity={0.1} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />;
+}
+
+function Road({ curve, minimal = false }: { curve: THREE.CatmullRomCurve3; minimal?: boolean }) {
+  const geometry = useMemo(() => makeRoadGeometry(curve), [curve]);
 
   useEffect(() => () => {
     geometry.ribbon.dispose();
@@ -166,15 +170,9 @@ function Road({ curve }: { curve: THREE.CatmullRomCurve3 }) {
   return (
     <group>
       <mesh geometry={geometry.ribbon} receiveShadow renderOrder={0}>
-        <meshBasicMaterial
-          map={texture}
-          color="#ececef"
-          transparent
-          opacity={0.1}
-          polygonOffset
-          polygonOffsetFactor={1}
-          polygonOffsetUnits={1}
-        />
+        {minimal
+          ? <meshBasicMaterial color="#f0eff0" polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
+          : <LegacyRoadMaterial />}
       </mesh>
       <lineSegments geometry={geometry.edgeLines} renderOrder={1}>
         <lineBasicMaterial color="#858bab" transparent opacity={0.2} />
@@ -281,12 +279,140 @@ function PathsideEnvironment({
   );
 }
 
+// Eight authored roadside placements, not scatter or milestone-specific scenery.
+const MINIMAL_PLANTS = [
+  { progress: 0.08, side: -3.4, kind: "bare", height: 2.8 },
+  { progress: 0.29, side: -3.6, kind: "tree", height: 2.6 },
+  { progress: 0.27, side: 2.4, kind: "grass", height: 0.48 },
+  { progress: 0.39, side: 3.8, kind: "tree", height: 2.3 },
+  { progress: 0.5, side: -2.6, kind: "grass", height: 0.52 },
+  { progress: 0.61, side: -3.7, kind: "bare", height: 2.9 },
+  { progress: 0.76, side: 3.5, kind: "tree", height: 2.4 },
+  { progress: 0.89, side: -2.5, kind: "grass", height: 0.5 },
+] as const;
+
+function BareBranches({ position, scale, opacity = 0.48, trunk = false }: { position: Vec3; scale: number; opacity?: number; trunk?: boolean }) {
+  const framing = useRef<THREE.Group>(null);
+  useFrame(({ camera }) => {
+    if (trunk && framing.current) framing.current.rotation.y = Math.atan2(camera.position.x - position[0], camera.position.z - position[2]);
+  });
+  // Deliberately flat, imperfect graphite branches; no mesh tree or new raster artwork.
+  const lines = useMemo(() => new THREE.BufferGeometry().setFromPoints([
+    [0, 0, 0], [-0.03, 0.6, 0], [-0.03, 0.6, 0], [0.04, 1, 0],
+    [-0.01, 0.35, 0], [-0.28, 0.61, 0], [-0.28, 0.61, 0], [-0.35, 0.83, 0],
+    [-0.18, 0.51, 0], [-0.43, 0.64, 0], [-0.02, 0.53, 0], [0.29, 0.78, 0],
+    [0.29, 0.78, 0], [0.33, 0.94, 0], [0.19, 0.7, 0], [0.42, 0.73, 0],
+    [0.02, 0.77, 0], [-0.16, 0.98, 0], [-0.1, 0.9, 0], [-0.13, 1.07, 0],
+  ].map(([x, y, z]) => new THREE.Vector3(x, y, z))), []);
+  const trunkShape = useMemo(() => new THREE.Shape([
+    new THREE.Vector2(-0.036, 0), new THREE.Vector2(0.025, 0),
+    new THREE.Vector2(0.008, 0.36), new THREE.Vector2(-0.017, 0.61),
+    new THREE.Vector2(0.046, 1), new THREE.Vector2(0.031, 1),
+    new THREE.Vector2(-0.048, 0.6), new THREE.Vector2(-0.036, 0.32),
+  ]), []);
+  useEffect(() => () => lines.dispose(), [lines]);
+  return <group ref={framing} position={position} scale={scale}>
+    <lineSegments geometry={lines}>
+      <lineBasicMaterial color="#777787" transparent opacity={opacity} />
+    </lineSegments>
+    {trunk && <mesh>
+      <shapeGeometry args={[trunkShape]} />
+      <meshBasicMaterial color="#9093a4" side={THREE.DoubleSide} transparent opacity={0.48} />
+    </mesh>}
+  </group>;
+}
+
+function MinimalWinterWorld({ curve, reducedMotion }: { curve: THREE.CatmullRomCurve3; reducedMotion: boolean }) {
+  const { size, gl } = useThree();
+  const compact = (gl.domElement.closest(".prototype-shell")?.clientWidth ?? size.width) <= 700;
+  return <group>
+    <WinterDistance />
+    {MINIMAL_PLANTS.map(({ progress, side: authoredSide, kind, height: authoredHeight }) => {
+      const side = compact && authoredSide < 0 ? Math.min(-2, authoredSide * 0.64)
+        : compact && kind === "grass" ? -2 : authoredSide;
+      const height = authoredHeight * (compact && kind !== "grass" ? 0.75 : 1);
+      return (
+      <group key={progress}>
+        {kind === "bare"
+          ? <BareBranches position={pathPosition(curve, progress, side, 0)} scale={height} />
+          : <WorldSprite
+              src={kind === "tree" ? "/assets/world/tree-v1.webp" : "/assets/world/grass-tuft-1.webp"}
+              position={pathPosition(curve, progress, side, height / 2 - 0.04)}
+              scale={[height * (kind === "tree" ? 0.75 : 0.85), height, 1]}
+              tint="#c1c7d8" opacity={kind === "tree" ? 0.62 : 0.5} reducedMotion={reducedMotion}
+            />}
+        {kind !== "grass" && <mesh position={pathPosition(curve, progress, side, 0.015)} rotation={[-Math.PI / 2, 0, 0]} scale={[0.7, 0.26, 1]}>
+          <circleGeometry args={[1, 24]} />
+          <meshBasicMaterial color="#a0a5bb" transparent opacity={0.09} depthWrite={false} />
+        </mesh>}
+      </group>
+    ); })}
+    {/* Short uneven runs follow the existing road, with gaps instead of a solid border. */}
+    {Array.from({ length: 38 }, (_, index) => {
+      const progress = 0.04 + index * 0.024 + Math.sin(index * 2.4) * 0.004;
+      const side = (index % 5 < 2 ? -1 : 1) * (1.75 + (index % 3) * 0.13);
+      const height = 0.24 + (index % 4) * 0.045;
+      return <group key={index}>
+        <WorldSprite src={`/assets/world/grass-tuft-${index % 2 + 1}.webp`}
+          position={pathPosition(curve, progress, side, height * 0.44)}
+          scale={[height * 0.9, height, 1]} opacity={0.55} tint="#babcc8" reducedMotion={reducedMotion} />
+        {index % 3 === 0 && <BareBranches position={pathPosition(curve, progress + 0.006, side * 1.12, 0)} scale={height * 1.35} opacity={0.38} />}
+      </group>;
+    })}
+    <BareBranches position={pathPosition(curve, compact ? 0.255 : 0.235, compact ? -2 : -3.05, 0)} scale={compact ? 2.8 : 4.4} opacity={0.72} trunk />
+    <BareBranches position={pathPosition(curve, 0.29, 4.8, 0)} scale={1.3} opacity={0.64} />
+    <GuideFireflies curve={curve} reducedMotion={reducedMotion} minimal />
+  </group>;
+}
+
+function WinterDistance() {
+  const geometry = useMemo(() => {
+    const vertices: number[] = [], indices: number[] = [], trees: THREE.Vector3[] = [];
+    const segments = 128;
+    for (let i = 0; i <= segments; i++) {
+      const angle = i / segments * Math.PI * 2;
+      const top = 3.6 + Math.sin(angle * 3) * 1.25 + Math.sin(angle * 7 + 1) * 0.7;
+      const x = Math.cos(angle) * 54, z = -25 + Math.sin(angle) * 54;
+      vertices.push(x, -2, z, x, top, z);
+      if (i < segments) { const j = i * 2; indices.push(j, j + 1, j + 2, j + 1, j + 3, j + 2); }
+      if (i % 2 === 0 && i % 7 !== 0) {
+        const a = angle + Math.sin(i * 2.1) * 0.028;
+        const base = new THREE.Vector3(Math.cos(a) * 43, -0.4, -25 + Math.sin(a) * 43);
+        const height = 1.7 + (Math.sin(i * 1.7) + 1) * 0.8;
+        const side = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a));
+        trees.push(base.clone(), base.clone().add(new THREE.Vector3(0.05, height, 0)));
+        for (const sign of [-1, 1]) {
+          trees.push(base.clone().add(new THREE.Vector3(0, height * 0.38, 0)),
+            base.clone().addScaledVector(side, sign * height * 0.3).add(new THREE.Vector3(0, height * 0.75, 0)));
+          trees.push(base.clone().add(new THREE.Vector3(0, height * 0.65, 0)),
+            base.clone().addScaledVector(side, sign * height * 0.2).add(new THREE.Vector3(0, height * 0.94, 0)));
+        }
+      }
+    }
+    const mountains = new THREE.BufferGeometry();
+    mountains.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    mountains.setIndex(indices);
+    return { mountains, trees: new THREE.BufferGeometry().setFromPoints(trees) };
+  }, []);
+  useEffect(() => () => { geometry.mountains.dispose(); geometry.trees.dispose(); }, [geometry]);
+  return <group>
+    <mesh geometry={geometry.mountains}>
+      <meshBasicMaterial color="#aeb8cf" transparent opacity={0.24} side={THREE.DoubleSide} fog={false} depthWrite={false} />
+    </mesh>
+    <lineSegments geometry={geometry.trees}>
+      <lineBasicMaterial color="#929fb9" transparent opacity={0.23} fog={false} depthWrite={false} />
+    </lineSegments>
+  </group>;
+}
+
 function GuideFireflies({
   curve,
   reducedMotion,
+  minimal = false,
 }: {
   curve: THREE.CatmullRomCurve3;
   reducedMotion: boolean;
+  minimal?: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
   const texture = useLoader(THREE.TextureLoader, "/assets/world/firefly-v2.webp");
@@ -299,13 +425,20 @@ function GuideFireflies({
 
   return (
     <group ref={group}>
-      {[
+      {(minimal ? [
+        pathPosition(curve, 0.14, -0.35, 0.8),
+        pathPosition(curve, 0.25, -1.6, 0.75),
+        pathPosition(curve, 0.28, -1.8, 1.1),
+        pathPosition(curve, 0.44, 1.5, 0.65),
+        pathPosition(curve, 0.61, -1.5, 0.85),
+        pathPosition(curve, 0.77, 1.5, 0.7),
+      ] : [
         pathPosition(curve, 0.1, -0.35, 1.25),
         pathPosition(curve, 0.125, 0.2, 1.55),
         pathPosition(curve, 0.15, -0.1, 1.05),
-      ].map((position, index) => (
+      ]).map((position, index) => (
         <sprite key={index} position={position} scale={[0.42, 0.42, 1]} renderOrder={6}>
-          <spriteMaterial map={texture} transparent alphaTest={0.02} depthWrite={false} depthTest opacity={0.76 - index * 0.12} toneMapped={false} />
+          <spriteMaterial map={texture} transparent alphaTest={0.02} depthWrite={false} depthTest opacity={minimal ? 0.5 : 0.76 - index * 0.12} toneMapped={false} />
         </sprite>
       ))}
     </group>
@@ -317,11 +450,13 @@ function Peiwen({
   controls,
   reducedMotion,
   milestoneActive,
+  visualScale = 1,
 }: {
   curve: THREE.CatmullRomCurve3;
   controls: MutableRefObject<Controls>;
   reducedMotion: boolean;
   milestoneActive: boolean;
+  visualScale?: number;
 }) {
   const character = useRef<THREE.Group>(null);
   const sprite = useRef<THREE.Sprite>(null);
@@ -361,6 +496,7 @@ function Peiwen({
 
   return (
     <group ref={character}>
+      <group scale={visualScale}>
       <mesh position={[0, 0.052, 0]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={3}>
         <circleGeometry args={[compact ? 0.34 : 0.25, 20]} />
         <meshBasicMaterial color="#6d7397" transparent opacity={0.22} depthWrite={false} />
@@ -380,6 +516,7 @@ function Peiwen({
           toneMapped={false}
         />
       </sprite>
+      </group>
     </group>
   );
 }
@@ -599,12 +736,14 @@ function Milestone({
 }
 
 function ExperienceScene({
+  minimal = false,
   controls,
   reducedMotion,
   journeyState,
   onJourneyStateChange,
   onMovingChange,
 }: {
+  minimal?: boolean;
   controls: MutableRefObject<Controls>;
   reducedMotion: boolean;
   journeyState: JourneyState;
@@ -679,8 +818,8 @@ function ExperienceScene({
 
   return (
     <>
-      <color attach="background" args={["#929ac3"]} />
-      <fog attach="fog" args={["#929ac3", 24, 62]} />
+      <color attach="background" args={[minimal ? "#cbd0e1" : "#929ac3"]} />
+      <fog attach="fog" args={[minimal ? "#cbd0e1" : "#929ac3", minimal ? 14 : 24, minimal ? 42 : 62]} />
       {/* No lights: the road (meshBasicMaterial), the ground plane (meshBasicMaterial),
           and every sprite (spriteMaterial) here are unlit by construction, so an
           ambientLight/directionalLight would affect nothing — removed rather than kept
@@ -688,9 +827,10 @@ function ExperienceScene({
           prop), and GroundContact's shared shadows instead. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.035, -24]} receiveShadow>
         <planeGeometry args={[100, 100]} />
-        <meshBasicMaterial color="#c9cee6" />
+        <meshBasicMaterial color={minimal ? "#e4e5ed" : "#c9cee6"} />
       </mesh>
-      <Road curve={curve} />
+      <Road curve={curve} minimal={minimal} />
+      {minimal ? <MinimalWinterWorld curve={curve} reducedMotion={reducedMotion} /> : <>
       <PathsideEnvironment curve={curve} reducedMotion={reducedMotion} />
       <GuideFireflies curve={curve} reducedMotion={reducedMotion} />
       <Milestone
@@ -700,7 +840,9 @@ function ExperienceScene({
         approaching={saclayPhase === "approaching"}
         reducedMotion={reducedMotion}
       />
+      </>}
       <Peiwen
+        visualScale={minimal ? 0.8 : 1}
         curve={curve}
         controls={controls}
         reducedMotion={reducedMotion}
@@ -711,6 +853,11 @@ function ExperienceScene({
 }
 
 export default function ExperiencePrototype() {
+  const minimal = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).get("world") === "minimal",
+    () => false,
+  );
   const controls = useRef<Controls>({
     progress: 0.03,
     targetProgress: 0.03,
@@ -809,6 +956,7 @@ export default function ExperiencePrototype() {
   return (
     <main
       className="prototype-shell"
+      data-world={minimal ? "minimal-winter" : "legacy"}
       data-milestone={journeyState.milestoneId}
       data-phase={journeyState.phase}
       onWheel={(event) => {
@@ -830,6 +978,14 @@ export default function ExperiencePrototype() {
       onPointerCancel={() => { pointer.current = null; }}
     >
       <a className="skip-link" href="#experience-content">Skip to experience details</a>
+      {minimal && <>
+        <span className="minimal-moon" aria-hidden="true" />
+        <span className="minimal-paper" aria-hidden="true" />
+        <svg className="minimal-stars" viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
+          {[[180, 54], [420, 110], [640, 36], [960, 83], [1210, 48], [1370, 130]].map(([cx, cy]) =>
+            <circle key={cx} cx={cx} cy={cy} r="1.35" fill="#f5efd7" />)}
+        </svg>
+      </>}
       <div className="scene-canvas" tabIndex={0} aria-label="Walk with Peiwen along the Experience path">
         <Canvas
           camera={{ position: [7, 3.5, 10], fov: 39, near: 0.1, far: 90 }}
@@ -847,6 +1003,7 @@ export default function ExperiencePrototype() {
           fallback={<p className="canvas-fallback">The spatial view is unavailable. Experience details remain available.</p>}
         >
           <ExperienceScene
+            minimal={minimal}
             controls={controls}
             reducedMotion={reducedMotion}
             journeyState={journeyState}

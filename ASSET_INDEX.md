@@ -1,14 +1,50 @@
 # Asset Index
 
+## Active Home master
+
+- **Frozen after user approval (2026-09-15): do not rerun the master preparation script
+  or replace any master/text-patch pixels.** Protected hashes: `public/peiwen-phase1/frozen-master-sha256.json`.
+- Phase 1 ONLY: `public/peiwen-phase1/peiwen-original.png` uses original master RGB with
+  a local alpha mask; `origin-clean-plate.png` is a 120×230 transparent silhouette patch
+  at master (800,608), including the original contact shadow. `design-assets/peiwen-phase1/`
+  records the selected imagegen local inpaint source and exact prompt. No generated
+  character drawing is used. `scripts/prepare-peiwen-phase1.mjs` regenerates ONLY these
+  derivatives and asserts frozen hashes; never redraws the master. Visual review pending.
+
+- `public/home-master/master.png`: byte-identical copy of
+  `design-assets/home-v2/home-visual-target.png`, used in the static review only.
+- `public/home-master/text-clean-plate.png`: transparent 1536×1024 layer containing original-paper
+  clones over eight text regions. Donor/destination coordinates: `public/home-master/text-regions.json`.
+- Rebuild with `node scripts/prepare-home-master.mjs`. No source pixel changes outside these patches.
+  DOM uses Patrick Hand via next/font, reusing the typeface already available in the project.
+- Old `public/assets/home-v2/` crops remain preserved and are not a visual foundation for this mode.
+  Character removal, movement frames, light, door and animated overlays are not produced in this phase.
+
 ## Storage rules
 
-- `design-assets/` contains source drawings and composition references for design work. These are not loaded by the application.
+## Home visual truth rebuild — 2026-09-15
+
+`design-assets/home-v2/home-visual-target.png` is the supplied 1536×1024 target. Deterministic
+grouped crops and the review-only lower plate live under `public/assets/home-v2/`; the extraction
+manifest is `design-assets/home-v2/README.md`. The lower plate is used only by
+`?static-reconstruction=1` while the existing interactive Home state machine remains untouched.
+No source file was deleted, and no Experience asset is shared by these crops. AI inpainting was
+attempted but unavailable (HTTP 429), so all visible pixels are extracted from the target.
+
+- `design-assets/` contains source drawings and composition references. Exception: Pass 4A `/storybook`
+  statically imports ONLY `keyframes/experience/paris-saclay-approved.png` and `cuc-approved.png` as
+  **temporary review plates**, optimized by Next Image. They contain baked Peiwen, headline and UI;
+  they are not final production backgrounds. Originals remain unchanged; no cutout/cleanup is performed.
 - `public/assets/` contains optimized transparent WebP derivatives used at runtime.
 - Project-local source copies are byte-identical to the originals under `C:\Users\21781\Desktop\个人网站\image` at their recorded import verification date. The Desktop originals were not modified.
 - Do not overwrite a source sheet while extracting runtime assets. Create deterministic derivatives by crop, background removal, alpha feathering, resize, and WebP/PNG optimization only.
 - `design-assets/references/` is for composition study only. Do not copy visual content from those images into production.
 
 ## Approved Experience target keyframes
+
+Pass 4A supersedes the old runtime prohibition only for the two temporary review plates named above.
+All 3C source and runtime derivatives remain preserved as an abandoned spatial experiment; do not
+delete them or continue tuning their placements. No production clean plate or new art exists yet.
 
 These are visual source of truth, distinct from the older reference-only moodboards. They are
 original PNG copies, not runtime assets. No compression, cropping, background removal or editing
@@ -152,7 +188,45 @@ Runtime derivatives: `public/assets/character/peiwen-back-walk-1.webp` through `
 | `design-assets/hub/stream-v1.jpg` | Stream source. |
 | `design-assets/hub/tree-v1.jpg` | Tree source; its project-local name removes the Desktop original's duplicate `.jpg` extension. |
 
-Available runtime derivatives include clouds, flowers, grass, dandelion seeds, fireflies, and tree assets under `public/assets/world/`. Hub itself is not implemented.
+Available runtime derivatives include clouds, flowers, grass, dandelion seeds, fireflies, and tree assets under `public/assets/world/`.
+
+Home Hub additionally uses deterministic crops from the unchanged character sheets:
+
+- `public/assets/hub/peiwen-idle-cutout.png` from `peiwen-character-v1.jpg`
+- `public/assets/hub/peiwen-walk-left-cutout.png` from `left-walking-v1.jpg`
+- `public/assets/hub/peiwen-walk-right-cutout.png` from `right-walking-v1.jpg`
+
+Only crop and near-white paper-background removal were applied; no pose, color or drawing was changed.
+
+## About page sources
+
+Peiwen's own watercolour artwork. `/about` is a hybrid: these images are the visual
+shell, and every readable element is DOM on top of them. Nothing on the page re-draws
+this artwork with CSS gradients, border-radius, SVG filters or inline SVG.
+
+| Source (`design-assets/about/`) | Runtime (`public/assets/about/`) | Role |
+| --- | --- | --- |
+| `about-desk-scene.png` 1672×941 | `desk-scene.webp` 1672×941 | The desk **and** the open notebook — leather cover, both pages, binder rings, gutter, pen, ginkgo, daisies, books. The desktop stage. |
+| `about-photo-frame.png` 1188×1324 | `photo-frame.webp` 700×846 | Polaroid frame; transparent window carries the real portrait. |
+| `about-paper-wide.png` 1712×919 | `paper-wide.webp` 1000×297 | Torn paper, wide. Masks the four "What I bring" papers, the beauty-tech note and the CV label. |
+| `about-paper-block.png` 1369×1149 | `paper-block.webp` 800×532 | Torn paper, block. Masks the two notes and the three postcard backings. |
+| `about-place-beijing/japan/paris.png` 1480×1062 | `place-*.webp` 640×459 | The three travel fragments. |
+| `about-tape.png` 2172×724 | `tape.webp` 680×169 | One tape strip, used exactly twice: the portrait and the beauty-tech note. |
+| `about-brush-swipe.png` 2172×724 | `brush-swipe.webp` 720×120 | One watercolour stroke, masked and tinted per heading. |
+| `about-asset-sheet.png` 1536×1024 | — | Peiwen's contact sheet. Archive only; carries labels and never ships. |
+| `portrait-source.jpg` 1080×1387 | `portrait.webp` 900×891 | Peiwen's photograph (MD5 `3cde0e3992de01aee502481718b54ca3`) and its single deterministic crop. |
+
+Derivatives are scale + WebP compression only, plus a crop to the painted bounding box
+for `paper-wide`, `paper-block`, `photo-frame`, `tape` and `brush-swipe` — those are used
+with `mask-size: 100% 100%` or `border`-style stretching, so transparent canvas margins
+would leave the artwork covering only part of its box. No painting was altered. Runtime
+total is roughly 620 KB.
+
+Geometry measured from `desk-scene.webp` and used by `about.module.css`: the left sheet
+spans x 14.2–47.5%, the right sheet x 53.8–86.8%, both y 16.6–80.4%. The DOM page panels
+sit inside that at x 15.5–46% / 55.5–85%, y 17.5–79.5%. The photo frame's transparent
+window sits at 7.6% / 7.3% / 84.6% / 68.9% of the cropped frame. If any of these assets is
+re-exported, those numbers must be re-measured.
 
 ## Milestone sources
 

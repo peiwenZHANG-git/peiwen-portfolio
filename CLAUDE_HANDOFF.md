@@ -1,171 +1,146 @@
 # Claude Code Handoff
 
-## Read first
+Read AGENTS.md, PROJECT_STATE.md, VISUAL_DIRECTION.md and ASSET_INDEX.md, then inspect live Git state.
+Use project-task-init before significant edits and project-delivery-check before completion.
 
-1. `AGENTS.md`
-2. `PROJECT_STATE.md`
-3. `VISUAL_DIRECTION.md`
-4. `ASSET_INDEX.md`
+## Active direction — Home / Hero / Hub
 
-Use `.agents/skills/project-task-init/SKILL.md` before significant edits and `.agents/skills/project-delivery-check/SKILL.md` before delivery.
+2026-09-15 update: **Static Master is approved and frozen.** Do not regenerate it or adjust
+its composition/Idle Peiwen. Phase 1 review is `/?peiwen-phase1=1`: original-pixel Peiwen
+overlay plus silhouette-only inpaint, LEFT_PREVIEW and return only. See PROJECT_STATE and
+`visualizations/peiwen-phase1/`. Wait for manual background/identity/grounding/handoff
+approval before further work. Right/About/Opening/lights/Entering remain out of scope.
+The statements below requiring initial static approval are historical and superseded.
 
-## What this portfolio is becoming
+Superseding instruction: **Master Plate + Minimal Dynamic Overlays**. The static review at
+`/?static-reconstruction=1` mounts `app/home-master.tsx`, not HomeHub. Full original master plus
+eight paper text patches and DOM typography preserve the complete scene. Old Home-v2 crops remain
+on disk but are not inputs. Review `visualizations/home-master/`; wait for explicit static approval
+before any character, door/light, reveal or other dynamic overlay work. The old split reconstruction
+and its claimed 50% overlay are superseded (the old Sharp opacity argument was ineffective).
 
-Peiwen Zhang's English-first portfolio is an illustrated spatial world for HCI × AI Agents work. The intended audience is France-based HCI / UX Research / UX Engineer internship recruiters and PhD or research-internship advisors. A visitor should feel that they are walking with Peiwen through her experiences while still finding clear, accessible portfolio information.
+Latest instruction (2026-09-15): the supplied 1536×1024 Home image is the single visual truth. A
+review-only static reconstruction is available at `/?static-reconstruction=1`, using deterministic
+crops under `public/assets/home-v2/` and DOM text. Stop after static capture, contact sheet, overlay
+and difference review; do not create walking/About/door assets or mobile adaptation before manual
+approval. Imagegen was unavailable with HTTP 429, so no generated or inpainted art was added.
 
-Long-term world model: a Hub choice point connects an outward Experience Path and a Project House. Only the Experience Path prototype exists today.
+Home reference correction (2026-09-14): central Hero name/subtitle persist in Idle; the prompt is in
+the sky and the world sits in the lower half. Preview travel is ±8vw on desktop/mobile, labels are
+asymmetric and contain no CTA verbs. New movement after Opening arms fine-pointer hover; both hints
+are session onboarding. Existing house/fence originals replace the polygonal house treatment.
+Native hash assignment was replaced with router navigation to the same anchors to fix Back navigation.
+Review captures and browser checks are described in PROJECT_STATE.md; manual visual approval is pending.
 
-## Current implementation
+Latest instruction (2026-09-14): `/` is Peiwen's Little World, a full-viewport Home Hub. The left
+road previews and opens the preserved Experience at `/experience`; Peiwen previews About; the right
+house previews Projects. Projects, About and Playground internal pages are intentionally not part of
+this pass, so their Home interactions finish at named anchors rather than inventing placeholder pages.
 
-- Next.js App Router with TypeScript, React, Tailwind CSS, Three.js, and React Three Fiber.
-- `app/experience-prototype.tsx` owns the current Canvas scene, path, controls, Peiwen sprite, camera follow, path environment, and first milestone.
-- `lib/journey.ts` owns the two-milestone registry and pure progress/transition queries. No global store, BiomeChunk, full JourneyController or independent JourneyCamera exists.
-- `app/globals.css` owns DOM overlays, responsive framing, focus styles, and reduced-motion transitions.
-- The path is a constrained `THREE.CatmullRomCurve3`, not free 3D exploration.
-- Controls: wheel / W-S / Up-Down for progress, A-D / Left-Right for a small lateral offset, and mobile pointer swipes.
-- The camera follows behind and above Peiwen with a 39° FOV and restrained look-ahead.
-- Experience content stays in semantic DOM beside the scene.
+The Home uses session-only Opening/exploration flags, discrete IDLE / LEFT_PREVIEW / RIGHT_PREVIEW /
+ABOUT_HOVER / ENTERING states, delayed desktop intent, direct clicks, keyboard controls, mobile swipe
+and tap, and reduced motion. It reuses existing Hub/world art plus three deterministic character crops.
+Do not add internal destination pages or resume Experience milestones as part of Home tuning.
 
-## Preserved Paris-Saclay runtime baseline
+## Parallel direction — Minimal Experience World Prototype
 
-The only implemented Experience landmark is:
+Latest instruction (2026-09-14): retain the proven third-person walking core; build a single minimal
+picture-book world, not place reconstructions or flattened scene transitions. `/?world=minimal`
+selects the winter-only prototype inside the existing Experience component. Plain `/` preserves 3C;
+`/storybook` remains a superseded experiment. Do not delete or overwrite either historical state.
 
-```text
-Université Paris-Saclay
-Human-Computer Interaction · 2025–Present
-```
+The minimal branch reuses path geometry, Peiwen, camera, movement/input, lateral bounds, registry,
+crossing/hysteresis, reduced motion, DOM narration and mobile foundation. It replaces only environment
+rendering with pale ground/road/sky/fog, sparse existing trees/grass, flat bare branches, two faint
+distant washes, a small foreground branch, still moon and sparse fireflies. No campus/Eiffel/heavy
+snow cutouts or strong road texture mounts in this mode. Source/runtime assets remain unchanged.
 
-The current vignette contains Eiffel, research diagram, desk lamp, notebook, sparse vegetation, dandelion seeds, grounding washes/lines, and seven designed fireflies. The tree is absent from the milestone core. The papers derivative remains in `public/assets/` but is not rendered.
+No new dependency, generated image, complex shader, dynamic shadow, autumn transition or additional
+chapter. Six emotional chapters remain a later direction only. Current Saclay copy stays unchanged;
+unconfirmed CUC narration remains null. Keyframes are now palette/atmosphere references, not blueprints.
 
-This is the preserved regression baseline, not the next visual target. The approved winter-night
-keyframe supersedes the large-Eiffel / white-paper academic composition as future art direction.
+Next action: user reviews desktop 1440×900, mobile 390×844 and the walking recording before a commit
+or another visual pass. Current checks belong in PROJECT_STATE.md; local evidence is under ignored
+visualizations/minimal-winter/. Do not push. The remaining Pass 4A sections below are historical.
 
-Pass 3A and its follow-up 3A-fix are implemented on this branch and were visually approved by Peiwen
-on 2026-09-12 from the live dev render. What changed, in short:
+## Historical direction — Pass 4A
 
-- `MILESTONE_PROGRESS` 0.47 -> 0.24 (shorter run-up), with the phase windows retightened to match
-  (active < 0.055, approaching < 0.105, slowdown window 0.07) so the arrival text no longer appears
-  before she arrives.
-- Gentler pacing: wheel 0.00045 -> 0.0003, pointer drag 0.00085 -> 0.00055, keyboard 0.075 -> 0.048,
-  progress damping 5 -> 4 (2.8 near the milestone), walk cycle 7Hz -> 5.2Hz so the gait matches.
-- Eiffel brought nearer and made stable: desktop local x 1.4 / z 4.8, sprite 2.71 x 4.2. It holds
-  within x 17-37% of the frame for the whole approach, where the old placement swept across to 95%
-  and back. Mobile sits at x 0.1 / z 8.8 with the sprite trimmed ~11% (2.17 x 3.36) so the spire
-  clears the subtitle line.
-- Academic vignette recomposed on a shared ground line (each y is the rendered half-height), with
-  the lamp as the vertical anchor, the book at its foot, and the sheet on the lamp-head side.
-  Desktop and mobile carry separate positions and separate size compensation.
-- Milestone copy raised from `top: 24%` to `15%` so the road's upper edge no longer cuts through the
-  subtitle at the new milestone bend.
-- The intro headline now hides on first movement (`hasMoved`), not only once the milestone is near,
-  so the tower no longer passes behind it.
-- Self-talk redrawn as a picture-book whisper: an SVG contour whose ink line does not hug the paper
-  edge plus two short re-traced strokes, irregular tail dots, anchored in the opening whitespace
-  (desktop `top: 26%`, mobile `top: 26%`) clear of Peiwen at both breakpoints.
+Peiwen Zhang's English-first HCI × AI Agents portfolio serves France-based internship recruiters and
+research advisors. Experience is now a **continuous-feeling journey of discrete complete storybook scenes**.
 
-Pass 3A.1 validation completed on 2026-09-12: wheel, keyboard, and swipe now share a bounded
-progress-target contract; forward/reverse milestone crossing retains the active state; lateral-only
-movement updates shared movement side effects; and the subdued walking hint measures 4.63:1. Lint,
-typecheck, production build, responsive rendering, and reduced-motion emulation passed. Details are
-in `PROJECT_STATE.md`.
+**Abandoned:** continuous 2.5D spatial biome world. Not technically impossible: continuity costs,
+too many intermediate art assets and cutout/sticker compositions conflicted with static-frame-first art.
+Do not resume 3C placement fixes or P1 spatial-environment integration.
 
-## Pass 3B — Journey Registry Foundation
+Planned only: Intro → Saclay → transition → CUC → transition → Japan → Tantan → Huashun → Yundao →
+Projects bridge. Only Saclay → transition → CUC is implemented as a review POC.
 
-- Registry IDs: `paris-saclay`, `cuc`, and transition `paris-saclay-to-cuc`.
-- Centers: `0.24` and `0.64`; active/approach/slowdown radii: `0.055 / 0.105 / 0.07`.
-- Saclay stable `0.015–0.345`, transition `0.345–0.535`, CUC stable `0.535–0.985`.
-  Reveal sampling uses `0.41–0.535`. These are foundation timings, not final visual timing.
-- Input target limits, coefficients, damping and lateral movement side effects retain 3A.1 behavior.
-  Crossing selects the first center in the direction of travel; active retention belongs to a milestone ID.
-- CUC is logical only: no scene, narration, camera framing or character reaction. Its approach,
-  active/passed state, slowdown and hysteresis work. All narration fields and framing variants are null.
-- Transition and reveal functions return progress-based values only; no environment material is changed.
-- Review: `?arrival=1` still selects Saclay; `?arrival=paris-saclay` and `?arrival=cuc` select registry IDs.
-  Unknown IDs leave normal starting progress intact. Inspect `main[data-milestone][data-phase]` for
-  logical state. No visible debug UI was added. The skip link retains access to confirmed Saclay details.
-- Run `node --experimental-strip-types scripts/check-journey.mjs`: 1222 deterministic assertions.
-  Node 22 may print type-stripping/module-detection warnings; no dependency or package-mode change is needed.
-- Verification: lint, typecheck and production build passed. Six desktop/mobile reduced-motion
-  comparison frames exactly matched the pre-migration baseline. Wheel, all movement keys, emulated
-  touch, bidirectional crossing/retention, resize, focus, review IDs and reduced motion passed.
-  No browser errors or failed requests were observed. Physical-device performance remains unverified.
+## Entry and architecture
 
-## Approved constraints
+- /storybook is review-only; / still renders preserved 3C. Wait for approval before switching defaults.
+  The review route is a pivot tool, not a second product to maintain indefinitely.
+- app/storybook/page.tsx: server entry, noindex, finite-checked/bounded ?progress= review position.
+- lib/storybook.ts: minimal scene data contract and pure scale/transition sampler.
+- app/storybook/storybook-review.tsx + storybook.module.css: DOM/Image plates, local input loop,
+  responsive framing, reduced motion, accessible details, skip link and polite arrival status.
+- lib/journey.ts is unchanged: 3A/3B registry, bounded target, crossing, hysteresis, slowdown and narration.
+- Next.js 16 / React 19 / TypeScript / Tailwind 4. No new dependencies. Three/R3F stays for the old route;
+  no Canvas, road mesh, snowbanks, campus cutouts, Eiffel sticker or extra Peiwen mounts in /storybook.
 
-- Preserve the long winding road, constrained movement, camera behavior, Peiwen walking, semantic text, accessibility, and reduced-motion support unless the user explicitly changes scope.
-- Preserve Peiwen's approved character identity and source artwork exactly.
-- Do not fabricate companies, schools, roles, dates, outcomes, or project facts.
-- Do not expose a CV yet. Older CV material predates Paris-Saclay.
-- Treat any current positioning line as temporary copy.
-- Keep source sheets in `design-assets/`; runtime derivatives belong in `public/assets/`.
-- The approved targets are `design-assets/keyframes/experience/paris-saclay-approved.png` and
-  `cuc-approved.png`: 2.5D hand-drawn picture-book winter night → autumn sunset. These are visual
-  source of truth, not ordinary moodboards and not runtime assets. Do not use the old monochrome
-  palette or old Eiffel prominence as current target guidance.
-- Use deterministic preprocessing for approved artwork. Do not redraw, regenerate, inpaint, or alter proportions/internal line structure.
-- Keep the experience playful and spatial without scores, missions, collectibles, failure states, enemies, or fully free exploration.
-- Do not add dependencies unless the implementation clearly needs them and the user approves.
+## Progress and input
 
-## Not approved or implemented
+Wheel, W/S, Up/Down and vertical swipes move storybook progress, not 3D coordinates. Old coefficients,
+target limit, damping and slowdown are reused. No lateral movement: Peiwen is baked into these plates.
 
-- Winter Saclay and autumn CUC runtime layers or visual transitions are not implemented. Their
-  keyframe direction is approved; an implementation/asset-production scope is still needed.
-- CUC identity, period and summary have not been confirmed. Do not infer them from the artwork.
-- Full Hub, Project House, Projects, About, Playground, bilingual routing, Personal AI, or AI Peiwen.
-- Final positioning copy or current CV.
-- Complex scroll camera, complex parallax, 3D world expansion, CMS, analytics, or backend.
+| Range | Visual |
+| --- | --- |
+| 0.015–0.345 | Saclay; milestone center 0.24 |
+| 0.345–0.535 | Reversible handoff |
+| 0.535–0.985 | CUC; milestone center 0.64 |
 
-## External technical reference
+Both adjacent plates decode before input activates. Outgoing opacity stays 1 beneath incoming
+opacity t; effective visual contributions are 1-t and t with no background bleed. Everything samples
+progress, not a one-shot timeline. Scales stay 0.98–1.04. Reduced motion uses scale 1 and midpoint switch.
+Optional midground/foreground and snow/leaves/petals/fireflies/water are data slots only, not systems.
 
-The sibling clone at `C:\Users\21781\Documents\ChatGPT\portfolio-itom` points to <https://github.com/ITomPoland/portfolio-itom> and is not part of this repository. Clone it separately if needed.
+## Assets, confirmed content and limits
 
-It is MIT-licensed and may be studied for scene state, camera organization, preload/performance strategy, device tiers, DOM/Canvas layering, and transition architecture. Do not reuse personal artwork, textures, branding, copy, room design, project content, or visual composition. Peiwen's world must remain visually original.
+The two unchanged PNGs in design-assets/keyframes/experience are **temporary review plates**,
+optimized by Next Image, NOT production backgrounds. Baked Peiwen/title/hints/signs remain intact.
+Do not overlay another character/headline, extract figures, generate clean plates or reconstruct pixels.
 
-## Assets
+Known compromises: baked text/character ghost during crossfade; sideways hint is stale; portrait cover
+crops clip landscape content. Accessible DOM explains vertical-only input. Mobile crop is not final art.
+Character continuity is unresolved: clean plates/shared Peiwen or baked stable plates/shared walking
+bridge are both future options, neither is selected. No final snow-to-leaf transition exists yet.
 
-- Source drawings and composition references: `design-assets/`
-- Optimized runtime WebP assets: `public/assets/`
-- Full mapping and restrictions: `ASSET_INDEX.md`
-- New keyframes are original PNG copies; SHA-256 equality with the supplied attachments was checked.
-  They are flattened images: missing/occluded layers cannot be recovered by alpha extraction alone.
-  No winter trees, campus clocktower or other new runtime derivatives were generated in Pass 3B.
-- Pass 3C.1 prepared eight deterministic Saclay derivatives under `public/assets/world/saclay/`.
-  Seven transparent cutouts are runtime-ready. `snow-road-surface.webp` is usable only with
-  bounded/stretched UVs because it is not seamless. Source originals remain unchanged; see
-  `ASSET_INDEX.md` for alpha QA, dimensions, file sizes and decoded-memory estimates.
+Only confirmed narration: Université Paris-Saclay / Human-Computer Interaction · 2025–Present.
+CUC narration fields remain null. Do not infer career facts from artwork. No approved public current CV.
 
-## Historical recovery
+Source art is in design-assets/, runtime derivatives in public/assets/, mappings in ASSET_INDEX.md.
+Preserve all Desktop originals. No 3C source/runtime files were deleted.
 
-GitHub-transferable checkpoint branches preserve the useful evolution:
+## Verification / next action
 
-- `checkpoint/goal-1d-2d`
-- `checkpoint/r3f-early`
-- `checkpoint/phase-1-approved`
-- `checkpoint/phase-1-1`
+Run npm.cmd run lint, npm.cmd run typecheck, npm.cmd run build, git diff --check, plus
+node --experimental-strip-types scripts/check-journey.mjs and scripts/check-storybook.mjs with the same flag.
+Check forward/reverse wheel/key/swipe, bounds/crossing/hysteresis, 1440×900 and 390×844, resize,
+reduced motion, focus/narration/aria-live, console/runtime/network health.
+Current results belong in PROJECT_STATE.md. Captures are ignored local visualizations/pass-4a/ output.
 
-Older Goal 1C, Hero/Experience v2, and rejected v1 drafts remain only in the original local Git stash because they are superseded and should not clutter the shared branch list.
+Next: user reviews /storybook before a POC commit or default-route replacement. Do not start Pass 4B,
+more chapters, art generation, Hub, Project House, AI, bilingual routing, analytics, CMS or backend.
 
-## Next task
+## Recovery and external reference
 
-Inspect live Git state first. Pass 3B and Pass 3C.1 are complete. Pass 3C.2 visual integration has not
-started and requires explicit authorization. When authorized, establish the static Saclay
-desktop/mobile composition using the prepared runtime derivatives; do not load source PNGs. Preserve
-the movement/registry contract and approved keyframe style. Do not regenerate artwork or start CUC
-runtime/visual transition.
+Old 3C.2/fix A/cleanup was saved before the pivot in the local commit:
+Checkpoint: preserve 3C spatial-world experiment before storybook pivot
+The old homepage/runtime/CSS remain intact after it. No stashes were changed.
+Historical branches: checkpoint/goal-1d-2d, checkpoint/r3f-early, checkpoint/phase-1-approved,
+checkpoint/phase-1-1. Older superseded drafts remain local-only stashes. Inspect refs live.
+Pass 4A authorizes only the old checkpoint, NOT the storybook commit or any push. Keep AGENTS.md unstaged.
 
-The historical "Pass 3B entry ritual + ambient life" proposal remains deferred; this pass is named
-Journey Registry Foundation. Do not start an entry ritual, Hub, Project House, visual transition or
-asset generation by default. Commit or push only when requested for the active task.
-
-## Working notes for the next agent
-
-Two things cost hours in the previous session and are worth knowing before touching this scene:
-
-- Composition cannot be tuned by reasoning about the coordinates. At the arrival camera the milestone
-  group's local x axis runs close to the view direction on both breakpoints, so moving a piece along
-  x can swing it across the frame or flip which side of the cluster it lands on, and on mobile every
-  unit of z also slides the tower sideways. Change one value, look at a settled frame, measure, repeat.
-- If the scene is inspected through a hosted browser pane: when the pane is hidden the page's
-  `requestAnimationFrame` stops, so the R3F loop freezes, the canvas screenshots come back black, and
-  the camera ease freezes part-way through. Any measurement taken in that state is wrong. Bring the
-  pane to the front and let the camera settle before trusting a frame.
+C:\Users\21781\Documents\ChatGPT\portfolio-itom remains a separate sibling reference clone:
+https://github.com/ITomPoland/portfolio-itom
+MIT code patterns may be studied under the license. Do NOT reuse personal artwork, textures, branding,
+copywriting, room designs, project content or visual composition. Peiwen's work must remain original.
