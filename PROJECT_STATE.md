@@ -11,6 +11,62 @@
 - `implemented`: working code exists; required verification or visual approval is incomplete.
 - `verified`: implementation exists and the recorded checks passed.
 
+## Current goal — Experience v2 (`/experience`, branch `experience-v2`)
+
+- **Implemented in an isolated worktree/branch (`experience-v2`, based on
+  `visual-direction-v2` at `f619d7e`), not merged, not pushed.** Built per
+  `experience-v2/PASS_02_experience.md` against `experience-v2/experience-prototype-v2.html`
+  (visual/interaction/copy source of truth) and `EXPERIENCE_SPEC.md` / `STYLE_GUIDE.md`.
+- Routing: `/experience` now serves the new illustrated page; the previous R3F/Three.js
+  prototype is preserved unmodified at `/lab/experience-3d`
+  (`app/lab/experience-3d/page.tsx`, imports the existing `app/experience-prototype.tsx`
+  — not deleted, not linked from navigation). Approved by the user before implementation.
+- Route files: `app/experience/page.tsx` (server entry, metadata), `app/experience/fonts.ts`
+  (route-scoped Patrick Hand + Nunito via `next/font`, mirrors `/about`'s pattern),
+  `app/experience/experience.module.css` (ported 1:1 from the prototype's stylesheet,
+  `--pw-*` variables scoped to a page root class per pass-01's naming convention, not on
+  `:root`), `app/experience/experience-page.tsx` (a single client component; interaction
+  is a direct DOM/WAAPI controller inside one `useEffect`, matching the pattern already
+  used by `app/peiwen-phase-one.tsx`, not React state for animation). Chapter copy lives
+  in `lib/experience.ts`, confirmed final by Peiwen per the spec.
+- Implements: chapter data (Paris-Saclay → CUC → Osaka), sticky left column (stage +
+  souvenir shelf + arrows) with a scrolling journal page on the right, scene
+  crossfade/slide with the walking sprite crossing between chapters, first-visit keepsake
+  collect-flight animation into the shelf slot, journal page-turn, three ambient drift
+  systems (snow / ginkgo / sakura) pausing on `visibilitychange`, the pencil/hand/grab
+  custom cursor with hover-underline and click-ring feedback, and stage footprint trail
+  — all only under `pointer: fine` and skipped under reduced motion. Keyboard ← → and
+  touch swipe navigate; `prefers-reduced-motion` replaces every animation with a direct
+  switch. See `ASSET_INDEX.md` for the two documented deviations from PASS_02 §2 (scene
+  width capped at the source's native 1499px instead of a fabricated 2400px; drift
+  sprites follow the prototype's own purpose-built art instead of a keepsake-photo
+  derivative) and one from `EXPERIENCE_SPEC.md` (chapter `chips` capability tags are
+  defined in the data but intentionally unrendered, matching the shipped prototype,
+  which never displays them).
+- **Verified:** `npx tsc --noEmit` and `npx eslint .` are clean for every new/changed
+  file (lint: 0 errors, 1 pre-existing-style `@next/next/no-img-element` warning on the
+  shelf's small `<img>`, consistent with how this component already mixes CSS
+  backgrounds/`innerHTML` for its imperative animation). `next build` (Turbopack,
+  `NEXT_TELEMETRY_DISABLED=1`) succeeds; `/experience` and `/lab/experience-3d`
+  prerender as static routes. A temporary Playwright install (`npm install --no-save`,
+  per this pass's own allowance) drove real-browser checks against the dev server:
+  desktop 1440×900 and mobile 390×844 captures of all three chapters, forward/backward
+  navigation via click/keyboard/touch-swipe, `reduced-motion` emulation (instant chapter
+  switch, no drift), zero horizontal overflow at 320–1920px, zero console/page errors
+  across every route touched, and accessibility spot-checks (skip link is the first tab
+  stop, shelf `aria-label`s read "Walk to {place}, where I picked up a {keepsake}",
+  `aria-current` tracks the active chapter, the journal article is `aria-live="polite"`).
+  Evidence: `visualizations/experience-v2/`, `scripts/check-experience-v2.mjs`.
+- **Home invariance:** zero Home/About/global files were touched (`git status` in the
+  worktree shows only `app/experience/*`, new `app/lab/`, `lib/experience.ts`, new
+  `public/assets/experience/` + `public/assets/ui/`, and two new `scripts/*.mjs`), so
+  `/?static-reconstruction=1` is unchanged by construction; a live capture confirms it
+  still renders with zero console errors.
+- **Not verified / pending:** human visual approval against the prototype (screenshots
+  delivered for review); real-device touch/performance; assistive-technology reading
+  beyond the automated aria spot-checks above. Nothing in this pass was committed or
+  pushed; the branch `experience-v2` exists locally in a sibling worktree only.
+
 ## Current goal — About me page (`/about`)
 
 - **Implemented, repository checks unrun, visual approval pending.** `/about` is a hybrid
