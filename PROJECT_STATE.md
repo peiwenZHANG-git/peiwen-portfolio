@@ -11,12 +11,23 @@
 - `implemented`: working code exists; required verification or visual approval is incomplete.
 - `verified`: implementation exists and the recorded checks passed.
 
-## Current goal — Experience v2 (`/experience`, branch `experience-v2`)
+## Current goal — Experience v2 (`/experience`)
 
-- **Implemented in an isolated worktree/branch (`experience-v2`, based on
-  `visual-direction-v2` at `f619d7e`), not merged, not pushed.** Built per
+- **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
+  `b0edf06`, branch commit `53258f9`); not pushed.** Built in an isolated worktree
+  (`experience-v2`, based on `visual-direction-v2` at `f619d7e`) per
   `experience-v2/PASS_02_experience.md` against `experience-v2/experience-prototype-v2.html`
   (visual/interaction/copy source of truth) and `EXPERIENCE_SPEC.md` / `STYLE_GUIDE.md`.
+  The user tested the merged page live in-browser and signed off ("验收通过").
+- **Post-review fix:** the route wrapper (`.root` in `experience.module.css`) originally
+  used `min-height: 100svh`, which let it grow past the viewport to fit its content
+  instead of ever actually overflowing itself, so its own `overflow-y: auto` never
+  engaged and the page was silently clipped and unscrollable by the global
+  `body { overflow: hidden }` (needed for the full-viewport Home route) at 100% zoom —
+  wheel, Space and Page Down all did nothing. Fixed to `height: 100svh` plus
+  `tabIndex={0}` on the wrapper, the same route-scoped-scroller pattern `/about` already
+  uses. Reverified at 1440×900 and 1366×768 (a common laptop size): real scroll range,
+  wheel/Space/PageDown all move it, zero console errors.
 - Routing: `/experience` now serves the new illustrated page; the previous R3F/Three.js
   prototype is preserved unmodified at `/lab/experience-3d`
   (`app/lab/experience-3d/page.tsx`, imports the existing `app/experience-prototype.tsx`
@@ -62,10 +73,13 @@
   `public/assets/experience/` + `public/assets/ui/`, and two new `scripts/*.mjs`), so
   `/?static-reconstruction=1` is unchanged by construction; a live capture confirms it
   still renders with zero console errors.
-- **Not verified / pending:** human visual approval against the prototype (screenshots
-  delivered for review); real-device touch/performance; assistive-technology reading
-  beyond the automated aria spot-checks above. Nothing in this pass was committed or
-  pushed; the branch `experience-v2` exists locally in a sibling worktree only.
+- Re-verified in the main worktree after the merge: `npx eslint .`, `npx tsc --noEmit`
+  and `next build` all pass (lint: 0 errors, the same pre-existing `no-img-element`
+  warning plus one unrelated pre-existing warning in the ignored
+  `visualizations/build-saclay-contact-sheet.mjs` helper); `/experience` and
+  `/lab/experience-3d` still prerender as static routes.
+- **Not verified:** real-device touch/performance; assistive-technology reading beyond
+  the automated aria spot-checks above. **Not done:** push to the remote.
 
 ## Current goal — About me page (`/about`)
 
@@ -522,4 +536,4 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-14
+2026-09-16

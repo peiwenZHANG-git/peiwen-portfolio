@@ -3,6 +3,17 @@
 Read AGENTS.md, PROJECT_STATE.md, VISUAL_DIRECTION.md and ASSET_INDEX.md, then inspect live Git state.
 Use project-task-init before significant edits and project-delivery-check before completion.
 
+## Completed — Experience v2 (`/experience`)
+
+2026-09-16: **User-approved and merged into `visual-direction-v2`, not pushed.**
+`/experience` now serves the illustrated walk-and-collect page (Paris-Saclay → CUC →
+Osaka) built against `experience-v2/experience-prototype-v2.html`; the previous
+R3F/Three.js prototype is preserved unmodified at `/lab/experience-3d`. See
+PROJECT_STATE.md's "Experience v2" section for route files, verification evidence and
+two documented deviations from the pass plan (recorded in ASSET_INDEX.md). Do not
+regenerate the scene/keepsake/walk-cycle art or re-run the asset pipeline against
+different source resolutions without a new approved asset-production scope.
+
 ## Active direction — Home / Hero / Hub
 
 2026-09-15 update: **Static Master is approved and frozen.** Do not regenerate it or adjust
