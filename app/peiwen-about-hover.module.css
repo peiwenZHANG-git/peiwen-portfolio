@@ -1,0 +1,19 @@
+.about { position: absolute; inset: -120px 0 0; pointer-events: none; }
+.pose { position: absolute; left: 800px; top: 608px; width: 120px; height: 230px; opacity: 0; visibility: hidden; mask-image: linear-gradient(to bottom, #000 0 90px, transparent 108px); transition: opacity 220ms ease, visibility 220ms; }
+.pose img { position: absolute; inset: 0; width: 120px; height: 230px; max-width: none; }
+.patch { clip-path: inset(0 0 122px 0); }
+.head { clip-path: inset(0 0 122px 0); transform-origin: 62px 105px; transform: rotate(0deg); transition: transform 280ms ease; }
+.hit { position: absolute; left: 795px; top: 604px; width: 130px; height: 238px; border: 0; padding: 0; background: transparent; pointer-events: auto; cursor: default; }
+.hit:disabled { pointer-events: none; }
+.hit:focus-visible { outline: 1px dashed #736653; outline-offset: 2px; }
+.note { position: absolute; left: 937px; top: 546px; opacity: 0; visibility: hidden; transform: rotate(-3deg); transition: opacity 220ms ease, visibility 220ms; letter-spacing: 1.2px; }
+.note span { display: block; font-size: 27px; line-height: 34px; }
+.note span + span { font-size: 19px; line-height: 28px; color: #81786d; letter-spacing: .8px; }
+.about[data-active="true"] .pose, .about[data-active="true"] .note { opacity: 1; visibility: visible; }
+.about[data-active="true"] .head { transform: rotate(-2deg); }
+:global([data-visual="master-static"]):has(.about) :global([data-home-prompt]) { transition: opacity 220ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  .pose, .head, .note { transition-duration: 80ms; }
+  .about[data-active="true"] .head { transform: rotate(-.5deg); }
+  :global([data-visual="master-static"]):has(.about) :global([data-home-prompt]) { transition-duration: 80ms; }
+}

@@ -20,6 +20,30 @@
 - Old `public/assets/home-v2/` crops remain preserved and are not a visual foundation for this mode.
   Character removal, movement frames, light, door and animated overlays are not produced in this phase.
 
+## Phase 5.2 revision — left-preview feedback assets
+
+- The revised Phase 5.2 road and destination feedback uses CSS `clip-path` / mask layers
+  over the frozen master image. No baked left-scene overlay is used by the app. The
+  earlier `left-wake-overlay.webp` experiment is retired/unreferenced and must not be
+  reintroduced.
+- Road wake uses one master-derived layer confined to a local route ribbon. A custom
+  property animates a directional mask from Peiwen toward the road curve; there is no
+  blur, soft-focus, white outline or route icon.
+- Distant response uses two small CSS mask anchors at the church and water. No full-village
+  clarity or broad saturation treatment is used.
+
+- `design-assets/peiwen-phase5/fluffy-dandelions-source.png` is the user-supplied 1254×1254
+  RGBA sheet of four fluffy dandelions. It is source-only and is not loaded by the app.
+- `public/peiwen-phase5/fluffy-dandelion-near.png` (140×185 RGBA) and
+  `public/peiwen-phase5/fluffy-dandelion-far.png` (96×122 RGBA) are deterministic crop +
+  resize derivatives from the two selected sheet entries. No redrawing, background matting
+  or color/pose alteration was applied.
+- Existing `public/assets/world/firefly-v2.webp` is reused at small scale for the two local
+  firefly wake points. No firefly asset was modified or newly created.
+- These feedback layers are active only on `/?peiwen-phase5=1` during Left Preview. The
+  near dandelion is the sole intentional preembedded element; all other overlays have zero
+  Idle opacity and active feedback exits fully on About, Right or Idle.
+
 ## Storage rules
 
 ## Home visual truth rebuild — 2026-09-15

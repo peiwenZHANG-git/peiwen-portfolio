@@ -79,7 +79,7 @@
   `/?static-reconstruction=1` preserves `app/home-master.tsx` and its frozen CSS/art.
   Do not change scene, typography, Idle character position/scale, or rebuild the master.
   `public/peiwen-phase1/frozen-master-sha256.json` records protected asset/CSS checksums.
-- **Peiwen overlay Phase 1 implemented; manual visual approval pending.**
+- **Peiwen overlay Phase 1 approved by the user (2026-09-15).**
   `/?peiwen-phase1=1` adds ONLY left preview and return to the same Master component.
   `app/peiwen-phase-one.tsx` / CSS provide 220ms left intent, 420ms return intent,
   54px left / 8px down travel over 1080ms, three restrained alternating foot strides,
@@ -100,6 +100,137 @@
   in `visualizations/build-saclay-contact-sheet.mjs`. Human acceptance remains required
   for exposed background, same-character feeling, grounding and the overlay/master handoff.
 - The default `/` still uses the older HomeHub below; this review pass does not switch it.
+
+### Peiwen Dynamic Overlay — Phase 2
+
+- **Phase 2 manually approved by the user (2026-09-15).**
+  `/?peiwen-phase2=1` enables ONLY RIGHT_PREVIEW in the existing overlay component.
+  `/?peiwen-phase1=1` retains left-only behavior; static/default routes are unchanged.
+- Right travel is +54px / -8px, following the rising path, over 1080ms and three small
+  strides. Same original RGB sprite, same alpha cutout, same clean plate, same scale:
+  no generated/replaced/mirrored assets and no changes to the frozen master or its CSS.
+  The left timing, displacement and foot keyframes remain equivalent to Phase 1.
+- Added a transparent right intent region and ArrowRight/native-button activation;
+  return uses the existing center/Escape handoff. No visible copy or navigation changes.
+  No Opening, About, lighting/door, Entering, cross-direction optimization or mobile work.
+- `scripts/check-peiwen-phase1.mjs` passes unchanged. `scripts/check-peiwen-phase2.mjs`
+  verifies frozen asset hashes, exact initial/returned Idle equality, left pixel regression,
+  right hover/keyboard/reduced-motion behavior, and zero console/runtime errors.
+  Right Preview changes zero RGB channels outside the local character overlay area.
+  Run the Phase 1 script first to supply its comparison capture on a fresh checkout.
+- Lint passes with one pre-existing unrelated warning; typecheck and production build pass.
+  Review screenshots and the actual desktop recording: `visualizations/peiwen-phase2/`.
+  Desktop captures/detail/recording frames inspected; human acceptance of right walking,
+  exposed background, grounding, return handoff and left/right balance is still required.
+
+### Peiwen Dynamic Overlay — Phase 3
+
+- **Phase 3 manually approved by the user (2026-09-15).**
+  `/?peiwen-phase3=1` adds only ABOUT_HOVER; Phase 1/2/static/default URLs retain their behavior.
+  `app/peiwen-about-hover.tsx` and CSS are a small overlay beside the existing walk controls.
+  No new image assets, generated faces, dependencies or background edits. The same original
+  head pixels tilt -2 degrees about the neck (-0.5 degrees under reduced motion); body/feet
+  stay on the frozen plate. A head-only crop of the existing clean plate is feathered at
+  the hair base. This is a restrained back-view head tilt, not a newly drawn face turn.
+- Peiwen's invisible 130×238 hit area adds 16px around the original character. It has
+  priority over directional zones. Fine-pointer trusted movement after entering Idle
+  is required; pointerenter alone, stationary reload/return and touch do not arm About.
+  Keyboard focus supports About, Tab/blur and Escape restore Idle; clicks never navigate.
+  Directional movement is not started while About has keyboard focus. No other state added.
+- Handwritten `About me` / `Meet Peiwen.` sits at (937,546), separate from the character;
+  only the question fades to 55% opacity. Hero title remains unchanged. Entry/exit fades
+  take 220ms, head response 280ms; reduced-motion transitions take 80ms.
+- Verified: initial/returned/fresh-return Idle exactly match frozen RGB; Phase 1/2 original
+  scripts pass unchanged, and both preview captures in Phase 3 match their approved baselines.
+  Fresh reload/return with stationary cursor does not open About; fresh movement does.
+  Focus, keyboard priority, no click navigation, reduced motion, touch suppression and zero
+  console/runtime errors checked. Tests: `scripts/check-peiwen-phase3.mjs` (run Phase 1/2 first).
+  Lint/typecheck/build pass (one unrelated pre-existing lint warning); `git diff --check` passes.
+- Evidence: `visualizations/peiwen-phase3/` contains Idle/About/Return screenshots, enlarged
+  character detail and an approximately six-second actual browser recording. Desktop captures
+  inspected; same-character feeling, subtlety and handoff still await the user's approval.
+  No Opening, entering, house effects, About page work or mobile layout adaptation performed.
+
+### Peiwen Home Interaction — Phase 4
+
+- **Implemented / verified, continuous interaction aesthetic approval pending.**
+  `/?peiwen-phase4=1` opts into coordinated input on the existing overlay controller.
+  Phase 1–3 review routes remain available. No image assets, CSS visuals, endpoints,
+  character scale, clean plates, title/navigation copy or other pages changed.
+- One owner coordinates walking and About. About's component is presentation-only in
+  Phase 4; its prior controller remains for the approved Phase 3 route. Pointer, keyboard
+  and focus feed one latest intent, not a backlog of intermediate commands.
+- About-hover priority fix: a trusted fine-pointer `pointerenter` with real cursor
+  movement immediately promotes About over directional/pending intent. In coordinated
+  mode the hit area remains enterable during walking. Element movement under a
+  stationary cursor, fresh load/return arming, keyboard/focus ownership and Escape are
+  unchanged; Phase 3's separate controller keeps its approved behavior.
+- Left/right crosses use consecutive approved 1080ms/54px walks: center is a planted-foot
+  checkpoint without Idle publication, fading the walking plate or a visible stop.
+  Each short walk completes before latest intent is consumed. Into About, walking returns
+  to the original anchor and hands back to the master before the approved head response.
+  Out of About, the existing CSS head/fade transitions finish before walking starts.
+- Peiwen's existing hit area follows the moving sprite, wins over directional zones,
+  and accepts explicit fine-pointer movement during a walk as the latest intent.
+  Stationary reload/returned Idle cannot auto-arm About. Keyboard focus, arrows, Escape,
+  reduced motion and coarse-pointer/touch suppression use the same coordinated flow.
+- Verified all 12 requested transitions; initial/returned Idle and Left/Right/About
+  screenshots are pixel-identical to approved captures. Frame audit checks no teleport,
+  no simultaneous walking/About overlay visibility and no Idle stop between directions.
+  Rapid keyboard and pointer latest-intent sequences, focus/Tab/Escape, hover arming,
+  reduced motion, touch and zero console/runtime errors passed.
+- Lint/typecheck/production build and `git diff --check` passed; lint retains one unrelated
+  old warning. `scripts/check-peiwen-phase4.mjs` writes evidence to
+  `visualizations/peiwen-phase4/` (copy approved Phase 1–3 captures into `baselines/` first).
+  `--record-only` refreshes the real continuous recording without rerunning checks.
+- 2026-09-15 priority-fix regression: Phase 1–4 scripts, lint/typecheck/build and
+  `git diff --check` pass; the Phase 4 recording is Left → About → Right → About → Idle.
+- User review remains required for the continuous feeling, not individual state art.
+  No Opening, Entering, house effects, new UI, Experience changes or mobile layout work.
+
+### Left Preview Environment Feedback — Phase 5 / 5.1 / 5.2
+
+- **Phase 5 is technically approved. Phase 5.1 visibility tuning and the Phase 5.2
+  revision (progressive road wake, pre-embedded dandelions and delayed copy) are
+  implemented and technically verified. Human aesthetic approval remains pending.**
+  `/?peiwen-phase5=1` enables ONLY a quiet left-road response on the approved Phase 4
+  interaction. Phase 1–4 routes retain their exact behavior; the default/static master
+  remains unchanged.
+- User-marked long left walk: only the Phase 5 route extends LEFT_PREVIEW to -330px
+  (sprite center near master x=530) as six consecutive approved-gait short steps of about
+  55px, reusing the same cadence and foot framing as Right Preview. Phase 1–4
+  retain the approved -54px travel; Right remains +54px. Cross-direction and About return
+  still pass through the planted-foot center checkpoint.
+- About-hover interruption: trusted fine-pointer entry/movement over the hit area during a
+  walk immediately freezes the interpolated character frame, cancels the queued gait, and
+  starts the About return sequence instead of waiting for the current step to finish.
+  Because WAAPI motion does not reliably synthesize hit-area boundary events, the
+  controller polls the last trusted cursor position per animation frame against the moving
+  hit rectangle; this is the robust contact path during Peiwen's own movement.
+- Phase 5.2 revision replaces the baked wake overlay with two local CSS-mask layers over
+  the frozen master. Road wake is confined to a route ribbon and animates directional
+  reveal from Peiwen toward the first curve; distant response is limited to small
+  church/water anchors. Blur, soft-focus, broad clarity/saturation, outlines and route
+  icons are not used.
+- Two fluffy dandelion guides are used. The near seed is intentionally preembedded in Idle
+  at 4.5% opacity, then wakes in place to 70–72%; the far seed enters later at 66%. Two
+  small reused fireflies provide local wake only. `Experience / How I got here.` is visual
+  copy delayed until about 950ms. The supplied dandelion sheet is source-only; its two
+  runtime derivatives are deterministic crops/resizes. No character, copy system,
+  navigation or mobile composition was modified. No new dependency.
+- Feedback starts after the left walk begins, exits by Escape/About/Right, and reduced
+  motion retains the final road/destination/dandelion/firefly opacity with no progressive
+  reveal, drift or pulse.
+- Verified by `scripts/check-peiwen-phase5.mjs`: frozen asset/CSS hashes; underlying Frozen
+  Idle unchanged except the declared near-seed bounding box; localized left-only changes;
+  progressive reveal timing; delayed copy; full exit; Left -> About approved equality;
+  Left -> Right approved equality with no residue; touch regression and zero browser
+  errors. It writes screenshots, staged reveal frames, a continuous review and a dedicated
+  4–6s Idle -> Left -> Idle recording under `visualizations/peiwen-phase5/`.
+- Phase 1–4 scripts, lint/typecheck/production build and `git diff --check` pass; lint
+  retains the one pre-existing unrelated warning. Human review must confirm quietness,
+  illustration fit, Peiwen priority and complete restoration before this state is called
+  final.
 
 ### Historical HomeHub implementation (not the approved master)
 
