@@ -68,3 +68,20 @@
 .skipLink:focus {
   transform: none;
 }
+
+/* Pencil cursor, same as /experience (see app/experience/experience.module.css):
+   fine pointers only, system cursor is the fallback. The postcard's writing area keeps
+   the pencil too — it is a button, not a text field. */
+@media (pointer: fine) {
+  .shell {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, auto;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, auto;
+  }
+
+  .shell a,
+  .shell button,
+  .shell [role="button"] {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, pointer;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, pointer;
+  }
+}

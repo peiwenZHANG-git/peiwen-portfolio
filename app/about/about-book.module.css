@@ -630,6 +630,18 @@
   color: rgb(125 105 90 / 85%);
 }
 
+@media (pointer: fine) {
+  .sheet {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, auto;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, auto;
+  }
+
+  .sheet button {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, pointer;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, pointer;
+  }
+}
+
 .sheetBar {
   display: flex;
   gap: 12px;
