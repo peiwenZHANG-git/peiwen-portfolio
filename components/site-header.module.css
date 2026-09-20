@@ -1,0 +1,141 @@
+/* The shared site header. Ported 1:1 from experience-v2/experience-prototype-v2.html —
+ * sizes, colors and the draw-on-hover underline are copied verbatim; see
+ * app/experience/experience.module.css history (this used to live there as
+ * .siteHeader, .brand, .nav and .lang before being extracted so /about could use the same
+ * component instead of a second, drifting copy).
+ *
+ * Self-contained: values that used to come from experience.module.css's `.root` are
+ * redeclared locally on `.siteHeader` so this header renders identically no matter
+ * which route's shell it sits inside. The `--pw-hand` fallback chain picks up whichever
+ * route's next/font variable (`--exp-hand` on /experience, `--about-hand` on /about) is
+ * actually in scope.
+ */
+
+.siteHeader {
+  --pw-ink: #242224;
+  --pw-ink-soft: #716d6c;
+  --pw-ink-faint: #918e88;
+  --pw-accent: #d96a60;
+  --pw-paper: #f7f1e7;
+  --pw-hand: var(--exp-hand, var(--about-hand, "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive));
+
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 12px clamp(16px, 3vw, 40px);
+  background: linear-gradient(var(--pw-paper) 70%, rgb(247 241 231 / 0%));
+}
+
+.siteHeader a:focus-visible {
+  outline: 2px solid var(--pw-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--pw-ink);
+  text-decoration: none;
+}
+
+.brand svg {
+  flex: none;
+  width: 22px;
+  height: 34px;
+}
+
+.brandName {
+  display: block;
+  font-family: var(--pw-hand);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.brandRole {
+  display: block;
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--pw-ink-faint);
+}
+
+.nav {
+  display: flex;
+  gap: clamp(14px, 2.4vw, 40px);
+  font-family: var(--pw-hand);
+  font-size: 19px;
+}
+
+.nav a {
+  padding-bottom: 3px;
+  color: var(--pw-ink);
+  text-decoration: none;
+}
+
+.nav a[aria-current] {
+  border-bottom: 1.5px solid var(--pw-ink);
+}
+
+.lang {
+  justify-self: end;
+  font-family: var(--pw-hand);
+  font-size: 19px;
+  color: var(--pw-ink-soft);
+}
+
+.lang span {
+  color: var(--pw-accent);
+  border-bottom: 1.5px solid var(--pw-accent);
+}
+
+/* hover: a pencil line draws itself under the label */
+.drawU {
+  padding-bottom: 4px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 3.6 C18 2.2 34 4.4 52 3 S84 2.4 99 3.4' fill='none' stroke='%234A3F33' stroke-width='1.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  transition: background-size 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navCurrent.drawU {
+  background: none;
+}
+
+.drawU:hover,
+.drawU:focus-visible {
+  background-size: 100% 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawU {
+    transition: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .siteHeader {
+    grid-template-columns: 1fr auto;
+    row-gap: 8px;
+  }
+
+  .nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+    gap: 14px;
+    font-size: 17px;
+  }
+
+  .brandName {
+    font-size: 22px;
+  }
+}

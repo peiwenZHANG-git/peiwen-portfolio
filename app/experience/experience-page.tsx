@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { SiteHeader } from "@/components/site-header";
 import { chapters, intro, type ExperienceChapter } from "@/lib/experience";
 import styles from "./experience.module.css";
 
@@ -527,41 +527,7 @@ export default function ExperiencePage() {
       <a className={styles.skipLink} href="#experience-content">
         Skip to content
       </a>
-      <header className={styles.siteHeader}>
-        <Link className={styles.brand} href="/" aria-label="Peiwen Zhang home">
-          <svg viewBox="0 0 22 34" fill="none" stroke="#7d8566" strokeWidth="1.3" strokeLinecap="round" aria-hidden="true">
-            <path d="M11 33V5" />
-            <path d="M11 12c-4-1-7-4-7-8 4 0 7 3 7 7" />
-            <path d="M11 18c4-1 7-4 7-8-4 0-7 3-7 7" />
-            <path d="M11 25c-4-1-7-4-7-8 4 0 7 3 7 7" />
-            <path d="M11 9c2-2 3-4 3-7-2 1-3 3-3 6" />
-          </svg>
-          <span>
-            <span className={styles.brandName}>Peiwen Zhang</span>
-            <span className={styles.brandRole}>HCI · PRODUCT · CREATIVE TECH</span>
-          </span>
-        </Link>
-        <nav className={styles.nav} aria-label="Main">
-          <Link className={styles.drawU} href="/">
-            Home
-          </Link>
-          <Link className={`${styles.drawU} ${styles.navCurrent}`} href="/experience" aria-current="page">
-            Experience
-          </Link>
-          <Link className={styles.drawU} href="/#projects" scroll={false}>
-            Projects
-          </Link>
-          <Link className={styles.drawU} href="/#playground" scroll={false}>
-            Playground
-          </Link>
-          <Link className={styles.drawU} href="/about">
-            About
-          </Link>
-        </nav>
-        <div className={styles.lang}>
-          中 / <span>EN</span>
-        </div>
-      </header>
+      <SiteHeader current="experience" />
 
       <main id="experience-content">
         <div className={styles.intro}>

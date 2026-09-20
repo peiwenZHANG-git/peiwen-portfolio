@@ -1,0 +1,591 @@
+/* The notebook redesign — desktop only, all three spreads (① Intro, ② My Journey,
+ * ③ Beyond).
+ *
+ * Ported 1:1 from design-assets/about/about-prototype-stickers.html per
+ * design-assets/about/IMPLEMENTATION.md and layout.js: coordinates, rotation, zoom and
+ * saturation values below are copied verbatim from that data and must not be adjusted
+ * here. See PROJECT_STATE.md "Current goal — About me page" for the superseded
+ * desk-scene approach that the header/shell rules in about.module.css still serve.
+ *
+ * `.book` is the single illustration (notebook.webp) for both page panels; `.page`
+ * establishes `container-type: inline-size` so every font-size below can be written in
+ * cqw (1cqw = 1% of that panel's own width), exactly as the prototype does. Neither
+ * `.book` nor `.page` clips overflow: some stickers are intentionally positioned partly
+ * outside the page (e.g. left:-2.9%), poking off the paper on purpose.
+ */
+
+.stageWrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 1rem 1rem 2.2rem;
+}
+
+.bookStage {
+  --paper: #f7f1e7;
+  --ink: #5b5147;
+  --ink-soft: #8a8072;
+  --rose-brown: #af886c;
+  --rose-deep: #8c6a52;
+  --sage: #9caf88;
+  --dust-blue: #93a8ac;
+  --straw: #d9be7a;
+  --butter: #ead48f;
+
+  width: 100%;
+}
+
+.book {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  aspect-ratio: 1390 / 853;
+  filter: drop-shadow(0 8px 20px rgb(90 70 45 / 12%));
+}
+
+/* The notebook illustration lives on its own layer, behind `.page`, so its
+   VISUAL_UNIFY.md §3 color-correction filter doesn't also tint the real DOM content
+   (text, stickers) sitting on top of it. */
+.book::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background-image: url("/assets/about/notebook.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  filter: saturate(0.65) sepia(0.2) brightness(1.06) contrast(0.93);
+}
+
+/* Two writable page areas, measured from the notebook illustration. Do not change. */
+.page {
+  position: absolute;
+  z-index: 1;
+  top: 9%;
+  height: 81%;
+  width: 31.6%;
+  container-type: inline-size;
+}
+
+.pageLeft {
+  left: 12.4%;
+}
+
+.pageRight {
+  left: 50.9%;
+}
+
+/* ---------------------------------------------------------------- placed elements */
+
+.el {
+  position: absolute;
+}
+
+.st {
+  pointer-events: none;
+}
+
+.st img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* VISUAL_UNIFY.md §3: every sticker image, pulled back from the About-only
+     saturation build-up so /about and /experience read as one site. */
+  filter: saturate(0.7);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: var(--title-fs, 12cqw);
+  line-height: 1.05;
+  color: var(--rose-deep);
+}
+
+.sub {
+  margin-top: 2px;
+  font-family: var(--hand);
+  font-size: var(--sub-fs, 4.2cqw);
+  color: var(--ink-soft);
+}
+
+.bodyText {
+  margin: 0;
+  font-size: var(--body-fs, 3.3cqw);
+  line-height: 1.5;
+}
+
+/* photo frame */
+.polaroid {
+  position: relative;
+  padding: 6% 6% 5%;
+  background: #fbf9f4;
+  box-shadow: 0 2px 7px rgb(90 70 45 / 16%);
+}
+
+.polaroidBack {
+  position: relative;
+  aspect-ratio: 1 / 1.22;
+  background: #f6f2ea;
+  box-shadow: 0 1px 5px rgb(90 70 45 / 14%);
+}
+
+.photoInner {
+  aspect-ratio: 1 / 1.02;
+  background-image: url("/assets/about/portrait.webp");
+  background-position: center 22%;
+  background-size: cover;
+  /* VISUAL_UNIFY.md §3 */
+  filter: saturate(0.87) sepia(0.07);
+}
+
+.cap {
+  margin-top: 4%;
+  font-family: var(--hand);
+  font-size: var(--cap-fs, 4.4cqw);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* hand-drawn underline stroke asset, reused for the contact "wave" flourish too */
+.uline {
+  display: block;
+  width: 100%;
+  height: 0.42em;
+  margin-top: 2px;
+  background-image: url("/assets/about/uline.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* note card (Quick Facts) */
+.note {
+  position: relative;
+  padding: 7% 8%;
+}
+
+.note::before {
+  position: absolute;
+  inset: -3% -4%;
+  z-index: -1;
+  content: "";
+  background: var(--tint, rgb(234 212 143 / 50%));
+  mask-image: url("/assets/about/notemask.webp");
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("/assets/about/notemask.webp");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+.noteButter {
+  --tint: rgb(238 214 138 / 62%);
+}
+
+.noteBig {
+  padding: var(--note-pady, 6%) var(--note-padx, 3.5%);
+  border-radius: 3px;
+}
+
+.noteBig h3 {
+  margin: 0 0 5%;
+  text-align: center;
+}
+
+.note h3 {
+  margin: 0 0 5%;
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: var(--note-title-fs, 7.2cqw);
+  color: var(--rose-deep);
+}
+
+/* Quick Facts rows: label tag + arrow + value */
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fact-gap, 4%);
+}
+
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--fact-colgap, 1.8cqw);
+}
+
+.tag2 {
+  flex: 0 0 auto;
+  padding: var(--tag-pady, 0.5cqw) var(--tag-padx, 1.6cqw);
+  font-family: var(--hand);
+  font-size: var(--tag-fs, 5.2cqw);
+  color: var(--ink);
+  white-space: nowrap;
+  background: rgb(217 190 122 / 55%);
+  border-radius: 5px;
+}
+
+.arw {
+  flex: 0 0 auto;
+  font-size: 0.9em;
+  color: var(--ink-soft);
+}
+
+.val {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--hand);
+  font-size: var(--val-fs, 5.2cqw);
+  color: var(--ink);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 1.8cqw;
+}
+
+.chip {
+  padding: 1.6% 5%;
+  font-family: var(--hand);
+  font-size: var(--chip-fs, 3.4cqw);
+  color: var(--rose-deep);
+  white-space: nowrap;
+  background-image: url("/assets/about/pill.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* filled CV pill — currently a static label; see about-page.tsx for why it has no href */
+.cvfill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 3.6% 0;
+  font-family: var(--hand);
+  font-size: var(--cv-fs, 5.2cqw);
+  color: var(--rose-deep);
+  text-decoration: none;
+  background-image: url("/assets/about/pill.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.cvfill::before {
+  position: absolute;
+  inset: 6% 3%;
+  z-index: -1;
+  content: "";
+  background: rgb(214 166 166 / 34%);
+  border-radius: 999px;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+}
+
+.contact a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--contact-fs, 3.8cqw);
+  color: #4a423a;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.contact a:hover .wave {
+  filter: brightness(0.82);
+}
+
+.contact a:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 3px;
+}
+
+.contact svg {
+  width: 1.45em;
+  height: 1.45em;
+}
+
+.ln {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.8;
+}
+
+.fl {
+  fill: currentcolor;
+  stroke: none;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.wave {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-top: 1px;
+  background-image: url("/assets/about/uline.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ---------------------------------------------------------- spread ②/③ content blocks
+ *
+ * Element positioning/animation for all three spreads is computed inline in
+ * about-page.tsx (per-item left/top/width/rotate/zoom/saturate/z-index from layout.js,
+ * plus the enter/exit transition for the cross-spread swap — see IMPLEMENTATION.md §5).
+ * The rules below only style each block's own inner markup, ported from
+ * about-prototype-stickers.html's extracted stylesheet.
+ */
+
+/* "② My Journey" timeline */
+.tl {
+  position: relative;
+  padding-left: 7%;
+}
+
+.tl::before {
+  position: absolute;
+  top: 4%;
+  bottom: 6%;
+  left: 2.2%;
+  content: "";
+  border-left: 1.4px dashed var(--rose-brown);
+}
+
+.tlItem {
+  position: relative;
+  margin-bottom: 9%;
+}
+
+.tlItem:last-child {
+  margin-bottom: 0;
+}
+
+.tlItem::before {
+  position: absolute;
+  top: 0.5em;
+  left: -5.6%;
+  width: 7px;
+  height: 7px;
+  content: "";
+  background: var(--rose-brown);
+  border-radius: 50%;
+}
+
+.tlYear {
+  font-family: var(--hand);
+  font-size: var(--yr-fs, 9cqw);
+  line-height: 1;
+  color: var(--rose-deep);
+}
+
+.tlSchool {
+  margin-top: 2px;
+  font-weight: 700;
+  font-size: var(--sch-fs, 5.6cqw);
+}
+
+.tlMeta {
+  font-size: var(--meta-fs, 4.6cqw);
+  color: var(--ink-soft);
+}
+
+.tlTag {
+  margin-top: 2px;
+  font-family: var(--hand);
+  font-size: var(--tltag-fs, 5cqw);
+  color: var(--sage);
+}
+
+/* "② My Journey" pull-quote */
+.quote {
+  font-family: var(--hand);
+  font-size: var(--quote-fs, 6.6cqw);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* "③ Beyond" "Currently exploring" note — reuses .note/.note::before's masked-paper
+   background (see the "note card" rules above), just a different tint. */
+.noteBlue {
+  --tint: rgb(147 168 172 / 50%);
+}
+
+/* "③ Beyond" write-a-note module */
+/* The airmail postcard doubles as the write-a-note module (see PostcardNote in
+   about-page.tsx). Writing area measured from user-postcard-airmail.webp (900x566):
+   left of the dashed divider, x 55-520, y 60-510. */
+.postcard {
+  position: relative;
+}
+
+.postcardArt {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.7); /* same as every other sticker, VISUAL_UNIFY.md §3 */
+}
+
+.postcardWrite {
+  position: absolute;
+  left: 6.1%;
+  top: 10.6%;
+  width: 51.7%;
+  height: 79.5%;
+}
+
+.postcardWrite textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0 0 18% 0;
+  font-family: var(--hand);
+  font-size: 4.3cqw;
+  line-height: 1.5;
+  color: var(--ink);
+  /* The card's paper colour after the saturate(0.7) above, so the lettering
+     baked into the artwork is covered seamlessly. */
+  background: #f6efe6;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  resize: none;
+}
+
+.postcardWrite textarea::placeholder {
+  color: rgb(125 105 90 / 85%);
+}
+
+.postcardWrite textarea:focus-visible {
+  box-shadow: 0 0 0 2px var(--dust-blue);
+}
+
+.sendrow {
+  position: absolute;
+  right: 0;
+  bottom: 2%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sendbtn {
+  padding: 3px 11px;
+  font-family: var(--hand);
+  font-size: var(--send-fs, 4.8cqw);
+  color: var(--rose-deep);
+  cursor: pointer;
+  background: rgb(255 255 255 / 70%);
+  border: 1.3px solid var(--rose-brown);
+  border-radius: 14px;
+}
+
+.sendbtn:hover {
+  background: var(--butter);
+}
+
+.sendbtn:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}
+
+/* Confirmation text's visibility is driven by inline `opacity` from React state
+   (see PostcardNote in about-page.tsx), not a class toggle — CSS just supplies the fade. */
+.sent {
+  font-family: var(--hand);
+  font-size: 4.8cqw;
+  color: var(--sage);
+  transition: opacity 0.3s ease;
+}
+
+/* ---------------------------------------------------------------- cross-spread nav */
+
+.controls {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: clamp(16px, 2.6vw, 24px);
+}
+
+.navBtn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--rose-deep);
+  cursor: pointer;
+  background: var(--paper);
+  border: 1.5px solid var(--rose-brown);
+  border-radius: 50%;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: var(--butter);
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}
+
+.navBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.label {
+  min-width: 118px;
+  font-family: var(--hand);
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.dots {
+  display: flex;
+  gap: 7px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  cursor: pointer;
+  background: rgb(90 70 45 / 22%);
+  border: none;
+  border-radius: 50%;
+}
+
+.dot[aria-current="true"] {
+  width: 22px;
+  background: var(--rose-brown);
+  border-radius: 5px;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}

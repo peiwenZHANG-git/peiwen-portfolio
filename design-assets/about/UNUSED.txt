@@ -1,0 +1,14 @@
+以下文件在最终设计里没有被引用，可以不复制进 public/assets/about/：
+
+04-sticker-C3-bird-with-thread.webp
+04-sticker-C5-rice-bowl.webp
+02-sticker-A4b-paperclip-curly.webp
+04-sticker-C4-design-tools.webp
+user-hearts-column.webp
+user-leaf-c.webp
+user-leaf-e.webp
+user-leaf-g.webp
+user-leaf-h.webp
+user-peiwen.webp
+02-sticker-A5-washi-tape.webp
+user-title-thingsilove.webp

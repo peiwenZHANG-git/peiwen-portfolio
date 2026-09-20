@@ -110,6 +110,10 @@ Master 代码里另外几个值按角色单独使用，不进入色板：
 - 新出图时，必须把 Home 的 Peiwen 当作角色参考图一起提供。
 - 已决定：Projects 页使用 Home 的**背影站姿**，不采用"双手背后"版本。
 - 其他新姿势需要单独提出，经批准后才能使用。
+- **例外：About 页的"贴纸版 Peiwen"（2026-09-20 批准）。** About 是她的私人手账，允许出现换装的贴纸形象：
+  `peiwen-camera`（粉色连衣裙、拿相机）和 `peiwen-swim`（泳衣、抱泳圈）。脸、发型、发色必须与 Home 一致，
+  画风按第 3 节。**这条例外只适用于 About**，Home、Experience、Projects 仍然只用 Home 的已确认形象；
+  新增其他换装版本同样需要单独批准。
 
 ---
 
@@ -350,3 +354,13 @@ no 3D, no strong perspective, no leafy or cut-out border, no decorative text.
   的（见 ASSET_INDEX「temporary review plates」），没有独立图层可以豁免——这是已知代价，记录在案，本轮不修图。
 - **transition 段**：`sampleStorybook` 同时挂载两张 plate 并交叉淡入，两套变量各自作用在自己的 plate 上，
   过渡期间两者独立生效，不需要额外插值。
+
+---
+
+## 12. Experience × About 画风统一（2026-09-20）
+
+两页并排时不像同一个网站（整页平均饱和度 Experience 0.074、About 0.180）。用户在对比页上选定：
+两边向中间靠拢，Experience 略提饱和并加暖，About 往回收并去掉纯装饰贴纸，共用底色 `#F4EDE1`。
+全部通过 CSS 实现，不重新出图。Home（Static Master）不在范围内，仍然冻结。
+
+具体数值、作用范围和验收项见 `design-assets/VISUAL_UNIFY.md`。今后新页面（Projects 等）以这组数值为基准。
