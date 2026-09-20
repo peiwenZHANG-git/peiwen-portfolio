@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
 import { aboutAsset, type AboutAssetKey } from "./about-assets";
 import { bodyFont, handFont } from "./fonts";
@@ -14,8 +15,16 @@ import bookStyles from "./about-book.module.css";
  * the cross-spread switching UI (nav buttons/dots/keyboard, the enter/exit stagger
  * animation). See design-assets/about/IMPLEMENTATION.md and design-assets/about/layout.js
  * (the finalized design; design-assets/about/about-prototype-stickers.html is the
- * runnable reference). Desktop only — mobile layout is out of scope, see
- * IMPLEMENTATION.md §7.2.
+ * runnable reference).
+ *
+ * Phones (2026-09-20, design-assets/about/MOBILE.md): the same two-page spread, never a
+ * re-flowed single column. In landscape (height ≤ 500px) the notebook is scaled up to
+ * fill the width and cropped to its content area, so text stays readable and the page
+ * scrolls vertically; prev/next and the dots are pinned to the viewport. Portrait
+ * phones get a "turn your phone sideways" card with a "View anyway" escape. The
+ * postcard opens a larger writing dialog everywhere (see PostcardNote).
+ * All of that is CSS media queries in about-book.module.css plus the small bits of
+ * state below; desktop rendering is unchanged.
  *
  * `notebook.webp` is the whole illustrated shell (cover, pages, binder rings) for both
  * page panels; every readable element sits on top as real DOM, absolutely positioned at
@@ -555,16 +564,20 @@ function Page({
 
 /* ------------------------------------------------------------------------ write a note */
 
-/** The airmail postcard *is* the write-a-note module: the illustration sits underneath
-    and a real textarea covers the writing half (left of the dashed divider), painted in
-    the card's own paper colour so the lettering baked into the artwork is hidden and the
-    DOM placeholder takes its place. Client-only — nothing is actually sent. Clicking
-    "Send" with empty text just focuses the field; with text, it clears the field and
-    shows "Sent ✓" for ~2.2s. */
+/** The airmail postcard *is* the write-a-note module. On the page it is a button: its
+    writing half (left of the dashed divider) is covered in the card's own paper colour
+    and shows the placeholder, or the draft so far. Clicking it opens the same postcard
+    enlarged in a dialog, where the note is actually written (18px text, so iOS doesn't
+    zoom on focus). Same on desktop and phones (user decision, 2026-09-20). Client-only —
+    nothing is actually sent: "Send" with empty text just focuses the field; with text it
+    clears the draft, shows "Sent ✓" and closes after ~1.4s. Close, Escape or a click on
+    the backdrop close it too, and focus returns to the postcard. */
 function PostcardNote() {
   const [value, setValue] = useState("");
   const [sent, setSent] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const sheetTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const tapRef = useRef<HTMLButtonElement | null>(null);
   const hideTimer = useRef<number | null>(null);
 
   useEffect(
@@ -574,38 +587,94 @@ function PostcardNote() {
     [],
   );
 
+  function closeSheet() {
+    setSheetOpen(false);
+    tapRef.current?.focus();
+  }
+
   function handleSend() {
     if (!value.trim()) {
-      textareaRef.current?.focus();
+      sheetTextareaRef.current?.focus();
       return;
     }
     setValue("");
     setSent(true);
     if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
-    hideTimer.current = window.setTimeout(() => setSent(false), 2200);
+    hideTimer.current = window.setTimeout(() => {
+      setSent(false);
+      closeSheet();
+    }, 1400);
   }
+
+  useEffect(() => {
+    if (!sheetOpen) return;
+    sheetTextareaRef.current?.focus();
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSheetOpen(false);
+        tapRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sheetOpen]);
 
   return (
     <div className={bookStyles.postcard}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className={bookStyles.postcardArt} src={aboutAsset("postcard-airmail")} alt="" />
       <div className={bookStyles.postcardWrite}>
-        <textarea
-          ref={textareaRef}
+        <button
+          ref={tapRef}
+          type="button"
+          className={bookStyles.postcardTap}
           aria-label="Write a note to Peiwen"
-          placeholder="A thought, a question, or just a little hello…"
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-        />
-        <div className={bookStyles.sendrow}>
-          <span className={bookStyles.sent} style={{ opacity: sent ? 1 : 0 }}>
-            Sent &#10003;
-          </span>
-          <button type="button" className={bookStyles.sendbtn} onClick={handleSend}>
-            Send
-          </button>
-        </div>
+          aria-haspopup="dialog"
+          onClick={() => setSheetOpen(true)}
+        >
+          {value || "A thought, a question, or just a little hello…"}
+        </button>
       </div>
+      {sheetOpen &&
+        // Portalled to <body>: the placed items carry transform/zoom and the book a
+        // filter, any of which would trap a position:fixed overlay inside the notebook.
+        createPortal(
+          <div
+            className={`${bookStyles.sheet} ${handFont.variable} ${bodyFont.variable}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Write a note to Peiwen"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) closeSheet();
+            }}
+          >
+            <div className={bookStyles.sheetCard}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={bookStyles.postcardArt} src={aboutAsset("postcard-airmail")} alt="" />
+              <div className={bookStyles.sheetWrite}>
+                <textarea
+                  ref={sheetTextareaRef}
+                  aria-label="Your note"
+                  placeholder="A thought, a question, or just a little hello…"
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className={bookStyles.sheetBar}>
+              <button type="button" onClick={closeSheet}>
+                Close
+              </button>
+              <span className={bookStyles.sheetSent} style={{ opacity: sent ? 1 : 0 }} aria-live="polite">
+                Sent &#10003;
+              </span>
+              <button type="button" onClick={handleSend}>
+                Send
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
@@ -627,12 +696,17 @@ function getReducedMotionServer() {
   return false;
 }
 
+/** Must match the landscape-phone media query in about-book.module.css. */
+const PHONE_LANDSCAPE_QUERY = "(orientation: landscape) and (max-height: 500px)";
+
 export default function AboutPage() {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [renderIndex, setRenderIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, getReducedMotionServer);
   const busyRef = useRef(false);
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const [viewAnyway, setViewAnyway] = useState(false);
   const timers = useRef<number[]>([]);
 
   useEffect(
@@ -649,6 +723,11 @@ export default function AboutPage() {
       if (target === spreadIndex) return;
 
       busyRef.current = true;
+
+      // Landscape phones scroll through a spread; start the next one at its top.
+      if (window.matchMedia(PHONE_LANDSCAPE_QUERY).matches) {
+        shellRef.current?.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+      }
 
       if (reducedMotion) {
         setRenderIndex(target);
@@ -687,7 +766,7 @@ export default function AboutPage() {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null;
-      if (target && target.tagName === "TEXTAREA") return;
+      if (target && (target.tagName === "TEXTAREA" || target.closest('[role="dialog"]'))) return;
       if (event.key === "ArrowRight") goTo(spreadIndex + 1);
       if (event.key === "ArrowLeft") goTo(spreadIndex - 1);
     }
@@ -702,7 +781,13 @@ export default function AboutPage() {
     /* body keeps its global `overflow: hidden`, so the About route scrolls inside its
        own shell. tabIndex keeps that scroll container reachable for keyboard-only
        users (the axe "scrollable-region-focusable" rule). */
-    <div className={`${styles.shell} ${handFont.variable} ${bodyFont.variable}`} tabIndex={0}>
+    <div
+      ref={shellRef}
+      className={[styles.shell, handFont.variable, bodyFont.variable, viewAnyway ? bookStyles.viewAnyway : ""]
+        .filter(Boolean)
+        .join(" ")}
+      tabIndex={0}
+    >
       <a className={styles.skipLink} href="#about-content">
         Skip to content
       </a>
@@ -729,7 +814,7 @@ export default function AboutPage() {
           <div className={bookStyles.controls}>
             <button
               type="button"
-              className={bookStyles.navBtn}
+              className={`${bookStyles.navBtn} ${bookStyles.navPrev}`}
               aria-label="Previous spread"
               disabled={spreadIndex === 0 || busy}
               onClick={() => goTo(spreadIndex - 1)}
@@ -752,7 +837,7 @@ export default function AboutPage() {
             </div>
             <button
               type="button"
-              className={bookStyles.navBtn}
+              className={`${bookStyles.navBtn} ${bookStyles.navNext}`}
               aria-label="Next spread"
               disabled={spreadIndex === SPREADS.length - 1 || busy}
               onClick={() => goTo(spreadIndex + 1)}
@@ -762,6 +847,22 @@ export default function AboutPage() {
           </div>
         </div>
       </main>
+
+      {/* Portrait phones only (CSS). */}
+      <div className={bookStyles.rotate}>
+        <svg viewBox="0 0 120 90" width="120" height="90" fill="none" stroke="#8c6a52" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="14" y="10" width="34" height="62" rx="6" />
+          <path d="M27 64h8" />
+          <rect x="58" y="42" width="54" height="30" rx="6" strokeDasharray="4 4" />
+          <path d="M40 4c22-4 40 8 44 28" />
+          <path d="M78 26l6 7 6-8" />
+        </svg>
+        <p className={bookStyles.rotateTitle}>Turn your phone sideways</p>
+        <p className={bookStyles.rotateText}>This notebook reads best in landscape.</p>
+        <button type="button" className={bookStyles.rotateBtn} onClick={() => setViewAnyway(true)}>
+          View anyway
+        </button>
+      </div>
     </div>
   );
 }

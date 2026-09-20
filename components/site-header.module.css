@@ -139,3 +139,34 @@
     font-size: 22px;
   }
 }
+
+/* Landscape phones (design-assets/about/MOBILE.md): one thin row, so the header doesn't
+   eat a third of a ~340px-tall viewport. Must come after the 860px block above. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .siteHeader {
+    grid-template-columns: auto 1fr auto;
+    column-gap: 16px;
+    padding: 6px max(14px, env(safe-area-inset-right)) 6px max(14px, env(safe-area-inset-left));
+  }
+
+  .brand svg,
+  .brandRole {
+    display: none;
+  }
+
+  .brandName {
+    font-size: 19px;
+  }
+
+  .nav {
+    grid-column: auto;
+    grid-row: auto;
+    justify-content: center;
+    gap: 16px;
+    font-size: 15px;
+  }
+
+  .lang {
+    font-size: 15px;
+  }
+}
