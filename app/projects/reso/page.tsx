@@ -48,9 +48,14 @@ export default function ResoPage() {
           <p className={styles.annotation}>A promising signal. A lesson in legibility.</p>
           <a className={styles.jump} href="#results">Read the findings ↓</a>
         </div>
-        <Figure name="working-prototype" width={1600} height={879} priority alt="Reso browser speech capture behind a transparent caption and rhythm overlay">
-          The working prototype: browser speech capture with a local caption overlay.
-        </Figure>
+        <figure id="demo" className={styles.heroDemo}>
+          <video controls preload="metadata" playsInline poster="/assets/projects/reso/working-prototype.webp" aria-label="Watch Reso working prototype demonstration">
+            <source src="/assets/projects/reso/resources/reso-demo.mp4" type="video/mp4" />
+            <track kind="captions" src="/assets/projects/reso/resources/reso-demo-en.vtt" srcLang="en" label="English" default />
+            Your browser does not support embedded video. <a href="/assets/projects/reso/resources/reso-demo.mp4">Open the demo video</a>.
+          </video>
+          <figcaption><span>Watch Reso in action · 0:30 ↗</span>The working prototype: browser speech capture with a local caption overlay.</figcaption>
+        </figure>
       </header>
 
       <section className={styles.overview} aria-labelledby="overview">
@@ -108,7 +113,7 @@ export default function ResoPage() {
             <p className={styles.eyebrow}>02 / DP1 · Two prototypes</p>
             <h2>Make the idea tangible before building it.</h2>
             <p><strong>My role:</strong> I co-designed the early prototypes with Moizza, exploring a screen-based interface and an AR headset direction.</p>
-            <div className={styles.pair}>
+            <div className={`${styles.pair} ${styles.prototypePair}`}>
               <Figure name="paper-sound-blocks" width={1130} height={896} alt="Paper screen prototype with a meeting transcript and square sound blocks">Screen prototype: abstract blocks explored how to make sound visible.</Figure>
               <Figure name="paper-emotion-colours" width={1120} height={818} alt="Paper caption prototype using several text colours and an emotion legend">Emotion-colour exploration: the caption itself carries an additional cue.</Figure>
             </div>
@@ -136,16 +141,9 @@ export default function ResoPage() {
                 <p className={styles.small}>The working overlay and the controlled evaluation interface are distinct. The study compared two visual conditions using recorded clips.</p>
               </div>
             </div>
-            <div id="demo" className={styles.demo}>
-              <h3>Reso, built</h3>
-              <p>A short working-prototype recording: browser speech capture sends recognised text to the local overlay, where captions receive emotion colour and a live rhythm trace.</p>
-              <video controls preload="metadata" playsInline poster="/assets/projects/reso/working-prototype.webp" aria-label="Reso working prototype demonstration">
-                <source src="/assets/projects/reso/resources/reso-demo.mp4" type="video/mp4" />
-                <track kind="captions" src="/assets/projects/reso/resources/reso-demo-en.vtt" srcLang="en" label="English" default />
-                Your browser does not support embedded video. <a href="/assets/projects/reso/resources/reso-demo.mp4">Open the demo video</a>.
-              </video>
-              <p className={styles.small}>Edited to a 30-second product demonstration from the original local recording. The final unclassified phrase is retained because it shows a real prototype limitation.</p>
-            </div>
+            <h3>Reso, built</h3>
+            <p>The demo above shows the full flow: browser speech capture sends recognised text to the local overlay, where captions receive emotion colour and a live rhythm trace.</p>
+            <p className={styles.small}>The 30-second edit retains the final unclassified phrase because it shows a real prototype limitation.</p>
           </section>
 
           <section id="study">
@@ -165,19 +163,28 @@ export default function ResoPage() {
           <section id="results">
             <p className={styles.eyebrow}>05 / Results</p>
             <h2>Better recognition. More mixed experience.</h2>
-            <div className={styles.result}><span>50.9% <span aria-hidden="true">→</span> 63.0%</span><p>Emotion recognition accuracy<br /><strong>Approximately +12 percentage points</strong> · p &lt; .05 · medium effect</p></div>
-            <div className={styles.tableWrap}><table>
-              <caption>Team results · 18 hearing proxy participants</caption>
-              <thead><tr><th scope="col">Measure</th><th scope="col">A · Plain</th><th scope="col">B · Enriched</th><th scope="col">Finding</th></tr></thead>
-              <tbody>
-                <tr><th scope="row">Emotion accuracy</th><td>50.9%</td><td>63.0%</td><td>p &lt; .05; medium effect</td></tr>
-                <tr><th scope="row">Reaction time</th><td>3.73 s</td><td>4.21 s</td><td>Not significant</td></tr>
-                <tr><th scope="row">Raw NASA-TLX</th><td>39.1</td><td>44.1</td><td>Not significant</td></tr>
-              </tbody>
-            </table></div>
-            <p className={styles.note}>Condition B combined colour and rhythm. The accuracy difference cannot be attributed to colour alone. Neither faster responses nor reduced workload was demonstrated.</p>
-            <Figure name="emotion-results" width={1504} height={721} alt="Accuracy by emotion: the largest increases were Angry, approximately 33 percentage points, and Sad, approximately 28 percentage points">Original team chart. Angry improved by about 33 pp and Sad by about 28 pp; gains were not uniform across emotions.</Figure>
-            <Figure name="workload-results" width={1600} height={753} alt="Team NASA-TLX subscale chart comparing Conditions A and B, with higher effort and frustration means for B">Original workload breakdown. Overall Raw NASA-TLX rose from 39.1 to 44.1; the overall difference was not statistically significant.</Figure>
+            <div className={styles.resultInsight}>
+              <p className={styles.resultLabel}>Emotion-recognition accuracy</p>
+              <strong>50.9% <span aria-hidden="true">→</span> 63.0%</strong>
+              <p className={styles.resultDelta}>+12 percentage points</p>
+              <p>p &lt; .05 · medium effect</p>
+            </div>
+            <p>The combined Reso condition improved emotion-recognition accuracy. Because Condition B contained both emotion colour and the rhythm graph, the difference cannot be attributed to colour alone.</p>
+            <div className={styles.emotionHighlights} aria-label="Largest accuracy gains by emotion">
+              <p><span aria-hidden="true">↳</span> Angry <strong>+33 pp</strong></p>
+              <p>Sad <strong>+28 pp</strong></p>
+            </div>
+            <Figure name="emotion-results" width={1504} height={721} alt="Accuracy by emotion: the largest increases were Angry, approximately 33 percentage points, and Sad, approximately 28 percentage points">Original team chart. The gains were largest for Angry and Sad, but were not uniform across emotions.</Figure>
+            <p className={styles.small}><strong>Reaction time:</strong> 3.73 s → 4.21 s; the difference was not significant.</p>
+
+            <div className={styles.resultInsight}>
+              <p className={styles.resultLabel}>Raw NASA-TLX workload</p>
+              <strong>39.1 <span aria-hidden="true">→</span> 44.1</strong>
+              <p className={styles.resultDelta}>+5 points</p>
+              <p>Not significant</p>
+            </div>
+            <p><strong>Cognitive load did not improve.</strong> The largest increases were Effort (31.1 → 43.3) and Frustration (30.3 → 38.9).</p>
+            <Figure name="workload-results" width={1600} height={753} alt="Team NASA-TLX subscale chart comparing Conditions A and B, with higher effort and frustration means for B">Original workload breakdown. Overall Raw NASA-TLX increased, but the difference was not statistically significant.</Figure>
             <h3>What failed · The graph asked too much of people</h3>
             <p>Emotion colour was generally described as helpful. The rhythm graph was often confusing or distracting: people had trouble understanding what it represented and how to read it. Adding a signal did not automatically make the interface easier to use.</p>
             <p>Qualitative feedback helps explain this tension, but it does not isolate the causal effect of either visual feature.</p>
@@ -186,12 +193,14 @@ export default function ResoPage() {
           <section id="iteration">
             <p className={styles.eyebrow}>06 / Feedback → iteration</p>
             <h2>A graph needs a way in.</h2>
-            <dl className={styles.iteration}>
-              <div><dt>Feedback</dt><dd>The rhythm graph lacked clear reference points and was difficult to interpret.</dd></div>
-              <div><dt>My revision</dt><dd>I added clearer labels and a visible scale to help users interpret changes in voice intensity and rhythm.</dd></div>
-              <div><dt>What remains to test</dt><dd>Whether the revised graph is easier to understand and less distracting. The reported evaluation does not establish the revised version’s effectiveness.</dd></div>
-            </dl>
-            <p className={styles.small}>The revision is documented here from my confirmed contribution. A verified before/after screenshot is still needed; the images above show earlier project material.</p>
+            <ol className={styles.iteration}>
+              <li><span>DP1 · Abstract blocks</span><p>The equaliser-like blocks were difficult to understand as a representation of volume.</p></li>
+              <li><span>DP2 · Rhythm graph</span><p>The graph made the signal more continuous, but evaluation participants still found it confusing or distracting.</p></li>
+              <li><span>Peiwen’s revision · Label + scale</span><p>I added clearer labels and a visible scale so changes in voice intensity and rhythm were easier to interpret.</p></li>
+            </ol>
+            <p className={styles.pencilNote}><span aria-hidden="true">↳</span> Give the signal a way in.</p>
+            <p>The next question is whether the revised graph is easier to understand and less distracting. The reported evaluation does not establish the revised version’s effectiveness.</p>
+            <p className={styles.small}><strong>Before/after image pending.</strong> No verified post-study screenshot is available, so this iteration is documented in words only.</p>
           </section>
 
           <section id="reflection">

@@ -15,6 +15,7 @@
 
 ### Reso detail route — 2026-09-21
 
+- Status: verified; Case Study v1 complete.
 - Implemented: `/projects/reso` is a static Server Component case study with metadata,
   existing Patrick Hand / Nunito fonts, warm-paper styling, route-scoped scrolling,
   semantic sections, a chapter index and native full-size image links. Files:
@@ -28,6 +29,10 @@
   analysis summary. Study copy includes a second inline experiment link. All new-tab
   links use `noopener noreferrer`; the video does not autoplay, retains controls and
   audio, and provides an English WebVTT caption track.
+- Refined: the hero prototype poster is the native inline demo player; results follow
+  insight then evidence for accuracy and workload; and the rhythm iteration records the
+  DP1 blocks, DP2 graph and Peiwen's label/scale revision as a restrained pencil timeline.
+  No visual before/after is shown because a verified post-study screenshot is unavailable.
 - Assets: ten compressed PDF figures (about 312 KiB), a 964 KiB H.264/AAC demo derived
   from the local MOV, byte-identical final paper/presentation PDFs, and a public HTML
   analysis derivative. Provenance is documented in ASSET_INDEX.md and
@@ -38,13 +43,13 @@
 - Verified: lint, typecheck and production build; `/projects/reso` prerenders statically.
   `scripts/check-reso.mjs` checks desktop 1440px, mobile 390px and reduced motion,
   responsive layout, image decoding, secure links, resource responses, video metadata
-  and playback, caption loading, section/document overflow, skip-link and keyboard
+  and playback, caption loading, video keyboard focus, section/document overflow, skip-link and keyboard
   scrolling, internal anchors, return/entry navigation, evidence-boundary copy and zero
   observed console/page/HTTP errors. The aggregate analysis resource is checked at
   desktop/mobile widths for overflow and excluded identifiers. Captures: ignored
   `visualizations/reso/`.
-- Pending: human visual review, physical-device/assistive-technology testing, AR/WoZ
-  imagery, verified graph before/after screenshot and exact DP1/DP2 month ranges.
+- Optional follow-up: physical-device/assistive-technology testing, AR/WoZ imagery,
+  a verified graph before/after screenshot and exact DP1/DP2 month ranges.
   No claim of a follow-up evaluation of the graph revision. No deployment performed.
 
 ### Existing attic implementation

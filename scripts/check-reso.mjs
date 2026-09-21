@@ -19,7 +19,7 @@ try {
     await page.addStyleTag({ content: "nextjs-portal{display:none!important}" });
     assert.match(await page.title(), /Reso/);
     assert.equal(await page.locator("h1").count(), 1);
-    assert.equal(await page.locator("main img").count(), 10);
+    assert.equal(await page.locator("main img").count(), 9);
     assert.deepEqual(await page.locator("section[aria-labelledby='materials-title'] a").allTextContents(), [
       "Watch demo ↗", "Try the experiment ↗", "Project report ↗", "Presentation ↗", "Analysis report ↗",
     ]);
@@ -28,17 +28,17 @@ try {
     const video = page.locator("video");
     assert.equal(await video.getAttribute("autoplay"), null);
     assert.equal(await video.getAttribute("controls"), "");
+    assert.match(await page.locator("#demo figcaption").innerText(), /Watch Reso in action · 0:30/);
     assert.equal(await video.locator('track[kind="captions"][srclang="en"]').count(), 1);
     await video.evaluate(element => element.readyState >= 1 ? undefined : new Promise(resolve => element.addEventListener("loadedmetadata", resolve, { once: true })));
     assert.deepEqual(await video.evaluate(element => [Math.round(element.duration), element.videoWidth, element.videoHeight]), [30, 1280, 766]);
     if (name === "desktop") {
-      const currentTime = await video.evaluate(async element => {
+      await video.evaluate(async element => {
         element.muted = true;
         await element.play();
-        await new Promise(resolve => setTimeout(resolve, 500));
-        element.pause();
-        return element.currentTime;
       });
+      await page.waitForFunction(() => document.querySelector("video")?.currentTime > 0.2, undefined, { timeout: 5000 });
+      const currentTime = await video.evaluate(element => { element.pause(); return element.currentTime; });
       assert.ok(currentTime > 0.2, "embedded demo plays");
       await page.waitForFunction(() => document.querySelector("video track").readyState === 2);
       assert.equal(await video.locator("track").evaluate(element => element.track.cues.length), 7);
@@ -60,6 +60,7 @@ try {
     assert.equal(await page.evaluate(() => document.activeElement.textContent), "Skip to case study");
     await page.keyboard.press("Enter");
     assert.equal(await page.evaluate(() => document.activeElement.id), "reso-content");
+    assert.equal(await video.evaluate(element => { element.focus(); return document.activeElement === element; }), true);
     for (const id of ["gap", "prototypes", "system", "study", "results", "iteration", "reflection"]) {
       await page.locator(`#${id}`).scrollIntoViewIfNeeded();
       await page.locator(`#${id}`).locator("img").evaluateAll(async images => {
@@ -78,7 +79,11 @@ try {
     assert.ok(await page.locator("main").evaluate(el => el.parentElement.scrollTop) > 100, "keyboard can scroll the route");
     assert.match(await page.locator("#study").innerText(), /18 hearing proxy participants/);
     assert.match(await page.locator("#results").innerText(), /cannot be attributed to colour alone/);
+    assert.match(await page.locator("#results").innerText(), /Angry \+33 pp/);
+    assert.match(await page.locator("#results").innerText(), /Sad \+28 pp/);
+    assert.match(await page.locator("#results").innerText(), /Cognitive load did not improve/);
     assert.match(await page.locator("#iteration").innerText(), /does not establish/);
+    assert.match(await page.locator("#iteration").innerText(), /Before\/after image pending/);
     assert.equal(await page.locator('img:not([alt]), img[alt=""]').count(), 0);
     const brokenAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(a => !document.getElementById(a.hash.slice(1))).map(a => a.hash));
     assert.deepEqual(brokenAnchors, []);
