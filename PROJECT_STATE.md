@@ -13,6 +13,49 @@
 
 ## Projects attic demo (`/projects`)
 
+### Arm-Swing VR Locomotion detail route — 2026-09-21
+
+- Status: verified; Case Study v1 implemented for direct review at
+  `/projects/arm-swing-vr-locomotion`. The Projects attic overview and its interaction
+  remain unchanged.
+- Implemented: a static Server Component case study reusing the Reso/About fonts, shell,
+  spacing, materials treatment and responsive rules. The story follows Explore → Choose →
+  Map body movement → Build → Debug → Test → Reflect, with restrained motion/direction
+  diagrams and no new dependency or client-side component.
+- Attribution: explicitly separates Peiwen's individual locomotion concept, custom Unity
+  implementation, integration, runtime debugging, formative testing and synthesis from the
+  course-provided parkour environment, coin course, scoring and base task framework.
+- Interaction account: either index trigger is a movement clutch; combined controller-speed
+  magnitude feeds a quadratic curve and speed cap; the HMD forward vector supplies continuous
+  3D direction; release uses damping. The page explicitly rejects a separate walking/flying
+  state or arms-open switch. Final scene parameters shown are exponent 2.0, sensitivity 12,
+  max speed 15 and damping 5.
+- Engineering evidence: high-speed collider-trigger misses lead to coin and banner proximity
+  fallbacks. The section is presented as a first-class runtime debugging story rather than a
+  footnote.
+- Evaluation: three formative runs are labelled, including the designer's own run. Participant
+  times, coin counts and single-item ratings are shown as directional observations; the page
+  states there was no baseline, control condition, validated scale or statistical test and makes
+  no causal sickness, presence, enjoyment or speed-accuracy claim.
+- Materials: a responsive 76-second H.264/AAC demo, final presentation PDF, course archive and
+  public APK link. The public Unity repository is intentionally omitted as a primary CTA pending
+  attribution, README and generated-file cleanup.
+- Assets: ten displayed WebP figures plus the demo poster, including three gameplay frames,
+  a verified-parameter speed plot, Unity settings, banner/coin edge cases, a public testing photo
+  and two anonymized result tables. Provenance is recorded in ASSET_INDEX.md and the asset-local
+  README; no Unity repository dump, generated build artifacts or unpublished research material ships.
+- Verified: lint, typecheck, production build and `git diff --check`; the route prerenders
+  statically. `scripts/check-arm-swing.mjs` passed against the production server at 1440px,
+  390px and reduced motion, covering demo metadata/playback, local and external resource
+  responses, secure new-tab links, keyboard skip/video focus, internal anchors, image decoding,
+  responsive overflow, scaffold/evidence boundaries, return navigation and zero observed
+  console/page/HTTP errors. Captures are ignored under
+  `visualizations/arm-swing-vr-locomotion/`.
+- Testing-photo status: Peiwen confirmed that the pictured classmate permits public portfolio use;
+  the existing public testing photograph is retained without anonymization.
+- Optional follow-up: physical-device/assistive-technology testing, a controlled joystick
+  comparison and repository cleanup before exposing code.
+
 ### Reso detail route — 2026-09-21
 
 - Status: verified; Case Study v1 complete.

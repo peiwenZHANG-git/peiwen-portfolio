@@ -1,5 +1,20 @@
 # Asset Index
 
+## Arm-Swing VR Locomotion case study
+
+`public/assets/projects/arm-swing-vr-locomotion/` contains the portfolio-ready evidence for
+`/projects/arm-swing-vr-locomotion`: a demo poster, three gameplay frames, a redrawn speed
+curve using the verified final Unity scene parameters, a Unity Inspector capture, banner and
+coin edge-case captures, one public testing photograph, and two anonymized result tables.
+Detailed source mapping and the course-scaffold attribution boundary are recorded in the
+directory's `README.md`.
+
+`resources/` contains a 1280px H.264/AAC derivative of Peiwen's supplied 76-second demo and
+a byte-identical copy of the supplied final presentation PDF. The course archive and APK remain
+external links. The public Unity repository is not copied or promoted because its README,
+starter-code attribution, generated files and history need cleanup. No raw participant data,
+unpublished notes or Unity build artifacts are included.
+
 ## Reso case study
 
 `public/assets/projects/reso/` contains ten compressed, original PDF figures for
