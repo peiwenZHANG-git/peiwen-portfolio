@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reso - Public analysis summary</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3e9; --ink:#3b3837; --soft:#625d56; --rule:#d6cec0; --sage:#59664e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font: 16px/1.7 system-ui, sans-serif; }
+    main { width: min(850px, calc(100% - 40px)); margin: 0 auto; padding: 64px 0 80px; }
+    h1, h2 { font-weight: 500; line-height: 1.2; text-wrap: balance; }
+    h1 { margin: 10px 0 18px; font-size: clamp(36px, 6vw, 58px); }
+    h2 { margin: 44px 0 14px; font-size: 27px; }
+    p { max-width: 72ch; }
+    a { color: inherit; text-underline-offset: 4px; }
+    a:focus-visible { outline: 2px solid #705544; outline-offset: 5px; }
+    .eyebrow { margin: 0; color: var(--soft); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    .notice { margin: 28px 0; padding: 16px 0 16px 20px; border-left: 3px solid #a5ae97; }
+    .result { margin: 30px 0; color: var(--sage); font-size: clamp(34px, 6vw, 54px); line-height: 1.2; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    caption { padding: 0 0 12px; color: var(--soft); text-align: left; }
+    th, td { padding: 12px 10px 12px 0; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+    th { font-size: 14px; }
+    footer { margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--rule); color: var(--soft); }
+    @media (max-width: 600px) { main { width: min(100% - 32px, 850px); padding-top: 36px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Reso · Design Project 2 · 2026</p>
+    <h1>Public analysis summary</h1>
+    <p>This is a privacy-safe derivative of the final local analysis report. Individual participant identifiers, responses, and per-participant charts are intentionally omitted.</p>
+    <p class="notice"><strong>Study boundary:</strong> 18 hearing proxy participants aged 18-30 completed both conditions. The results do not establish improvements for Deaf or Hard-of-Hearing users.</p>
+
+    <h2>Conditions</h2>
+    <p><strong>Condition A:</strong> plain captions. <strong>Condition B:</strong> emotion-coloured captions plus a live voice-intensity graph. Because Condition B combined both features, the study cannot attribute the difference to colour alone.</p>
+
+    <h2>Aggregate results</h2>
+    <p class="result">50.9% → 63.0%</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Group-level results, N = 18</caption>
+        <thead><tr><th>Measure</th><th>A · Plain</th><th>B · Reso</th><th>Paired comparison</th></tr></thead>
+        <tbody>
+          <tr><th>Emotion accuracy</th><td>50.9% (SD 20.2)</td><td>63.0% (SD 24.6)</td><td>t(17) = -2.247; p &lt; .05; d = -0.530</td></tr>
+          <tr><th>Reaction time</th><td>3.73 s (SD 2.11)</td><td>4.21 s (SD 3.54)</td><td>p = .589; not significant</td></tr>
+          <tr><th>Raw NASA-TLX</th><td>39.1 (SD 15.5)</td><td>44.1 (SD 17.5)</td><td>p = .264; not significant</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Accuracy by emotion</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>Percentage correctly recognised</caption>
+        <thead><tr><th>Emotion</th><th>A · Plain</th><th>B · Reso</th><th>Difference</th></tr></thead>
+        <tbody>
+          <tr><th>Happy</th><td>66.7%</td><td>72.2%</td><td>+5.6 pp</td></tr>
+          <tr><th>Angry</th><td>27.8%</td><td>61.1%</td><td>+33.3 pp</td></tr>
+          <tr><th>Sad</th><td>33.3%</td><td>61.1%</td><td>+27.8 pp</td></tr>
+          <tr><th>Surprised</th><td>77.8%</td><td>72.2%</td><td>-5.6 pp</td></tr>
+          <tr><th>Neutral</th><td>77.8%</td><td>83.3%</td><td>+5.6 pp</td></tr>
+          <tr><th>Fearful</th><td>22.2%</td><td>27.8%</td><td>+5.6 pp</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Interpretation</h2>
+    <p>Emotion recognition accuracy increased under the combined interface. Reaction time and workload did not show statistically significant improvements. Qualitative feedback described emotion colour as generally helpful, while the rhythm graph was often confusing or distracting.</p>
+    <p>The study used muted, single-speaker clips and a limited emotion set. It did not include DHH co-design or a real meeting context. A later rhythm-graph revision added clearer labels and a visible scale, but that revision was not evaluated in the reported study.</p>
+
+    <footer><a href="/projects/reso">Return to the Reso case study</a></footer>
+  </main>
+</body>
+</html>

@@ -1,5 +1,18 @@
 # Asset Index
 
+## Reso case study
+
+`public/assets/projects/reso/` contains ten compressed, original PDF figures for
+`/projects/reso`: working prototype, two caption examples, two paper prototypes,
+control panel, Conditions A/B, emotion results and workload results. Provenance,
+slide/image-object mapping and limits are in that directory's `README.md`.
+`public/assets/projects/reso/resources/` additionally contains a responsive-ready
+30-second MP4 demo with English captions, byte-identical final paper and presentation
+PDFs, and a privacy-safe aggregate HTML analysis summary. The source analysis HTML is
+not shipped because it includes participant identifiers and individual-level data.
+AR/WoZ photographs and a verified rhythm-graph before/after pair are not available
+in the selected material. No replacement evidence was generated.
+
 ## Active Home master
 
 - **Frozen after user approval (2026-09-15): do not rerun the master preparation script

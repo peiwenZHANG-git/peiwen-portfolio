@@ -11,6 +11,89 @@
 - `implemented`: working code exists; required verification or visual approval is incomplete.
 - `verified`: implementation exists and the recorded checks passed.
 
+## Projects attic demo (`/projects`)
+
+### Reso detail route — 2026-09-21
+
+- Implemented: `/projects/reso` is a static Server Component case study with metadata,
+  existing Patrick Hand / Nunito fonts, warm-paper styling, route-scoped scrolling,
+  semantic sections, a chapter index and native full-size image links. Files:
+  `app/projects/reso/page.tsx` and `reso.module.css`.
+- Content: hero/overview, gap/design space, DP1 prototypes and first study, scope
+  decision, working system, evaluation, results/what failed, personal revision,
+  reflection/limitations. Explicitly separates Peiwen's contribution and team outcomes,
+  hearing proxy participants and intended DHH context, and combined-condition effects.
+- Project materials: five restrained text links expose a 30-second embedded MP4 demo,
+  the live experiment, final paper, final presentation and privacy-safe aggregate
+  analysis summary. Study copy includes a second inline experiment link. All new-tab
+  links use `noopener noreferrer`; the video does not autoplay, retains controls and
+  audio, and provides an English WebVTT caption track.
+- Assets: ten compressed PDF figures (about 312 KiB), a 964 KiB H.264/AAC demo derived
+  from the local MOV, byte-identical final paper/presentation PDFs, and a public HTML
+  analysis derivative. Provenance is documented in ASSET_INDEX.md and
+  `public/assets/projects/reso/README.md`. The source analysis HTML is excluded because
+  it contains participant names and individual-level results; no raw research data ships.
+- Projects integration is one direct reading link below the attic introduction.
+  Existing demo cards, dialog, clothesline, art and project data are preserved.
+- Verified: lint, typecheck and production build; `/projects/reso` prerenders statically.
+  `scripts/check-reso.mjs` checks desktop 1440px, mobile 390px and reduced motion,
+  responsive layout, image decoding, secure links, resource responses, video metadata
+  and playback, caption loading, section/document overflow, skip-link and keyboard
+  scrolling, internal anchors, return/entry navigation, evidence-boundary copy and zero
+  observed console/page/HTTP errors. The aggregate analysis resource is checked at
+  desktop/mobile widths for overflow and excluded identifiers. Captures: ignored
+  `visualizations/reso/`.
+- Pending: human visual review, physical-device/assistive-technology testing, AR/WoZ
+  imagery, verified graph before/after screenshot and exact DP1/DP2 month ranges.
+  No claim of a follow-up evaluation of the graph revision. No deployment performed.
+
+### Existing attic implementation
+
+- Implemented: isolated server route reuses About's Patrick Hand / Nunito font instances,
+  scoped palette and navigation styles. Home, Experience, About and global styles are unchanged.
+  Existing navigation on those routes still points to the historical Projects hash; open
+  `/projects` directly for this demo. Navigation integration is deferred to the main-site owner.
+- `app/projects/` contains the page, clothesline, card/clip, native dialog preview and
+  route CSS; `lib/projectsData.ts` contains four demo categories plus a WIP note. Role,
+  year and tools are explicit placeholders. Case-study text is visibly pending and inert.
+- Pointer events provide mouse drag with bounded, frame-time-adjusted inertia; native
+  horizontal scrolling provides trackpad/touch support. Arrow/Home/End keys and tab focus
+  expose all cards. A native modal dialog traps focus; WAAPI scales the paper from/to its
+  source card. ESC/Close preserve scroll position and restore focus. Reduced motion skips
+  inertia, zoom and decorative motion. No application dependency was added.
+- Artwork: source reference and a cleaned derivative are in `public/assets/projects/`,
+  with provenance in its README. Imagegen removed baked upper UI/cards to prevent duplicate
+  content; lower rope and scene remain decorative. This is a generative edit, not a
+  pixel-identical clean plate. Background uses cover/center; mobile crops the scene and
+  gives each card 76vw. Project images reuse existing About illustrations.
+- Visual harmony pass: shared card/preview image treatment reduces saturation and contrast,
+  adds a subtle paper texture, and warms the paper field. Tags use the existing handwriting
+  font; clips have irregular silhouettes and the rope uses two light uneven strokes. WIP
+  is a text-only note. Existing illustration subjects/brushwork remain placeholders; this
+  styling pass does not claim a fully matched illustration set. Browser regression, lint,
+  typecheck and build passed again; visual approval remains pending.
+- Verified on 2026-09-18: lint, typecheck, production build, and browser interaction checks
+  (mouse, wheel, emulated touch, keyboard bounds, modal focus/ESC/Close/position retention,
+  reduced motion, no horizontal document overflow at 320–1920px, no observed runtime/HTTP
+  errors). Runnable check: `scripts/check-projects.mjs`; screenshots: `visualizations/projects/`.
+- Pending: human visual approval and physical-device touch testing. The original reference
+  has smaller, more numerous paper pieces; this demo uses larger legible cards and a gentler
+  rope curve. The lower rope is intentionally non-interactive. No full case studies.
+- Tunable values: project images/copy/rotation/size in `lib/projectsData.ts`; line height,
+  gaps/card dimensions/mobile width in `projects.module.css`; drag damping in
+  `project-clothesline.tsx`; preview durations in `project-preview.tsx`.
+- Card-scale correction: desktop cards now span 150–235px (previously 190–320px),
+  with smaller covers and a compact layout below 800px viewport height. Desktop captures
+  at 1440×900 and 1440×760 show the character's head unobstructed. Mobile keeps the 76vw
+  swipe target with shorter covers. All cards may fit on wide screens; dragging is tested
+  at 1024px where the line overflows. Visual approval remains pending.
+- Lower-clothesline style match (2026-09-21): card backgrounds now use a lightweight
+  transparent blank-paper asset generated from the user's lower-row reference. Removed
+  the scalloped inner paper, CSS frame/shadow and visible sequence numbers; centered the
+  handwritten labels with looser spacing, and replaced geometric pegs with pencil-outline
+  SVG clips. The compact dimensions and interactive behavior are preserved. Cover art
+  remains placeholder imagery; final visual acceptance is pending.
+
 ## Current goal — About me page (`/about`)
 
 - **Implemented, repository checks unrun, visual approval pending.** `/about` is a hybrid
@@ -597,4 +680,4 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-14
+2026-09-21
