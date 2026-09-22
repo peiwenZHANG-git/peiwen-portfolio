@@ -13,6 +13,15 @@
 
 ## Projects attic demo (`/projects`)
 
+### Tangram detail route — 2026-09-22
+
+- Status: verified; an independent Featured-style tangible interaction and digital fabrication case study is available at `/projects/tangram`. The Projects attic and existing routes remain unchanged.
+- Context and attribution: 2026, seven-week Tangible Interface / Digital Fabrication coursework at Universite Paris-Saclay. Peiwen completed the project independently.
+- Story: the page follows fabrication decisions rather than weekly reports: modular geometry, an early dumbbell connector, reduced test units, 0.4 mm selection, a topology failure, three connector concepts, a double-anchor revision, planning for nine sets / 144 pieces, 500 × 500 mm border filling and exhibition play.
+- Evidence boundary: the project documents CAD, 3D printing and physical prototyping. It makes no claim about electronics, sensors, embedded systems, software interaction, formal mechanical validation or a user study. The final requirement is 500 × 500 mm; the earlier 1 m² brief is not presented as final.
+- Materials: sixteen WebP derivatives from original embedded images across the Week 2–7 and exhibition PDFs, plus a supplied 1536 × 2048 exhibition photograph for the Hero. They cover final installation, CAD, physical tests, production, layout and four puzzle prompts. A secure external link exposes the complete Week 1–7 fabrication log; the original PDFs and their full-page layouts are not published.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-tangram.mjs` passed against the production server at 1440px, 390px and reduced motion, covering image decoding, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/`.
+
 ### Chess detail route — 2026-09-22
 
 - Status: verified; a Short HCI Interaction Concept Case Study is available at `/projects/chess`. The Projects attic and all existing routes remain unchanged.

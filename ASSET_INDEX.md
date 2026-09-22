@@ -1,5 +1,9 @@
 # Asset Index
 
+## Tangram case study
+
+`public/assets/projects/tangram/` contains sixteen WebP derivatives extracted from embedded source images in Peiwen's Week 2–7 and Tangible Interface Show PDFs, plus one supplied 1536 × 2048 exhibition photograph. The set records CAD geometry, connector designs and physical tests, production/layout evidence, the final 500 × 500 mm board, exhibition image and four puzzle prompts. Low-resolution process photographs are displayed only in smaller evidence placements. The source PDFs, their page layouts and all non-selected images are not published.
+
 ## Chess case study
 
 `public/assets/projects/chess/` contains eight selected WebP derivatives from original Figma Frame exports: the intent-first homepage, onboarding question, low-fidelity flow, duration selection, Game History, board controls, speech-recognition state and parallel-media state. The low-fidelity figure is a compact presentation crop that retains the complete flow, branches, arrows and node labels. They are the portfolio evidence for `/projects/chess`; no screenshot of the Figma canvas, raw research material, chess-engine code or production implementation is published. The original Figma prototype and YouTube demo remain external links.
