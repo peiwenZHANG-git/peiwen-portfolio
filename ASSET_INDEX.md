@@ -312,3 +312,16 @@ Birds and butterflies are not CUC-specific. Use them sparsely across the journey
 ## Composition references
 
 `design-assets/references/experience-1.jpg` through `design-assets/references/experience-4.jpg`, plus `design-assets/references/house.jpg` and `design-assets/references/hub.jpg`, are reference-only images. They are kept in the private repository so another local coding agent can understand composition intent without chat history. They must not be treated as runtime assets or copied literally.
+
+## Maze of Wishes case study
+
+`public/assets/projects/maze-of-wishes/` contains eleven selected WebP assets for
+`/projects/maze-of-wishes`: a real classroom demo poster, early storyboard, phone-tilt tutorial,
+start screen, gameplay overview, potion/cake/success/timeout states, final illustrated map and Tiled
+authoring view. The directory-local `README.md` records source mapping and evidence limits.
+
+`resources/` contains a 1280×720 H.264 derivative of the supplied 12.73-second HEVC demo, a
+byte-identical copy of the early storyboard PDF and the supplied final project documentation DOCX.
+The public set excludes the source archive, compiled output and raw project workspace. The archived
+collision mask is not published because it does not fully match the final demonstrated build and
+would overstate the available implementation evidence.

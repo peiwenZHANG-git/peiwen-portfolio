@@ -13,6 +13,18 @@
 
 ## Projects attic demo (`/projects`)
 
+### Maze of Wishes detail route — 2026-09-22
+
+- Status: verified; Case Study v1 implemented at `/projects/maze-of-wishes`. The Projects attic overview and its interaction remain unchanged.
+- Implemented: a static Server Component case study reusing the existing About/case-study shell, fonts, warm-paper palette, chapter navigation, materials treatment and responsive rules. The story follows keyboard concept → phone tilt → sensor pipeline → mapping → game loop → collision → classroom demo → reflection. No dependency or client-side component was added.
+- Attribution: identifies Maze of Wishes as Peiwen's individual 2025 project and states that she designed and implemented the complete prototype independently: concept, interaction design, sensor mapping, UI/game design, Java implementation, debugging and live demo.
+- Interaction account: phone gravity data passes through ZigSim and OSC/UDP to Java, then through `TiltController` into predicted movement, map checks and JavaFX rendering. The page documents the verified gx/gy directions, Space calibration, threshold/bias/bounded-speed treatment, mainly single-axis movement and unused gz value without inventing a parameter rationale.
+- Product scope: tutorial, Easy Mode, 90-second timer, cake-gated goal, win/fail states, potion boost and supporting feedback are shown. Hard Mode is explicitly menu-only; multiple levels and other abandoned storyboard ideas are not claimed.
+- Evidence boundary: the final demonstrated build prevented wall traversal through a map-based collision approach, but the archived semantic mask does not fully match that build and is not published as proof of robust pixel-perfect collision. The classroom recording is labelled as a working live demonstration, not a user study or validated result.
+- Materials: a 13-second browser-compatible H.264 demo, early storyboard PDF and supplied project documentation DOCX. Eleven selected WebP assets cover the demo setup, concept shift, tutorial, map authoring, game states and final map. No raw source archive, participant data or unselected research material ships.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-maze-of-wishes.mjs` passed against the production server at 1440px, 390px and reduced motion, covering video metadata/play/pause, secure materials links and resource responses, keyboard skip/video focus, internal anchors, decoded images, Back to top/Projects navigation, responsive overflow, evidence boundaries and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/maze-of-wishes/`.
+- Optional follow-up: real-device/assistive-technology testing, documented user evaluation and a final collision-mask archive that matches the demonstrated build.
+
 ### Arm-Swing VR Locomotion detail route — 2026-09-21
 
 - Status: verified; Case Study v1 implemented for direct review at
