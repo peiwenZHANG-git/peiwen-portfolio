@@ -13,6 +13,15 @@
 
 ## Projects attic demo (`/projects`)
 
+### ZOO Desk Organizer detail route — 2026-09-22
+
+- Status: verified; a short individual product-fabrication case study is available at `/projects/zoo-desk-organizer`. The Projects attic and existing routes remain unchanged.
+- Context and attribution: 2026, six-week CAD & 3D Printing coursework at Universite Paris-Saclay. Peiwen designed and prototyped the project independently.
+- Story: the route follows a desk-organizer ecosystem through its motivation, product family, chainmail clearance failure and revision, large-print failure, animal-shaped functional objects, storage fit and final system.
+- Evidence boundary: it documents CAD, 3D printing and physical product prototyping, without claims of electronics, sensors, software interaction, formal user research, quantified mechanical performance, production manufacturing or retained CAD source files.
+- Materials: ten selected WebP derivatives from the public project documentation archive. The original GitLab README is linked securely; the source archive, STL/STEP/3MF files and Fusion source model are not published or claimed to be retained.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. Production browser verification at 1440px, 390px and reduced motion covered decoded images, secure external link markup, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. `scripts/check-zoo-desk-organizer.mjs` records the repeatable Node/Playwright check.
+
 ### Tangram detail route — 2026-09-22
 
 - Status: verified; an independent Featured-style tangible interaction and digital fabrication case study is available at `/projects/tangram`. The Projects attic and existing routes remain unchanged.

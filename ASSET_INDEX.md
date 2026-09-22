@@ -1,5 +1,9 @@
 # Asset Index
 
+## ZOO Desk Organizer case study
+
+`public/assets/projects/zoo-desk-organizer/` contains ten compressed WebP derivatives selected from Peiwen's public six-week documentation archive: a final assembled system, early system sketch, elephant prototype, fishbone CAD model, failed and revised chainmail prints, a large-print failure, storage-fit CAD image, cat pot and final poster. The original archive is not copied into the portfolio; no STL, STEP, 3MF or Fusion source model is published or claimed to be retained.
+
 ## Tangram case study
 
 `public/assets/projects/tangram/` contains sixteen WebP derivatives extracted from embedded source images in Peiwen's Week 2–7 and Tangible Interface Show PDFs, plus one supplied 1536 × 2048 exhibition photograph. The set records CAD geometry, connector designs and physical tests, production/layout evidence, the final 500 × 500 mm board, exhibition image and four puzzle prompts. Low-resolution process photographs are displayed only in smaller evidence placements. The source PDFs, their page layouts and all non-selected images are not published.
