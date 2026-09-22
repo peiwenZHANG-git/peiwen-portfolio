@@ -1,5 +1,9 @@
 # Asset Index
 
+## Chess case study
+
+`public/assets/projects/chess/` contains eight selected WebP derivatives from original Figma Frame exports: the intent-first homepage, onboarding question, low-fidelity flow, duration selection, Game History, board controls, speech-recognition state and parallel-media state. The low-fidelity figure is a compact presentation crop that retains the complete flow, branches, arrows and node labels. They are the portfolio evidence for `/projects/chess`; no screenshot of the Figma canvas, raw research material, chess-engine code or production implementation is published. The original Figma prototype and YouTube demo remain external links.
+
 ## Flight Booking Experience case study
 
 `public/assets/projects/flight-booking/` contains eleven WebP portfolio assets and the final course PDF. The research/breakdown and journey overview are English DOM content, not the original Chinese screenshots. Search, flight results and itinerary overview use their supplied original Figma Frames; the fare comparison and three multi-passenger states remain unchanged; apply-to-all, baggage and itinerary details use 2× Figma exports. Three supplied 180px-wide Figma sketches appear only as small process thumbnails. The public set excludes raw interview notes and does not imply a runnable prototype, live travel data or post-design usability evaluation.

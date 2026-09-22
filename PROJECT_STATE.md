@@ -13,6 +13,15 @@
 
 ## Projects attic demo (`/projects`)
 
+### Chess detail route — 2026-09-22
+
+- Status: verified; a Short HCI Interaction Concept Case Study is available at `/projects/chess`. The Projects attic and all existing routes remain unchanged.
+- Context and attribution: 2025, Fundamentals of Human-Computer Interaction, M1 HCI at Universite Paris-Saclay. Team of four. Peiwen contributed to Research, Concept Development, Low-fidelity Prototyping, Prototype Interaction and User Testing.
+- Story: the short page follows an intent-first chess concept through an onboarding question, low-fidelity flow, duration choice, learning history, board notes/voice states and parallel media. It records informal feedback about discoverability, noisy spaces and constrained screen space without treating those observations as validated results.
+- Evidence boundary: this was a one-week Figma interaction concept. It does not claim a production chess engine, front-end or backend implementation, real-time multiplayer, rule validation, a formal usability study, participant count, formal protocol or metrics.
+- Materials: eight selected, high-resolution Figma Frame exports converted to WebP. The original Figma prototype and YouTube demo are secure external links; no Figma canvas, raw research material or production-code claim ships.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-chess.mjs` passed against the production server at 1440px, 390px and reduced motion, covering image decoding, secure external-link markup, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/`.
+
 ### Flight Booking Experience detail route — 2026-09-22
 
 - Status: verified; a Short UX Case Study is available at `/projects/flight-booking`. The Projects attic overview and the other case studies remain unchanged.
