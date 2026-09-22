@@ -13,6 +13,15 @@
 
 ## Projects attic demo (`/projects`)
 
+### Flight Booking Experience detail route — 2026-09-22
+
+- Status: verified; a Short UX Case Study is available at `/projects/flight-booking`. The Projects attic overview and the other case studies remain unchanged.
+- Context and attribution: 2025 Fundamentals of HCI 1 at Universite Paris-Saclay. Team of four. Peiwen contributed to Story Interviews, research synthesis, prototype and presentation.
+- Story: 20 Story Interviews with mainly classmates/friends led to four recurring breakdowns. The short page focuses on price/rule comparison, multi-passenger configuration and post-booking itinerary support, then shows the high-fidelity prototype scope from search through airport support.
+- Evidence boundary: complete raw notes and a formal coding process are not retained; the classroom presentation is not a post-design usability study. No validated improvement, production implementation or live data integration is claimed.
+- Materials: eleven selected WebP derivatives and the final course PDF. The former PDF-derived search, results and itinerary-overview images now use supplied original Figma Frames; three supplied Figma sketches are displayed only as small process thumbnails; research/breakdown and journey scope are English DOM content. No raw research material or Figma workspace is published.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-flight-booking.mjs` passed against the production server at 1440px, 390px and reduced motion, covering decoded images, the PDF resource, secure external linking, keyboard skip navigation, internal anchors, Back to Projects/top navigation, responsive overflow, evidence boundaries and zero observed console/page/HTTP errors.
+
 ### Maze of Wishes detail route — 2026-09-22
 
 - Status: verified; Case Study v1 implemented at `/projects/maze-of-wishes`. The Projects attic overview and its interaction remain unchanged.

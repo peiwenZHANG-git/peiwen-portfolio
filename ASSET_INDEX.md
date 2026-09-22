@@ -1,5 +1,9 @@
 # Asset Index
 
+## Flight Booking Experience case study
+
+`public/assets/projects/flight-booking/` contains eleven WebP portfolio assets and the final course PDF. The research/breakdown and journey overview are English DOM content, not the original Chinese screenshots. Search, flight results and itinerary overview use their supplied original Figma Frames; the fare comparison and three multi-passenger states remain unchanged; apply-to-all, baggage and itinerary details use 2× Figma exports. Three supplied 180px-wide Figma sketches appear only as small process thumbnails. The public set excludes raw interview notes and does not imply a runnable prototype, live travel data or post-design usability evaluation.
+
 ## Arm-Swing VR Locomotion case study
 
 `public/assets/projects/arm-swing-vr-locomotion/` contains the portfolio-ready evidence for
