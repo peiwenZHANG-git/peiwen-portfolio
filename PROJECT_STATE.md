@@ -13,6 +13,15 @@
 
 ## Projects attic demo (`/projects`)
 
+### Multi-Sensory Music VR detail route — 2026-09-23
+
+- Status: verified; a Featured Case Study route is available at `/projects/multi-sensory-music-vr`. The Projects attic and all existing routes remain unchanged.
+- Context and attribution: 2026, four-week Advanced Immersive Interaction coursework at Universite Paris-Saclay. The project began as a team project; after the other teammates left, Peiwen completed the final prototype independently.
+- Story: the page follows an accessibility-oriented rhythm question through an AR/Arduino haptic prototype, an AR-to-VR technical pivot, block-based direct manipulation, BPM/note timing, a shared audio/particle/controller-haptic trigger path and virtual-character feedback.
+- Evidence boundary: no formal user study or Deaf/Hard-of-Hearing participants are documented. The route does not claim validated accessibility, usability, cognitive-load, therapeutic or emotional outcomes. It records implementation evidence only.
+- Materials: seven selected WebP derivatives: one native-size early Unity frame from the WhatsApp recording and six final-demo frames, plus a 1280×720 H.264/AAC derivative of that demo. The demo opens in a secure new tab with native browser playback controls and does not autoplay. The source archive, compiled build, raw reports and presentation are not published; their overbroad outcome language is not repeated as evidence.
+- Verification: lint, typecheck, production build, static prerender and `git diff --check` passed. A production browser check at 1440px, 390px and reduced motion covered image decoding, demo-resource availability, secure links, keyboard skip navigation, anchors, return navigation, overflow and console/page/HTTP errors.
+
 ### ZOO Desk Organizer detail route — 2026-09-22
 
 - Status: verified; a short individual product-fabrication case study is available at `/projects/zoo-desk-organizer`. The Projects attic and existing routes remain unchanged.

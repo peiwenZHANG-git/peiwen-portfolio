@@ -1,5 +1,21 @@
 # Asset Index
 
+## Multi-Sensory Music VR case study
+
+`public/assets/projects/multi-sensory-music-vr/` contains seven selected WebP derivatives: one native-size 640×480 early Unity frame from the supplied WhatsApp recording, plus six frames from the supplied final 1920×1080 Unity demo. They are used by `/projects/multi-sensory-music-vr`.
+
+| Runtime asset | Source moment | Portfolio role |
+| --- | --- | --- |
+| `hero-sequencer.webp` | 0:35 final demo frame | Hero/poster: VR room, table, blocks, scanner and virtual character. |
+| `early-unity-scanner.webp` | 0:18 WhatsApp recording | Small early scanner-prototype evidence; kept below native visual scale. |
+| `grab-place.webp` | 0:32 final demo frame | Controller ray reaching toward blocks: direct manipulation. |
+| `scanner-trigger.webp` | 0:54 final demo frame | Scanner and particle response: triggered feedback. |
+| `particle-trigger.webp` | 0:40 final demo frame | Supporting particle-channel evidence. |
+| `haptic-mapping.webp` | 0:55 final demo frame | Supporting BPM and vibration-control context. |
+| `virtual-boy-feedback.webp` | 0:48 final demo frame, cropped | Character feedback evidence, framed around the virtual boy. |
+
+`resources/multi-sensory-music-vr-demo.mp4` is a browser-compatible 1280×720 H.264/AAC derivative of the supplied 78.1-second 1920×1080 H.264 final demo. It is linked from the case study in a secure new tab, where native browser playback controls are available; it does not autoplay. `hero-sequencer.webp` is the linked demo poster. The source report PDFs, presentation, 1 GB source archive and final build zip remain private: they contain unselected material and, in places, claims unsupported by a study. No raw hardware materials or participant data are published.
+
 ## ZOO Desk Organizer case study
 
 `public/assets/projects/zoo-desk-organizer/` contains ten compressed WebP derivatives selected from Peiwen's public six-week documentation archive: a final assembled system, early system sketch, elephant prototype, fishbone CAD model, failed and revised chainmail prints, a large-print failure, storage-fit CAD image, cat pot and final poster. The original archive is not copied into the portfolio; no STL, STEP, 3MF or Fusion source model is published or claimed to be retained.
