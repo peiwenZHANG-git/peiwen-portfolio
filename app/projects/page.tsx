@@ -31,9 +31,10 @@ export default function ProjectsPage() {
         <div className={styles.title}>
           <h1>Projects</h1>
           <p>Things I’ve made, tested, and explored.</p>
-          <Link href="/projects/reso">Read Reso: making tone visible →</Link>
         </div>
-        <ProjectClothesline />
+        <ProjectClothesline rope="featured" />
+        <p className={styles.hint}>drag to explore →</p>
+        <ProjectClothesline rope="smaller" />
       </main>
     </div>
   );

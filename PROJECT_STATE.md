@@ -13,6 +13,46 @@
 
 ## Projects attic demo (`/projects`)
 
+### Two-piece illustrated project covers — 2026-09-23
+
+- Structure visually approved by Peiwen; final artwork supplied: each project is an independent illustration
+  paper plus a narrower title note, with separate clips and keyboard-focusable buttons.
+  There is no shared paper backing. Both buttons open the existing project modal and
+  focus returns to the exact source button on close.
+- Eight user-supplied final covers are integrated from `public/assets/projects/overview-covers/`:
+  Reso, Arm-Swing, Tangram, Music VR, Maze, Flight, Chess and ZOO. Each WebP is 1122 x 1402,
+  converted at quality 90 without resizing, crop, sharpening, regeneration or filters.
+  Existing contain-fit preserves the complete artwork and paper geometry.
+- Chess now uses the separately supplied chess illustration; all eight cover slots are filled.
+  Authentic modal/detail visuals remain unchanged.
+- Featured order remains Reso, Arm-Swing, Tangram, Music VR, Maze. Short title/subtitle
+  copy follows the approved request. Illustration widths 160–180px, title notes 120px,
+  within-pair gap 12px, between-project gap 48px; fixed rotations and vertical offsets.
+  Desktop opening shows three full pairs and part of Music VR. Maze requires dragging.
+- Smaller pairs remain mixed with botanical, flower, Peiwen and WIP decorative sheets.
+  Mobile illustration/title widths are 58vw/34vw Featured and 46vw/32vw Smaller.
+  Next Featured project peeks as a narrow paper edge because the first pair occupies
+  most of the mobile width. Final illustration integration remains a visual-review step.
+- Upper Featured rope now uses a quadratic curve with a more visible drop, following the
+  lower-rope reference: 70px center sag on desktop, 32px on mobile. Fixed individual paper offsets follow its height; clip rotations are
+  +1/-1 degrees. Paper and clip hanging points follow the revised curve at both breakpoints.
+  Background, lower rope, spacing, paper dimensions, furniture and modal remain unchanged. Drag/inertia/wheel/touch/keyboard effect is unchanged.
+  Only one drag instruction remains. Case-study pages and source evidence are unchanged.
+- Lower-rope attachment correction (2026-09-24): desktop project papers now follow a
+  trace of the painted rope as their screen position changes during scroll/resize.
+  This fixes the detached Chess title clip. The background and drag effect are unchanged;
+  mobile retains its existing layout. Extra clipping space preserves raised clips without
+  intercepting pointer input above the lower track. A browser regression checks that the
+  Chess attachment changes height when horizontally scrolled.
+- Passed: lint, typecheck, production build (including static /projects prerender),
+  browser drag/wheel/swipe/keyboard on both ropes, modal opens from both paper pieces,
+  ESC/Close and exact focus return, eight case-study route links/media, reduced motion,
+  320–1920px body overflow, and browser runtime/HTTP error checks.
+- Current acceptance captures: 1440 x 900 opening and 40 percent drag, plus 390 x 844
+  opening. Eight covers load successfully and browser/production checks pass. Visual
+  approval and physical-device feel remain pending. Peiwen requested a local checkpoint
+  for Claude handoff; no push or merge is authorized. See CLAUDE_HANDOFF.md.
+
 ### Multi-Sensory Music VR detail route — 2026-09-23
 
 - Status: verified; a Featured Case Study route is available at `/projects/multi-sensory-music-vr`. The Projects attic and all existing routes remain unchanged.
@@ -152,7 +192,7 @@
   a verified graph before/after screenshot and exact DP1/DP2 month ranges.
   No claim of a follow-up evaluation of the graph revision. No deployment performed.
 
-### Existing attic implementation
+### Historical category-demo attic implementation (superseded by real-project bundles)
 
 - Implemented: isolated server route reuses About's Patrick Hand / Nunito font instances,
   scoped palette and navigation styles. Home, Experience, About and global styles are unchanged.
@@ -785,4 +825,4 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-21
+2026-09-24

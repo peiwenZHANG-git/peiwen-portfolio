@@ -18,17 +18,24 @@ export default function ProjectCard({ project, onOpen }: {
   onOpen: (project: Project, button: HTMLButtonElement) => void;
 }) {
   return (
-    <button type="button" className={`${styles.card} ${styles[project.size]}`}
-      style={{ "--rotation": `${project.rotation}deg` } as CSSProperties}
-      aria-haspopup="dialog" data-project={project.id}
-      onClick={(event) => onOpen(project, event.currentTarget)}>
-      <ProjectClip />
-      <span className={styles.cover}>
-        <Image src={project.image} alt="" fill sizes="(max-width: 719px) 76vw, 320px" draggable={false} />
-      </span>
-      <span className={styles.cardTitle}>{project.title}</span>
-      <span className={styles.tags}>{project.subtitle}</span>
-      <span className={styles.open} aria-hidden="true">open →</span>
-    </button>
+    <div className={styles.pair} data-project={project.id} role="group" aria-label={project.title}
+      style={{ "--rotation": `${project.rotation}deg` } as CSSProperties}>
+      <button type="button" className={`${styles.piece} ${styles.illustration}`} data-piece="illustration"
+        data-cover-status={project.cover ? "final" : "placeholder"}
+        aria-haspopup="dialog" aria-label={`Preview ${project.title} from illustration${project.cover ? "" : " (cover pending)"}`}
+        onClick={(event) => onOpen(project, event.currentTarget)}>
+        <ProjectClip />
+        {project.cover && <span className={styles.cover} aria-hidden="true">
+          <Image src={project.cover} alt="" fill sizes={project.rope === "featured" ? "(max-width: 719px) 58vw, 180px" : "(max-width: 719px) 46vw, 120px"} draggable={false} />
+        </span>}
+      </button>
+      <button type="button" className={`${styles.piece} ${styles.titleNote}`} data-piece="title"
+        aria-haspopup="dialog" aria-label={`Preview ${project.title} from title note`}
+        onClick={(event) => onOpen(project, event.currentTarget)}>
+        <ProjectClip />
+        <span className={styles.cardTitle}>{project.label}</span>
+        <span className={styles.coverSubtitle}>{project.coverSubtitle}</span>
+      </button>
+    </div>
   );
 }

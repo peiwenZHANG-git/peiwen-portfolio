@@ -4,7 +4,7 @@
   position: relative;
   flex: 1 0 auto;
   min-height: calc(100svh - 110px);
-  background: url('/assets/projects/attic-clean.webp') center / cover no-repeat;
+  background: url('/assets/projects/attic-layered.webp') center / cover no-repeat;
   isolation: isolate;
 }
 .title {
@@ -22,58 +22,45 @@
 .viewport { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; cursor: grab; touch-action: pan-x pan-y; }
 .viewport::-webkit-scrollbar { display: none; }
 .viewport[data-dragging] { cursor: grabbing; }
-.track { position: relative; display: flex; align-items: flex-start; width: max-content; min-width: 100%; gap: 34px; padding: 42px 8vw 30px; }
-.rope { position: absolute; top: 12px; left: 0; width: 100%; height: 50px; overflow: visible; fill: none; stroke: #877564; stroke-width: 1.7; stroke-linecap: round; pointer-events: none; }
+.track { position: relative; display: flex; align-items: flex-start; width: max-content; min-width: 100%; gap: 48px; padding: 42px 8vw 30px; }
+.rope { position: absolute; top: 12px; left: 0; width: 100%; height: 160px; overflow: visible; fill: none; stroke: #877564; stroke-width: 1.7; stroke-linecap: round; pointer-events: none; }
 .rope path + path { stroke-width: .8; opacity: .45; }
-.card {
-  position: relative;
-  flex: none;
-  width: 76vw;
-  max-width: 340px;
-  border: 0;
-  border-radius: 0;
-  padding: 14px 14px 22px;
-  background: transparent;
-  color: var(--ink);
-  box-shadow: none;
-  text-align: center;
-  isolation: isolate;
-  transform: rotate(var(--rotation));
-  transform-origin: 50% 0;
-  transition: transform 300ms ease;
-  cursor: inherit;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.clip { position: absolute; z-index: 2; top: -25px; left: 47%; width: 16px; height: 42px; transform: rotate(4deg); }
-.card::before { content: ''; position: absolute; z-index: -1; inset: 0; background: url('/assets/projects/hanging-paper.webp') center / 100% 100% no-repeat; pointer-events: none; }
-.cover { display: block; position: relative; height: 175px; overflow: hidden; background: var(--blue); }
-.cover img { object-fit: cover; pointer-events: none; filter: saturate(.38) contrast(.78) sepia(.16); opacity: .86; }
-.cover::after, .previewImage::after { content: ''; position: absolute; inset: 0; background: #cdb9a0; opacity: .08; pointer-events: none; }
-.cardTitle { display: block; margin-top: 12px; font: 400 27px/1.15 var(--hand); letter-spacing: .045em; }
-.tags { display: block; margin-top: 9px; font: 400 14px/1.5 var(--hand); letter-spacing: .025em; color: var(--ink-soft); }
-.open { position: absolute; bottom: 7px; right: 14px; font: 400 16px/1 var(--hand); opacity: 0; transition: opacity 300ms; }
-.wide { margin: 12px 12px 0 0; }
-.photo { margin: 17px 0 0 8px; }
-.square { margin: 10px 22px 0 0; }
-.square .cover { height: 205px; }
-.note { margin-top: 1px; }
-.note .cover { display: none; }
-.note { padding: 40px 22px 34px; }
-.note .cardTitle { max-width: 7ch; margin: 0 auto; font-size: 28px; line-height: 1.5; }
-.note .tags { margin-top: 12px; }
-.hint { width: fit-content; margin: 2px auto 0; padding: 4px 14px; color: var(--ink); background: #fbf5e8e8; font: 400 18px/1.4 var(--hand); animation: quiet 1s 4s forwards; }
-@keyframes quiet { to { opacity: .5; } }
-.card:focus-visible, .viewport:focus-visible, .close:focus-visible { outline: 2px solid var(--focus); outline-offset: -3px; }
-.card:focus-visible { transform: rotate(0) scale(1.03); z-index: 3; }
-.card:focus-visible .open { opacity: 1; }
-@media (hover: hover) {
-  .card:hover { transform: rotate(0) scale(1.03); z-index: 3; }
-  .card:hover .open { opacity: 1; }
-  .card:hover .clip { animation: clipSway 300ms ease; }
-}
-@keyframes clipSway { 50% { transform: rotate(-3deg); } }
-.viewport[data-dragging] .card { transform: translateY(2px) rotate(var(--rotation)); }
+.pair { position: relative; display: flex; align-items: flex-start; flex: none; gap: 12px; }
+.piece { position: relative; flex: none; display: block; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--ink); isolation: isolate; cursor: inherit; user-select: none; -webkit-user-select: none; transform: rotate(var(--rotation)); transform-origin: 50% 0; transition: transform 300ms ease; }
+.piece::before { content: ''; position: absolute; inset: 0; z-index: -1; background: url('/assets/projects/hanging-paper.webp') center / 100% 100% no-repeat; pointer-events: none; }
+.illustration { width: 174px; aspect-ratio: 1 / 1.05; margin-top: 8px; }
+.titleNote { width: 120px; min-height: 150px; margin-top: 16px; padding: 28px 9px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; transform: rotate(calc(var(--rotation) * -.6)); }
+.clip { position: absolute; z-index: 2; top: -25px; left: calc(50% - 8px); width: 16px; height: 42px; transform: rotate(4deg); }
+.cover { position: absolute; inset: 9px; }
+.cover img { object-fit: contain; pointer-events: none; }
+.cardTitle { display: block; font: 400 21px/1.15 var(--hand); }
+.coverSubtitle { display: block; margin-top: 12px; font: 400 11px/1.4 var(--hand); color: var(--ink-soft); white-space: nowrap; }
+.pair[data-project="arm-swing"] .illustration { width: 180px; aspect-ratio: 1.12; margin-top: 14px; }
+.pair[data-project="tangram"] .illustration { width: 160px; aspect-ratio: .9; margin-top: 6px; }
+.pair[data-project="music-vr"] .illustration { width: 175px; aspect-ratio: 1.08; margin-top: 18px; }
+.pair[data-project="maze"] .illustration { width: 170px; aspect-ratio: 1.15; margin-top: 10px; }
+/* Fixed hanging points sampled from the upper rope's shallow quadratic curve. */
+.pair[data-project="reso"] { --image-drop: 28px; --note-drop: 46px; }
+.pair[data-project="arm-swing"] { --image-drop: 58px; --note-drop: 66px; }
+.pair[data-project="tangram"] { --image-drop: 71px; --note-drop: 71px; }
+.pair[data-project="music-vr"] { --image-drop: 64px; --note-drop: 56px; }
+.pair[data-project="maze"] { --image-drop: 41px; --note-drop: 24px; }
+.clothesline[data-rope="featured"] .illustration { margin-top: var(--image-drop); }
+.clothesline[data-rope="featured"] .titleNote { margin-top: var(--note-drop); }
+.clothesline[data-rope="featured"] .clip { transform: rotate(1deg); }
+.clothesline[data-rope="featured"] .titleNote .clip { transform: rotate(-1deg); }
+.hint { position: absolute; top: 53%; left: 50%; transform: translateX(-50%); margin: 0; padding: 4px 14px; color: var(--ink-soft); background: #fbf5e899; font: 400 18px/1.4 var(--hand); }
+.smallerLine { position: absolute; left: 56%; right: 0; top: calc(50% + max(1.9vw, 2.5svh) - 20px); padding-top: 0; }
+.smallerLine .track { gap: 20px; padding: 32px 20px 24px; }
+.smallerLine .pair { gap: 8px; }
+.smallerLine .illustration { width: 115px; aspect-ratio: 1; margin-top: var(--rope-drop, 2px); }
+.smallerLine .titleNote { width: 92px; min-height: 112px; margin-top: var(--rope-drop, 7px); padding: 20px 7px 15px; }
+.smallerLine .cardTitle { font-size: 17px; }
+.smallerLine .coverSubtitle { font-size: 8px; margin-top: 9px; }
+.decoration { position: relative; flex: none; width: 105px; height: 140px; margin-top: -18px; }
+.decoration img { object-fit: contain; }
+.piece:focus-visible, .viewport:focus-visible, .close:focus-visible, .caseStudy:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) { .piece:hover { transform: translateY(-2px) rotate(0); } }
 .dialog { position: fixed; inset: 0; margin: auto; padding: 24px; border: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; background: transparent; color: var(--ink); overflow: auto; }
 .dialog[open] { display: flex; align-items: safe center; }
 .dialog::backdrop { background: #f2ead9b8; }
@@ -82,51 +69,42 @@
 .close { display: block; margin-left: auto; padding: 8px 10px; border: 0; background: transparent; color: inherit; font: 400 21px/1.2 var(--hand); cursor: pointer; }
 .previewLabel { font: 400 17px/1.5 var(--hand); }
 .previewImage { position: relative; height: clamp(160px, 28svh, 290px); margin: 15px 0 24px; }
-.previewImage img { object-fit: cover; filter: saturate(.38) contrast(.78) sepia(.16); opacity: .86; }
+.previewImage img { object-fit: contain; }
 .preview h2 { margin: 0 0 12px; font: 400 clamp(32px, 4vw, 48px)/1.1 var(--hand); }
 .preview p { line-height: 1.6; }
-.details { display: flex; flex-wrap: wrap; gap: 22px 52px; padding: 22px 0; margin: 20px 0; border-block: 1px solid #b7a88e; }
-.details dt { font: 400 20px var(--hand); }
-.details dd { margin: 5px 0 0; font-size: 14px; }
 .caseStudy { font: 400 23px var(--hand); color: var(--ink-soft); }
-.pending { font-size: 12px; color: var(--ink-soft); }
 @media (min-width: 720px) {
-  .header { flex-direction: row; justify-content: space-between; padding: 13px 5vw; }
-  .scene { min-height: calc(100svh - 74px); }
-  .title h1 { font-size: clamp(42px, 4vw, 60px); }
-  .clothesline { padding-top: max(110px, 12svh); }
-  .cover { height: 95px; }
-  .card { width: 195px; padding: 16px 14px 22px; }
-  .cardTitle { font-size: 21px; }
-  .tags { font-size: 12px; }
-  .large { width: 210px; }
-  .large .cover { height: 110px; }
-  .wide { width: 235px; }
-  .photo { width: 215px; }
-  .square { width: 185px; }
-  .square .cover { height: 115px; }
-  .note { width: 150px; padding: 28px 16px; }
-  .note .cardTitle { font-size: 23px; }
-}
-@media (min-width: 720px) and (max-height: 800px) {
-  .title h1 { font-size: 48px; }
-  .clothesline { padding-top: 100px; }
-  .cover { height: 70px; }
-  .large .cover { height: 85px; }
-  .square .cover { height: 90px; }
-  .cardTitle { font-size: 20px; }
+.header { flex-direction: row; justify-content: space-between; padding: 13px 5vw; }
+.scene { min-height: calc(100svh - 74px); }
+.title h1 { font-size: clamp(42px, 4vw, 60px); }
+.title { top: 2%; }
+.clothesline { padding-top: max(110px, 12svh); }
+
+.smallerLine { padding-top: 0; }
+.smallerLine .viewport { margin-top: -48px; padding-top: 48px; pointer-events: none; }
+.smallerLine .track { pointer-events: auto; }
 }
 @media (max-width: 719px) {
-  .scene { background-position: 53% center; }
-  .title { top: 20px; left: 5%; padding: 15px 18px; }
-  .title h1 { font-size: 48px; }
-  .track { gap: 25px; padding-inline: 9vw; }
-  .cover, .square .cover { height: 125px; }
-  .dialog { padding: 14px; }
-  .preview { padding: 18px; }
+.rope { top: 17px; height: 73.1429px; }
+.pair[data-project="reso"] { --image-drop: 9px; --note-drop: 19px; }
+.pair[data-project="arm-swing"] { --image-drop: 27px; --note-drop: 33px; }
+.pair[data-project="tangram"] { --image-drop: 35px; --note-drop: 35px; }
+.pair[data-project="music-vr"] { --image-drop: 31px; --note-drop: 25px; }
+.pair[data-project="maze"] { --image-drop: 17px; --note-drop: 7px; }
+.scene { background-position: 53% center; }
+.title { top: 20px; left: 5%; padding: 15px 18px; }
+.title h1 { font-size: 48px; }
+.track { gap: 8px; padding-inline: 0; }
+.pair { gap: 8px; }
+.pair .illustration { width: 58vw; aspect-ratio: 1.12; }
+.titleNote { width: 34vw; min-height: 168px; }
+.smallerLine { left: 0; top: calc(50% + 55px); padding-top: 0; }
+.smallerLine .track { padding-inline: 0; gap: 14px; }
+.smallerLine .illustration { width: 46vw; }
+.smallerLine .titleNote { width: 32vw; min-height: 140px; }
+.smallerLine .coverSubtitle { font-size: 10px; }
+.hint { top: 160px; font-size: 15px; white-space: nowrap; }
+.dialog { padding: 14px; }
+.preview { padding: 18px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .card, .open { transition: none; }
-  .hint, .card:hover .clip { animation: none; }
-  .viewport[data-dragging] .card { transform: rotate(var(--rotation)); }
-}
+@media (prefers-reduced-motion: reduce) { .piece { transition: none; } }

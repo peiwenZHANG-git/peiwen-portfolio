@@ -357,3 +357,24 @@ byte-identical copy of the early storyboard PDF and the supplied final project d
 The public set excludes the source archive, compiled output and raw project workspace. The archived
 collision mask is not published because it does not fully match the final demonstrated build and
 would overstate the available implementation evidence.
+
+
+## Projects attic paper separation (2026-09-23)
+
+- `public/assets/projects/attic-layered.webp`: original `attic-clean.webp` with only
+  the five lower paper/clip polygons replaced by a built-in imagegen clean plate.
+  Prompt: remove the five lower hanging papers and clips, reconstruct the window behind,
+  preserve the rope and all other scene elements. Compositing masks protect original
+  pixels outside the removed papers. Original background retained unchanged.
+- `attic-botanical.webp`, `attic-flowers.webp`, `attic-peiwen.webp`, `attic-wip.webp` in the same directory:
+  polygon cutouts of the original decorative sheets, reused between Smaller projects.
+- Real project thumbnails reuse the published case-study assets; no synthetic project
+  evidence is introduced. This visual restoration is awaiting Peiwen acceptance.
+
+
+## Illustrated overview covers (supplied artwork)
+
+`public/assets/projects/overview-covers/` contains eight final supplied cover illustrations:
+Reso, Arm-Swing, Tangram, Music VR, Maze, Flight, Chess and ZOO. All are 1122 x 1402 WebP,
+quality 90, uncropped and unscaled with no filters. The directory README records mapping.
+Chess uses the separate follow-up illustration supplied after the initial duplicate Flight attachment. Real screenshots/photos remain in modal/detail content.

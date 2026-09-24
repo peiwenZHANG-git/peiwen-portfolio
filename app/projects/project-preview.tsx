@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Project } from "@/lib/projectsData";
 import styles from "./projects.module.css";
@@ -54,19 +55,13 @@ export default function ProjectPreview({ selection, onClose }: {
       onCancel={(event) => { event.preventDefault(); void close(); }}>
       <article ref={paper} className={styles.preview}>
         <button type="button" className={styles.close} onClick={() => void close()} autoFocus>Close ×</button>
-        <p className={styles.previewLabel}>From the attic · {project.id} / 05</p>
+        <p className={styles.previewLabel}>From the attic · {project.subtitle}</p>
         <div className={styles.previewImage}>
-          <Image src={project.image} alt="Illustration placeholder for this project preview" fill sizes="(max-width: 719px) 85vw, 780px" />
+          <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 719px) 85vw, 780px" />
         </div>
         <h2 id="project-title">{project.title}</h2>
         <p>{project.description}</p>
-        <dl className={styles.details}>
-          <div><dt>Role</dt><dd>{project.role}</dd></div>
-          <div><dt>Year</dt><dd>{project.year}</dd></div>
-          <div><dt>Tools</dt><dd>{project.tools.join(" · ")}</dd></div>
-        </dl>
-        <span className={styles.caseStudy} aria-disabled="true">View case study →</span>
-        <p className={styles.pending}>Still being put together — this is a demo preview.</p>
+        <Link className={styles.caseStudy} href={project.href}>View case study →</Link>
       </article>
     </dialog>
   );

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { projects } from "@/lib/projectsData";
 import ProjectCard from "./project-card";
 import ProjectPreview, { type Selection } from "./project-preview";
 import styles from "./projects.module.css";
 
-export default function ProjectClothesline() {
+export default function ProjectClothesline({ rope }: { rope: "featured" | "smaller" }) {
   const viewport = useRef<HTMLDivElement>(null);
   const stop = useRef(() => {});
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -90,19 +91,58 @@ export default function ProjectClothesline() {
     };
   }, []);
 
+  useEffect(() => {
+    if (rope !== "smaller") return;
+    const element = viewport.current!;
+    const scene = element.closest("main")!;
+    const track = element.firstElementChild as HTMLElement;
+    const papers = [...element.querySelectorAll<HTMLElement>("[data-piece]")];
+    function alignPapers() {
+      if (window.innerWidth < 720) {
+        papers.forEach(paper => paper.style.removeProperty("--rope-drop"));
+        return;
+      }
+      const bounds = scene.getBoundingClientRect();
+      const scale = Math.max(bounds.width / 1448, bounds.height / 1086);
+      const imageLeft = bounds.left + (bounds.width - 1448 * scale) / 2;
+      const imageTop = bounds.top + (bounds.height - 1086 * scale) / 2;
+      const baseline = track.getBoundingClientRect().top + parseFloat(getComputedStyle(track).paddingTop);
+      // Trace the painted lower rope in the original 1448 x 1086 background.
+      const drops = papers.map(paper => {
+        const clip = paper.querySelector("svg")!.getBoundingClientRect();
+        const x = (clip.left + clip.width / 2 - imageLeft) / scale;
+        const t = Math.max(0, Math.min(1, (x - 807) / 641));
+        return imageTop + (554 + 109 * t - 138 * t * t) * scale - baseline + 22;
+      });
+      papers.forEach((paper, index) => paper.style.setProperty("--rope-drop", `${drops[index]}px`));
+    }
+    const observer = new ResizeObserver(alignPapers);
+    observer.observe(scene);
+    element.addEventListener("scroll", alignPapers, { passive: true });
+    alignPapers();
+    return () => { observer.disconnect(); element.removeEventListener("scroll", alignPapers); };
+  }, [rope]);
+
   return (
     <>
-      <section className={styles.clothesline} aria-label="Projects on the clothesline">
-        <div ref={viewport} className={styles.viewport} tabIndex={0} aria-label="Explore projects. Drag, swipe, or use left and right arrow keys.">
+      <section className={`${styles.clothesline} ${rope === "smaller" ? styles.smallerLine : ""}`} aria-label={rope === "featured" ? "Featured projects" : "Smaller projects"} data-rope={rope}>
+        <div ref={viewport} className={styles.viewport} tabIndex={0} aria-label={`${rope === "featured" ? "Featured" : "Smaller"} projects. Drag, swipe, or use left and right arrow keys.`}>
           <div className={styles.track}>
-            <svg className={styles.rope} viewBox="0 0 1800 60" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M0 8 Q210 23 420 28 T900 38 Q1330 39 1800 8" />
-              <path d="M0 10 Q208 25 422 29 T901 36 Q1332 41 1800 10" />
-            </svg>
-            {projects.map((project) => <ProjectCard key={project.id} project={project} onOpen={(project, source) => { stop.current(); setSelection({ project, source }); }} />)}
+            {rope === "featured" && <svg className={styles.rope} viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0 8 Q500 148 1000 8" />
+              <path d="M0 9 Q500 149 1000 9" />
+            </svg>}
+            {projects.filter((project) => project.rope === rope).map((project, index) => <Fragment key={project.id}>
+              <ProjectCard project={project} onOpen={(project, source) => { stop.current(); setSelection({ project, source }); }} />
+              {rope === "smaller" && <span className={styles.decoration} aria-hidden="true">
+                <Image src={`/assets/projects/attic-${["botanical", "flowers", "peiwen"][index]}.webp`} alt="" fill sizes="105px" draggable={false} />
+              </span>}
+            </Fragment>)}
+            {rope === "smaller" && <span className={styles.decoration} aria-hidden="true">
+              <Image src="/assets/projects/attic-wip.webp" alt="" fill sizes="105px" draggable={false} />
+            </span>}
           </div>
         </div>
-        <p className={styles.hint}>drag to explore →</p>
       </section>
       {selection && <ProjectPreview selection={selection} onClose={() => setSelection(null)} />}
     </>

@@ -3,7 +3,40 @@
 Read AGENTS.md, PROJECT_STATE.md, VISUAL_DIRECTION.md and ASSET_INDEX.md, then inspect live Git state.
 Use project-task-init before significant edits and project-delivery-check before completion.
 
-## Active direction — Home / Hero / Hub
+## Current handoff — Projects attic (2026-09-24)
+
+The current task is `/projects`. The Home / Experience sections below are historical
+context, not authorization to resume those tasks. Read the Projects section at the top
+of PROJECT_STATE.md before changing this page.
+
+- Preserve the approved attic composition, two ropes and illustration-paper + title-note
+  pairs. Do not revert to category demos, uniform project cards or screenshot covers.
+- Eight supplied watercolor covers are integrated in `public/assets/projects/overview-covers/`.
+  All are 1122 x 1402 WebP; none was cropped, stretched, filtered or regenerated.
+- Featured: Reso, Arm-Swing, Tangram, Music VR, Maze. Smaller: Flight, Chess, ZOO,
+  interleaved with original botanical, flower, Peiwen and WIP decorations.
+- Keep mouse drag, native swipe, wheel, keyboard, inertia, reduced motion and the native
+  preview dialog with exact source-button focus restoration. Both papers open the same
+  project's real case-study route. Existing case-study pages were not modified.
+- Upper SVG rope has a shallow curve across the full scrollable track; individual paper
+  hanging points follow it. Lower rope is painted into the background: the latest fix
+  aligns desktop project clips to it during scroll/resize, including the Chess title.
+  Mobile retains its prior layout. Do not remove that alignment effect as unused code.
+- The prior local background separation was explicitly authorized. `attic-clean.webp`
+  is retained; `attic-layered.webp` and four decorative cutouts supply the current scene.
+- Checks passed: lint, typecheck, production build/static prerender, diff whitespace,
+  both ropes' input behavior, all eight covers/routes, both modal entry buttons, focus,
+  reduced motion, overflow and browser errors. Regression: `scripts/check-projects.mjs`.
+  Run with an active local server and a resolvable Playwright installation; the script
+  accepts `PROJECTS_URL` and `PLAYWRIGHT_MODULE`.
+- Local review captures (ignored by Git): `visualizations/projects/desktop.png`,
+  `desktop-drag40.png`, `mobile.png`. They can be regenerated with the check script.
+- Remaining review limits: final assembled-page visual approval and physical-device feel.
+  Mobile shows only a narrow edge of the next Featured pair. Fine details in Reso/Maze/ZOO
+  are small at overview scale; do not aggressively crop or redesign without a request.
+- Peiwen requested a local checkpoint for Claude to take over. No push or merge is authorized.
+
+## Historical direction — Home / Hero / Hub
 
 2026-09-15 update: **Static Master is approved and frozen.** Do not regenerate it or adjust
 its composition/Idle Peiwen. Phase 1 review is `/?peiwen-phase1=1`: original-pixel Peiwen
