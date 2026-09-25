@@ -1,0 +1,470 @@
+/* See peiwen-companion.tsx. Paper, pencil and the site's warm ink — no chat-widget chrome. */
+
+.root {
+  --h: 112px; /* her height on screen in the corner */
+  --ink: #5e4a3c;
+  --paper: #fbf6ea;
+  --line: rgb(140 123 105 / 32%);
+  --hand: var(--home-hand, "Patrick Hand"), "Patrick Hand", cursive;
+  --body: var(--home-body, "Nunito"), "Nunito", system-ui, sans-serif;
+
+  position: fixed;
+  right: clamp(10px, 1.8vw, 28px);
+  bottom: 8px;
+  z-index: 46;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--ink);
+  pointer-events: none;
+  animation: companionArrive 700ms ease-out 300ms both;
+}
+
+.root > * {
+  pointer-events: auto;
+}
+
+@keyframes companionArrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- little fairy Peiwen herself: small, floating, softly glowing ---- */
+.trigger {
+  position: relative;
+  display: block;
+  width: calc(var(--h) * 0.663);
+  height: var(--h);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.float {
+  position: absolute;
+  inset: 0;
+  animation: companionFloat 2600ms ease-in-out infinite;
+  transition: translate 320ms ease;
+}
+
+@keyframes companionFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
+/* rises a little while she talks */
+.isOpen .float {
+  translate: 0 -6px;
+}
+
+.aura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--h) * 1.7);
+  height: calc(var(--h) * 1.7);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 238 196 / 55%), rgb(255 226 170 / 20%) 45%, rgb(255 226 170 / 0%));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: companionGlow 3600ms ease-in-out infinite;
+}
+
+.isOpen .aura {
+  opacity: 1;
+  animation: none;
+}
+
+@keyframes companionGlow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.sprite {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: var(--h);
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 0 4px rgb(255 236 200 / 80%));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover .aura {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+.trigger:focus-visible {
+  outline: 2px solid #d74b3c;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+/* the once-per-session nudge, handwritten to her left */
+.hint {
+  position: absolute;
+  right: calc(var(--h) * 0.663 + 8px);
+  bottom: calc(var(--h) * 0.55);
+  margin: 0;
+  padding: 3px 10px 4px;
+  border-radius: 10px 10px 2px 10px;
+  background: var(--paper);
+  box-shadow: 0 2px 8px rgb(94 71 58 / 14%), inset 0 0 0 1px var(--line);
+  font-family: var(--hand);
+  font-size: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: hintPop 420ms ease-out both;
+}
+
+@keyframes hintPop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) rotate(-2deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(-2deg);
+  }
+}
+
+/* ---- the speech bubble ---- */
+.bubble {
+  position: relative;
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(560px, calc(100dvh - var(--h) - 110px));
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: 0 6px 22px rgb(94 71 58 / 18%), inset 0 0 0 1px var(--line);
+  transform-origin: calc(100% - var(--h) * 0.33) 100%;
+  animation: bubbleIn 280ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+/* tail pointing down at her head */
+.bubble::after {
+  position: absolute;
+  right: calc(var(--h) * 0.33 - 9px);
+  bottom: -9px;
+  width: 18px;
+  height: 18px;
+  content: "";
+  background: var(--paper);
+  box-shadow: inset -1px -1px 0 var(--line);
+  transform: rotate(45deg) skew(6deg, 6deg);
+  border-bottom-right-radius: 4px;
+}
+
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bubbleHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 12px 4px 18px;
+}
+
+.greeting {
+  flex: 1;
+  margin: 0;
+  font-family: var(--hand);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.close {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -4px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #8c7b69;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: rgb(140 123 105 / 12%);
+}
+
+.body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 18px 10px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip,
+.action {
+  display: inline-block;
+  padding: 5px 12px 6px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 60%);
+  box-shadow: inset 0 0 0 1px rgb(140 123 105 / 45%);
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: 16px;
+  line-height: 1.15;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.chip:hover,
+.action:hover {
+  background: #f3e7cf;
+  box-shadow: inset 0 0 0 1px rgb(140 123 105 / 70%);
+  transform: translateY(-1px);
+}
+
+.action {
+  background: #f1e2c6;
+}
+
+.chip:focus-visible,
+.action:focus-visible,
+.back:focus-visible,
+.close:focus-visible,
+.send:focus-visible {
+  outline: 2px solid #d74b3c;
+  outline-offset: 2px;
+}
+
+.answer {
+  animation: answerIn 260ms ease-out both;
+}
+
+@keyframes answerIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.asked {
+  margin: 0 0 6px;
+  color: #9a8877;
+  font-family: var(--hand);
+  font-size: 15px;
+}
+
+.line {
+  margin: 0 0 8px;
+  font-family: var(--body);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.email {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 10px 0 4px;
+}
+
+.back {
+  margin-top: 8px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #8c7b69;
+  font-family: var(--hand);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.thinking {
+  display: flex;
+  gap: 5px;
+  margin: 6px 0 12px;
+}
+
+.thinking span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b8a792;
+  animation: dot 900ms ease-in-out infinite;
+}
+
+.thinking span:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.thinking span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* "Ask me anything…" — a handwritten line on the paper, not a chat input box */
+.ask {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 14px 14px;
+  padding: 2px 4px 2px 6px;
+  border-bottom: 1.5px dashed rgb(140 123 105 / 55%);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 2px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: 17px;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #a8978a;
+}
+
+.ask:focus-within {
+  border-bottom-color: #8c7b69;
+}
+
+.send {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1e2c6;
+  color: var(--ink);
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* phones: a little smaller, bubble uses the full width */
+@media (max-width: 719px) {
+  /* tucked tight into the corner: phone layouts put keepsakes and cards close to it */
+  .root {
+    --h: 68px;
+
+    right: 2px;
+    bottom: 4px;
+  }
+
+  .greeting {
+    font-size: 18px;
+  }
+
+  .chip,
+  .action {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .float,
+  .aura,
+  .hint,
+  .bubble,
+  .answer {
+    animation: none;
+  }
+
+  .float,
+  .chip,
+  .action {
+    transition: none;
+  }
+}

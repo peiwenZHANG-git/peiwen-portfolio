@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteAudio } from "@/components/site-audio";
 import { WorldLink } from "@/components/world-link";
+import { PeiwenCompanion } from "@/components/peiwen-companion";
 import { PageTransitionProvider } from "@/components/page-transition";
 import "./globals.css";
 
@@ -36,6 +37,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
           {/* snow + the desk keepsake that walks back Home, on every inner page */}
           <WorldLink />
+          {/* little Peiwen in the bottom-right corner of every page — "ask me" */}
+          <PeiwenCompanion />
         </PageTransitionProvider>
         {/* Mounted here, not per route, so the loop survives client-side navigation. */}
         <SiteAudio />

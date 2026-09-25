@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, typ
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
+import { FairyGuide } from "@/components/fairy-guide";
 import styles from "./home-desk.module.css";
 import { handFont, bodyFont } from "./home-fonts";
 
@@ -27,7 +28,11 @@ import { handFont, bodyFont } from "./home-fonts";
  * The four entrances are transparent hotspots over the painted objects (no cut-out
  * layers, no hop): the painting already reads as one scene.
  *
- * Phases: sleep (Stage 0) → window (Stage 1) → lighting (Stage 2, ~1.45s) → lit.
+ * Phases: sleep (Stage 0) → window (Stage 1) → lighting (Stage 2, ~3.4s) → lit.
+ *
+ * 2026-09-25: when the opening plays, the flower-fairy Peiwen (components/fairy-guide.tsx)
+ * guides it — she waits by the window, then by the lamp, and finally flies to the corner
+ * where she becomes the "Ask me" little Peiwen. Her notes replace the text hints.
  * The full intro only plays once (localStorage `peiwen-home-intro-seen`); `?intro=1`
  * replays it. Reduced motion goes straight to the lit room.
  */
@@ -219,6 +224,10 @@ export default function HomeDesk() {
     };
   }, [startPhase]);
   const phase: Phase | null = progress ?? startPhase;
+  // the fairy only guides a real opening; when she has landed in the corner the
+  // companion takes over (it waits for data-guide="done" on <main>)
+  const guided = startPhase === "sleep";
+  const [guideDone, setGuideDone] = useState(false);
 
   function openWindow() {
     if (phase !== "sleep") return;
@@ -281,7 +290,10 @@ export default function HomeDesk() {
     <main
       onPointerMove={moveGlow}
       onPointerLeave={hideGlow}
-      className={`${styles.viewport} ${phaseClass} ${played ? styles.played : ""} ${touched ? styles.touched : ""} ${handFont.className} ${handFont.variable} ${bodyFont.variable}`}
+      // read by components/peiwen-companion.tsx: little Peiwen waits until the room is lit
+      data-home-phase={phase ?? "boot"}
+      data-guide={guided && !guideDone ? "active" : "done"}
+      className={`${styles.viewport} ${phaseClass} ${guided ? styles.guided : ""} ${played ? styles.played : ""} ${touched ? styles.touched : ""} ${handFont.className} ${handFont.variable} ${bodyFont.variable}`}
     >
       {phase && !lit ? (
         <button type="button" className={styles.skip} onClick={skipIntro}>
@@ -433,6 +445,7 @@ export default function HomeDesk() {
         </div>
       </div>
       <div ref={glowRef} className={styles.lanternGlow} aria-hidden="true" />
+      {guided && phase && <FairyGuide phase={phase} stageRef={stageRef} onDone={() => setGuideDone(true)} />}
     </main>
   );
 }

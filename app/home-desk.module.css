@@ -609,6 +609,11 @@
   text-align: right;
 }
 
+/* when the flower fairy guides the opening, her notes replace these text hints */
+.guided .hint {
+  display: none;
+}
+
 /* pointing at the lamp, right-aligned so the arrow points at it */
 .hintLamp {
   right: 23.5%;

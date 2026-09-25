@@ -1,0 +1,183 @@
+/* See fairy-guide.tsx. Small, light, softly glowing — never a sparkle show. */
+
+.guide {
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+}
+
+.leaving {
+  opacity: 0;
+}
+
+/* positioned by transform from fairy-guide.tsx; (0,0) is her centre */
+.flyer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.bob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: guideBob 2600ms ease-in-out infinite;
+}
+
+@keyframes guideBob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+/* her own soft light: a warm halo that breathes */
+.aura {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--gh, 90px) * 1.9);
+  height: calc(var(--gh, 90px) * 1.9);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 238 196 / 55%), rgb(255 226 170 / 22%) 45%, rgb(255 226 170 / 0%));
+  transform: translate(-50%, -50%);
+  animation: auraBreathe 3600ms ease-in-out infinite;
+}
+
+.inDark .aura {
+  background: radial-gradient(closest-side, rgb(255 226 160 / 60%), rgb(255 214 140 / 26%) 42%, rgb(255 214 140 / 0%));
+  width: calc(var(--gh, 90px) * 2.6);
+  height: calc(var(--gh, 90px) * 2.6);
+}
+
+.tapping .aura {
+  animation: auraFlash 900ms ease-out 1;
+}
+
+@keyframes auraBreathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes auraFlash {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.pose {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  max-width: none; /* Tailwind preflight caps images at the (zero-width) parent */
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 5px rgb(255 236 200 / 75%));
+  transition: opacity 220ms ease;
+  user-select: none;
+}
+
+.on {
+  opacity: 1;
+}
+
+/* shared drawing scale: every pose is (its source height / 300) × --gh */
+.hover {
+  height: var(--gh, 90px);
+}
+
+.fly {
+  height: calc(var(--gh, 90px) * 0.853);
+}
+
+/* mirrored so the wand points down-right, at the lamp */
+.tap {
+  height: calc(var(--gh, 90px) * 0.827);
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+.tapping .tap {
+  animation: guideTap 700ms ease-in-out 1;
+}
+
+@keyframes guideTap {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scaleX(-1);
+  }
+
+  40% {
+    transform: translate(-46%, -44%) scaleX(-1) rotate(-6deg);
+  }
+}
+
+.inDark .pose {
+  filter: drop-shadow(0 0 6px rgb(255 226 170 / 80%)) brightness(0.92);
+}
+
+/* her line, on a small paper note above her head */
+.say {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--gh, 90px) * 0.55);
+  margin: 0;
+  padding: 4px 12px 5px;
+  border-radius: 12px;
+  background: #fbf6ea;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 22%), inset 0 0 0 1px rgb(140 123 105 / 30%);
+  color: #5e4a3c;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: clamp(15px, 1.35vw, 20px);
+  white-space: nowrap;
+  transform: translateX(-50%) rotate(-2deg);
+  animation: sayIn 420ms ease-out both;
+}
+
+@keyframes sayIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px) rotate(-2deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) rotate(-2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bob,
+  .aura,
+  .say,
+  .tapping .tap,
+  .tapping .aura {
+    animation: none;
+  }
+}

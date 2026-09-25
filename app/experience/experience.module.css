@@ -830,6 +830,8 @@ button:focus-visible .drawU {
   display: flex;
   justify-content: space-between;
   padding: 14px clamp(16px, 3vw, 40px);
+  /* leave the bottom-right corner to little Peiwen (components/peiwen-companion) */
+  padding-right: 160px;
   font-family: var(--pw-hand);
   color: var(--pw-ink-soft);
   font-size: 17px;
@@ -857,5 +859,11 @@ button:focus-visible .drawU {
   .page,
   .slot img {
     transition: none;
+  }
+}
+
+@media (max-width: 719px) {
+  .footnotes {
+    padding-right: 72px;
   }
 }

@@ -36,6 +36,21 @@
   errors. The Reso video preload was interrupted by closing the browser, while a direct
   HEAD request confirmed the 986,762-byte MP4 is served with HTTP 200.
 
+## Flower-fairy little Peiwen — 2026-09-25
+
+- The flower-fairy opening guide and global little-Peiwen companion use the user-supplied
+  fairy sheet and deterministic cutouts from `scripts/prepare-fairy-sprites.py`.
+- On Home, the fairy waits by the window and lamp, taps the lamp, then flies to the
+  bottom-right corner and hands off to the companion. It replaces text hints for guided
+  first openings and is skipped for reduced motion, portrait screens and returning visitors.
+- Every page has the corner companion with preset questions, answers, copy-email and links.
+  "Ask me anything" is phase 1 without AI; entries marked `draft: true` await Peiwen.
+- Experience footnotes reserve the bottom-right corner, and the dev badge moves to the
+  bottom-left. About Email is a copy button whose paper note falls back to a selectable
+  address when the clipboard is unavailable.
+- Verification for this checkpoint: `npm run lint` has 0 errors and 5 pre-existing warnings;
+  `npx tsc --noEmit` passes; `npm run build` passes.
+
 ## Inner-page return keepsake — 2026-09-25
 
 - Implemented: `WorldLink` sits at the top-left beneath the measured site header.

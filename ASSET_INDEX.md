@@ -293,6 +293,14 @@ No Experience code, journey registry, character, camera or road geometry changed
 
 Runtime derivatives: `public/assets/character/peiwen-back-walk-1.webp` through `public/assets/character/peiwen-back-walk-4.webp`.
 
+## Flower-fairy companion assets
+
+- `design-assets/character/peiwen-fairy-sheet-v1.png` is the user-supplied flower-fairy
+  Peiwen source sheet.
+- `scripts/prepare-fairy-sprites.py` deterministically cuts the supplied art into
+  `public/assets/companion/fairy-{hover,fly,tap}.webp`; a repeated run reproduced the
+  RGBA pixels and output files exactly. No pose, color or drawing is changed.
+
 ## Hub sources
 
 | File | Role |
