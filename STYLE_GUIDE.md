@@ -4,14 +4,16 @@
 > 当前语言范围：**仅英文版**。中文版的字体与排版之后单独处理。
 >
 > **与仓库现状的关系（2026-09-15 核对后补充）**
-> - Home 的 Static Master 是**已批准并冻结**的状态。本规范**不覆盖**这条冻结：Home 是被参照的对象，不是被修改的对象。
-> - 本规范里的 Experience、Projects、About 截图属于**概念稿**。已经实现的只有 `/storybook` 的 Saclay → CUC 两章；Japan 仍处于 planned 状态；Projects 路由尚未建立；About 仍在冻结中。
+> - 本规范里的 Experience、Projects、About 截图属于**概念稿**。已经实现的只有 `/storybook` 的 Saclay → CUC 两章；Japan 仍处于 planned 状态；Projects 路由尚未建立。
 > - 各条规则只在对应页面实际建立或接入时生效。
-> **本规范里的“Home”一律指 Static Master**（`app/home-master.tsx` + `public/home-master/master.png`，
-> 已批准冻结），可在 `/?static-reconstruction=1` 和 `/?peiwen-phase1=1` 审阅。不变性基线也是这两条路由。
-> `/` 默认渲染的 `HomeHub` 是更早的实现，本轮**不作为基准、也不改动**。
-> 基准：**Static Master（已确认）**。其他页面向它靠拢，它本身不改。
-> 范围：本规范只统一"画风 + 字体 + 界面外壳"。不改信息架构、不改 Hero 空间逻辑、不改 Experience 交互、不改 Peiwen 已确认形象。
+> 范围：本规范只统一"画风 + 字体 + 界面外壳"。不改信息架构、不改 Experience 交互、不改 Peiwen 已确认形象。
+>
+> **2026-09-21 更新：Home 冻结解除。** 用户明确要求把 Home 从 Static Master（山谷版）
+> 换成一个可交互的桌面场景（"小佩文的桌面一角"，物体即入口），并且是**直接替换**，
+> 不经过 `/lab` 草稿并行。旧的 `app/home-master.tsx` + `public/home-master/master.png`
+> 不再是基准，作为历史版本保留、可回滚，但不再是"其他页面向它靠拢"的参照物。
+> 详细方案见项目文档 `claude/home-desk-2026-09-21.md`。本文件第 2 节的色板、
+> 第 3 节的插画语言仍然适用于新的桌面场景，唯一的例外见下方第 2 节末尾的冬夜蓝色条目。
 
 ---
 
@@ -74,6 +76,12 @@ Master 代码里另外几个值按角色单独使用，不进入色板：
 - **饱和度上限约 35%。** 任何大面积颜色都不能比 `--pw-butter` 更鲜艳。
 - **强调色全站只用在"当前状态"上**，包括语言切换、CV 按钮和 focus 环。不要用来做装饰。
 - **季节色必须向色板靠拢，不能另立一套。** 秋天用暗赭或蜂蜜色，不用橙红；春天用灰粉，不用樱花粉；冬夜用淡灰紫，不用蓝紫渐变。
+- **例外：Home 桌面场景窗外的冬夜（2026-09-21 用户明确要求）。** 允许使用真正的冷蓝色调
+  （不是灰紫），作为室内暖光和室外冷蓝的对比。**这条例外只适用于 Home 的窗外**；
+  Experience 的 Paris-Saclay 冬夜场景仍然遵守"淡灰紫、不用蓝紫渐变"，除非之后单独提出改动。
+  **数值已回填（2026-09-21）**：`--pw-window-blue: #9BABC7`，从定稿背景图
+  `home-bg-v1-processed.png` 窗外夜空区域取样（上方天空色带均值，真蓝而非灰紫），
+  在 `app/home-desk.module.css` 的 `.viewport` 局部变量里声明，未写入全局 `:root`。
 
 ---
 
@@ -165,17 +173,21 @@ Nunito」，而不是「删除衬线体」。
 
 ### 7.1 Header
 
-**所有页面使用同一个 Header**，模板是 **Static Master 的 header**（`app/home-master.tsx` 里的
-`.logo` / `.tagline` / `.navigation` / `.language`），不是 `HomeHub` 的 header。抽取成共用组件时，
-Master 的渲染必须保持像素级不变；如果做不到这一点，就让其他页面去对齐 Master，不改 Master 本身。
-Projects 页在建立时接入这个 Header。
+**所有页面使用同一个 Header**。已经抽成共用组件 `components/site-header.tsx`
+（Experience、About 在用），字号、间距、选中态下划线按下面几条。Home 桌面版接入时对齐这个组件，
+不再单独维护一份 Master 专属 header 标记（旧的 `app/home-master.tsx` header 已随桌面场景一起替换）。
+Projects 页在建立时同样接入。
 
 **2026-09-15 核对**：`/storybook` **目前完全没有 Header**（没有 logo、导航、语言切换），所以这一条在本轮
 表现为「新建并接入」，不是「对齐」。
 
 - **左侧**：灰绿线稿枝条（`--pw-sage`）、手写体 "Peiwen Zhang"，下方是小标签。Experience 页当前的橙色叶子需要换掉。
 - **中间**：导航使用手写体。选中态是一条细手绘下划线，颜色 `--pw-ink`（Master 实际用 `#494542`）。全站只用这一种选中样式，不再使用粉色笔刷胶囊，也不再使用衬线加下划线的版本。
-- **右侧**：`中 / EN` 切换，当前语言用 `--pw-accent` 下划线标出。黑胶唱片改成扁平样式，不加投影和高光。
+- **右侧**：`中 / EN` 切换，当前语言用 `--pw-accent` 下划线标出，其后是背景音乐开关
+  （`components/music-toggle.tsx`）。**已知冲突（2026-09-21 记录，未处理）**：这条规则写的是
+  "黑胶唱片改成扁平样式，不加投影和高光"，但音乐开关实现时加了两道高光弧（用来让转动的唱片
+  看得出在转，纯同心圆转多快都像静止）。这条待专门讨论——可能是换一种不加高光的不对称标记
+  （比如封面上的一道裂纹、一个偏心的花纹），而不是干脆去掉，因为去掉后转动又会变得不可见。
 
 ### 7.2 页脚小注
 
@@ -228,6 +240,9 @@ no blue-purple gradients, no heavy shading, no realistic rendering,
 no 3D, no strong perspective, no leafy or cut-out border, no decorative text.
 ```
 
+**Home 桌面场景的窗外例外**：上面这段排除清单里的 "no blue-purple gradients" 对 Home 的
+窗外不生效（见第 2 节的冬夜例外）；其余排除项照常适用。
+
 ### 8.4 各场景的单独修改要求
 
 **Experience · Communication University of China（秋）**
@@ -248,6 +263,21 @@ no 3D, no strong perspective, no leafy or cut-out border, no decorative text.
 - 路灯只画小暖点，不带光晕。
 - 雪花数量减少。
 - 保留：埃菲尔铁塔（本场景主地标）、石碑、长椅。
+
+**Home · 桌面场景（2026-09-21，取代 Static Master）**
+- 小佩文的书桌一角，第一人称视角（看向桌面和窗外，不是看向她本人）。
+- 窗外：固定冬夜，真蓝色调（本节例外），远处的城、飘雪、暖黄的室内窗光作对比。
+- 桌上的可交互物体：活页笔记本（→ About）、明信片一叠 + 银杏叶 + 车票（→ Experience）、
+  胶卷／老式相机（→ Projects）、水晶球（→ Playground）。
+- 氛围装饰（不可点）：书堆、花瓶、笔筒、墙上钉的小佩文照片、窗台的猫、小房子摆件。
+- 每个可交互物体最终要能单独出图（独立图层，透明底），才能做悬停时的抬起反应；
+  背景桌面本身也要单独一张，物体的位置留白但不留可见接缝。
+- 详细的构图区块、图层清单和逐个出图提示词见 `claude/home-desk-2026-09-21.md`。
+- **接入状态（2026-09-21）**：`app/home-desk.tsx` + `app/home-desk.module.css` 已实现并接管
+  `app/page.tsx` 默认路由；背景层与四个物体图层已定位、悬停 hop/sway 反应已接入、四个物体是
+  真正的 `<Link>`（Tab 可达、focus 环可见）。移动端沿用旧 Master 的"固定像素舞台 + 外层滚动"
+  方案，不是专门的竖屏构图（待办里明确标注为下一步）。lint/typecheck/build 尚未在本次改动上
+  跑过——见 `claude/home-desk-2026-09-21.md` 待办的说明。
 
 **Projects · 阁楼**
 - 构图保留：晾绳、窗外的巴黎、小猫。
@@ -361,6 +391,7 @@ no 3D, no strong perspective, no leafy or cut-out border, no decorative text.
 
 两页并排时不像同一个网站（整页平均饱和度 Experience 0.074、About 0.180）。用户在对比页上选定：
 两边向中间靠拢，Experience 略提饱和并加暖，About 往回收并去掉纯装饰贴纸，共用底色 `#F4EDE1`。
-全部通过 CSS 实现，不重新出图。Home（Static Master）不在范围内，仍然冻结。
+全部通过 CSS 实现，不重新出图。当时 Home（Static Master）不在范围内，仍然冻结；
+2026-09-21 起该冻结已解除（见文件开头），Home 换成新的桌面场景，不再沿用这版山谷画面。
 
 具体数值、作用范围和验收项见 `design-assets/VISUAL_UNIFY.md`。今后新页面（Projects 等）以这组数值为基准。

@@ -69,6 +69,153 @@
   transform: none;
 }
 
+/* Page-level intro banner (2026-09-22, redrawn same day after a live check — the
+   pill.webp version below read as heavy/cartoonish sitting on open cream paper
+   instead of inside the notebook's own cramped page, and didn't match /experience's
+   airier banner). Sits between the header and the notebook, the same job
+   /experience's own `.intro` does above its scene. Doesn't grow/shrink (no
+   flex-grow), so it just takes its natural height and the notebook below still
+   centers in whatever space is left. Tags are now the same light dash-marker style
+   as /experience's `.stickers` (see app/experience/experience.module.css) instead of
+   an image asset, just recolored with About's own palette (dust-blue / butter /
+   rose-brown, from about-book.module.css's `--dust-blue`/`--butter`/`--rose-brown`)
+   so the two pages read as one system without literally sharing a stylesheet. */
+.intro {
+  flex: none;
+  text-align: center;
+  padding: 10px 20px 0;
+}
+
+.introHeading {
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 36px);
+  line-height: 1.15;
+  margin: 0 0 4px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 22px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--hand);
+  font-size: 17px;
+  line-height: 1.4;
+  color: #8a8072;
+  letter-spacing: 0.01em;
+}
+
+.tag {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tag::before {
+  content: "";
+  width: 16px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 3px;
+  opacity: 0.85;
+  transform: rotate(-6deg) translateY(1px);
+}
+
+.tag:nth-child(1)::before {
+  background: #93a8ac;
+}
+
+.tag:nth-child(2)::before {
+  background: #ead48f;
+  opacity: 0.65;
+  transform: rotate(5deg) translateY(1px);
+}
+
+.tag:nth-child(3)::before {
+  background: #cba088;
+  transform: rotate(-3deg) translateY(1px);
+}
+
+.stats {
+  margin-top: 6px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats li {
+  margin: 0 0.7em;
+  white-space: nowrap;
+}
+
+.stats li + li::before {
+  content: "·";
+  margin-right: 1.4em;
+  color: #c6bca9;
+}
+
+/* 2026-09-22 (v5): page-specific arrival — "text elements appear one by one", a very
+   subtle soft-pop (not a cartoon bounce): a small overshoot past rest on the way in,
+   opacity 0→1 (0→0.55 for `.stats`, which already rests at 0.55 — the keyframe's "to"
+   has to match that or the fill-forwards end state would permanently brighten it).
+   Plain CSS `animation`, fires on mount, no JS — same convention as
+   experience.module.css's `.reveal*`. Gated behind
+   `prefers-reduced-motion: no-preference`. */
+@keyframes aboutTextPop {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes aboutStatsPop {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  60% {
+    opacity: 0.55;
+    transform: translateY(-1px);
+  }
+  100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .revealHeading {
+    opacity: 0;
+    animation: aboutTextPop 380ms cubic-bezier(0.25, 0.1, 0.25, 1) 920ms both;
+  }
+  .revealTags {
+    opacity: 0;
+    animation: aboutTextPop 380ms cubic-bezier(0.25, 0.1, 0.25, 1) 1030ms both;
+  }
+  .revealStats {
+    opacity: 0;
+    animation: aboutStatsPop 380ms cubic-bezier(0.25, 0.1, 0.25, 1) 1140ms both;
+  }
+}
+
 /* Pencil cursor, same as /experience (see app/experience/experience.module.css):
    fine pointers only, system cursor is the fallback. The postcard's writing area keeps
    the pencil too — it is a button, not a text field. */

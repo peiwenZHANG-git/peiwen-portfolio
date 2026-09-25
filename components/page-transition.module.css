@@ -1,0 +1,139 @@
+/* Airy Paper Dissolve — Global Departure (v5). See page-transition.tsx's top comment
+   for the full rationale. This file now owns ONLY the old page leaving:
+
+   1. `.stage` / `.departing` / `.departed` are applied by each page to its own OUTER
+      main-content element (never its header, never the inner elements a page uses for
+      its own arrival reveal — see app/experience/experience.module.css and
+      app/about/about-book.module.css + about.module.css for those). `.departing` is
+      the animated fade-out; `.departed` is the held, fully-invisible resting state
+      during the warm-paper gap (transition: none — a hard hold, not a further
+      animation). When a page is simply sitting idle, or has just mounted as a
+      destination, only the base `.stage` rule applies (opaque, untransformed) — this
+      file never animates a page in.
+
+   2. `.backdrop` is a small always-mounted, never-animated flat rect behind everything,
+      in the project's real warm-ivory paper tone (`#f7f3e9`, the same value already
+      used as `--pw-paper` in home-desk.module.css). It exists purely so the instant
+      between the old page unmounting and the new one mounting shows the right colour
+      instead of `body`'s mismatched lavender `--paper` token.
+
+   3. `.paperLight` is the brief's "short warm-paper breathing gap" made visible: one
+      flat (no shape, no gradient, no visible edge), low-opacity warm-ivory rect,
+      mounted only for the duration of a transition, remounted fresh per-transition via
+      a React `key` so its keyframe restarts cleanly every time. */
+
+/* IMPORTANT: no `transition` on the base rule. A freshly-mounted destination page can
+   briefly receive `.departed` (if this file's phase hasn't ticked back to idle yet by
+   the time that page's own first render reads context) before settling back to this
+   bare `.stage` class. If a transition were declared here, THAT class change (departed
+   → idle) would itself animate — an unintended ~420ms fade/drift/blur on the page's
+   OUTER wrapper, racing against that page's own, differently-timed inner reveal
+   animation (see experience.module.css / about-book.module.css / about.module.css).
+   That produced exactly the "content still pops in, like a page flip" bug reported
+   live on About: two uncoordinated motions on the same content. Keeping the
+   transition declared only on `.departing` (below) means the ONLY time this wrapper
+   ever animates is the one intentional case — the page currently being navigated away
+   from. Reverting to bare `.stage` always snaps instantly, never animates. */
+.stage {
+  transform-origin: 50% 50%;
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  will-change: transform, opacity, filter;
+}
+
+/* DEPART — the current page lifts very slightly and fades, like it's settling back
+   into the paper rather than reacting to anything on screen. Transition is declared
+   here, not on the base `.stage` rule — see the comment above. */
+.stage.departing {
+  transition:
+    transform 420ms cubic-bezier(0.37, 0, 0.2, 1),
+    opacity 420ms cubic-bezier(0.37, 0, 0.2, 1),
+    filter 420ms cubic-bezier(0.37, 0, 0.2, 1);
+  transform: translateY(-3px);
+  opacity: 0;
+  filter: blur(0.5px);
+}
+
+/* Held, fully-invisible resting state during the warm-paper gap between the departure
+   finishing and this file resetting to idle. No transition — a hard hold. */
+.stage.departed {
+  transition: none;
+  transform: translateY(-3px);
+  opacity: 0;
+  filter: blur(0.5px);
+}
+
+/* DIVE (2026-09-24) — Home's "walk in through the object". Home zooms its own inner
+   camera layer toward the clicked desk object; this outer wrapper only fades, later and
+   slower than the default, so the first half of the zoom is seen at full strength and
+   the paper takes over at the end. No transform here (it would fight the zoom). */
+.stage.departing.dive {
+  transition:
+    opacity 820ms cubic-bezier(0.6, 0, 0.85, 0.35),
+    filter 820ms cubic-bezier(0.6, 0, 0.85, 0.35);
+  transform: none;
+  opacity: 0;
+  filter: blur(2px);
+}
+
+.stage.departed.dive {
+  transform: none;
+  filter: blur(2px);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #f7f3e9;
+  pointer-events: none;
+}
+
+.paperLight {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: #f7f3e9;
+  opacity: 0;
+  animation: paperLightPulse 500ms cubic-bezier(0.37, 0, 0.2, 1) both;
+}
+
+/* A short, localized "breath" centred on the 420–500ms gap (the route switch itself
+   happens ~480ms in) — still a flat rect, still capped at the same ~0.20 peak as
+   before, not raised. */
+@keyframes paperLightPulse {
+  0% {
+    opacity: 0;
+  }
+  76% {
+    opacity: 0.1;
+  }
+  84% {
+    opacity: 0.2;
+  }
+  96% {
+    opacity: 0.06;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition: none;
+  }
+
+  .stage.departing,
+  .stage.departed {
+    transform: none;
+    opacity: 1;
+    filter: none;
+  }
+
+  .paperLight {
+    display: none;
+  }
+}

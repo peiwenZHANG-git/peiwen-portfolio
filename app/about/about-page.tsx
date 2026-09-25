@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
+import { usePageTransition } from "@/components/page-transition";
 import { aboutAsset, type AboutAssetKey } from "./about-assets";
 import { bodyFont, handFont } from "./fonts";
 import styles from "./about.module.css";
@@ -39,6 +40,13 @@ import bookStyles from "./about-book.module.css";
  * them anymore) and pulled back three item-level saturations (polaroid backing 2.5→1.44,
  * chips 1.6→1.17, the CV pill 1.9→1.26). Its color-correction filters (notebook base,
  * sticker images, the portrait photo) live in about-book.module.css, not here.
+ *
+ * Hover reactions (2026-09-21): the objects on the page — camera, flower, globe,
+ * suitcase, bird, carousel, mailbox and so on — answer the mouse with a small hop or
+ * sway (`live` on the sticker, `.live` in the stylesheet). Only those stickers take
+ * pointer events; tapes, pins, clips, backing cards and the two Peiwen stickers stay
+ * click-through so their transparent corners don't sit on top of the text. Touch devices
+ * and `prefers-reduced-motion` get nothing.
  *
  * Cross-spread switching (IMPLEMENTATION.md §5): the notebook itself never animates.
  * On navigation the current spread's items fade out (200ms, 8px lift), then the new
@@ -90,11 +98,17 @@ type BaseItem = {
   zIndex?: number;
 };
 
-type StickerItem = BaseItem & { kind: "sticker"; assetKey: AboutAssetKey; alt: string };
+type StickerItem = BaseItem & { kind: "sticker"; assetKey: AboutAssetKey; alt: string; live?: Live };
 type NodeItem = BaseItem & { kind: "node"; content: ReactNode };
 type SpreadItem = StickerItem | NodeItem;
 
 type Spread = { name: string; left: SpreadItem[]; right: SpreadItem[] };
+
+/** Hover reactions for the objects on the page (mouse/trackpad only, see the
+    `.live` rules in about-book.module.css). Most things hop; the light, feathery ones
+    sway; the carousel turns. Stickers without one of these stay click-through, which is
+    what keeps their transparent corners from swallowing the text underneath. */
+type Live = "hop" | "sway";
 
 /** A placed sticker image, per layout.js's `st(IMG[key], css, rot)`. `alt` defaults to ""
     (decorative) — the four exceptions with real text baked into the artwork
@@ -106,11 +120,31 @@ function sticker(
   top: string,
   width: string,
   rotate: number,
-  extra: Partial<Pick<BaseItem, "zoom" | "saturate" | "zIndex" | "height">> = {},
+  extra: Partial<Pick<BaseItem, "zoom" | "saturate" | "zIndex" | "height">> & { live?: Live } = {},
   alt = "",
 ): StickerItem {
   return { kind: "sticker", id, assetKey, left, top, width, rotate, alt, ...extra };
 }
+
+/* ------------------------------------------------------------- page-level intro banner
+ * 2026-09-22: mirrors /experience's `.intro` — a short heading + a row of tags + a
+ * stats line, sitting above the interactive piece instead of inside it, so a visitor
+ * gets the same kind of orientation on both pages. First pass reused the notebook's
+ * pill.webp chip art for the tags; a live check showed it reading as heavy/cartoonish
+ * on open cream paper (it was drawn for the notebook's own cramped page, not this),
+ * so the tags now use the same light colored-dash marker Experience's `.stickers`
+ * use, just recolored with About's own dust-blue/butter/rose-brown palette instead of
+ * Experience's — see about.module.css's `.tag` rules. The three tags themselves
+ * ("AI Products", "Prototyping", "Interactive Storytelling") still echo three of the
+ * four skill chips already shown on the Intro spread's right page (see `introRight`
+ * below), and the stats are drawn from content already on the page (three spreads,
+ * three languages, the current MSc) — nothing here is a new fact or a new asset.
+ */
+const topIntro = {
+  heading: "Turn a few pages to get to know me.",
+  tags: ["AI Products", "Prototyping", "Interactive Storytelling"],
+  stats: ["3 spreads", "3 languages", "MSc in progress"],
+};
 
 /** A placed content block, per layout.js's `el(html, css, rot)`. */
 function node(
@@ -149,8 +183,8 @@ const introLeft: SpreadItem[] = [
     "68%",
     -3,
   ),
-  sticker("intro-flower", "flower", "-2.9%", "27.9%", "27%", 17.5),
-  sticker("intro-camera", "camera", "51.2%", "31.4%", "50%", 11),
+  sticker("intro-flower", "flower", "-2.9%", "27.9%", "27%", 17.5, { live: "sway" }),
+  sticker("intro-camera", "camera", "51.2%", "31.4%", "50%", 11, { live: "hop" }),
   node(
     "intro-title",
     <>
@@ -309,7 +343,7 @@ const journeyLeft: SpreadItem[] = [
     {},
     "My Journey",
   ),
-  sticker("journey-feather", "feather", "69.9%", "-3%", "19.5%", 5),
+  sticker("journey-feather", "feather", "69.9%", "-3%", "19.5%", 5, { live: "sway" }),
   node(
     "journey-timeline",
     <div
@@ -352,7 +386,7 @@ const journeyLeft: SpreadItem[] = [
     "96.2%",
     0,
   ),
-  sticker("journey-flower-sakura", "flower-sakura", "77.6%", "45.1%", "15.7%", 0),
+  sticker("journey-flower-sakura", "flower-sakura", "77.6%", "45.1%", "15.7%", 0, { live: "sway" }),
 ];
 
 const journeyRight: SpreadItem[] = [
@@ -380,8 +414,8 @@ const journeyRight: SpreadItem[] = [
     "46.8%",
     7.5,
   ),
-  sticker("journey-globe", "globe", "5.7%", "18.5%", "31%", -17),
-  sticker("journey-suitcase", "suitcase", "55.4%", "75.8%", "42.7%", 6),
+  sticker("journey-globe", "globe", "5.7%", "18.5%", "31%", -17, { live: "sway" }),
+  sticker("journey-suitcase", "suitcase", "55.4%", "75.8%", "42.7%", 6, { live: "hop" }),
   sticker("journey-clip1", "clip1", "10.8%", "78.9%", "8.3%", -14),
 ];
 
@@ -411,7 +445,7 @@ const beyondLeft: SpreadItem[] = [
     "A little beyond design",
   ),
   sticker("beyond-peiwen-swim", "peiwen-swim", "-25.6%", "48.8%", "64.3%", 0, { zIndex: 3 }),
-  sticker("beyond-skillet", "skillet", "76.6%", "37.5%", "23.8%", 25),
+  sticker("beyond-skillet", "skillet", "76.6%", "37.5%", "23.8%", 25, { live: "hop" }),
   sticker(
     "beyond-note-thingsilove",
     "note-thingsilove",
@@ -425,10 +459,10 @@ const beyondLeft: SpreadItem[] = [
 ];
 
 const beyondRight: SpreadItem[] = [
-  sticker("beyond-carousel", "carousel", "8.9%", "76.7%", "30.1%", -6.5),
+  sticker("beyond-carousel", "carousel", "8.9%", "76.7%", "30.1%", -6.5, { live: "hop" }),
   node("beyond-postcard", <PostcardNote />, "1.8%", "46.1%", "69.1%", 0),
-  sticker("beyond-feather", "feather", "55.2%", "76.2%", "18.2%", 0),
-  sticker("beyond-bird", "bird", "-5.8%", "-0.6%", "26.7%", -4, { zoom: 1.14, zIndex: 3 }),
+  sticker("beyond-feather", "feather", "55.2%", "76.2%", "18.2%", 0, { live: "sway" }),
+  sticker("beyond-bird", "bird", "-5.8%", "-0.6%", "26.7%", -4, { zoom: 1.14, zIndex: 3, live: "sway" }),
   node(
     "beyond-note-exploring",
     <div className={`${bookStyles.note} ${bookStyles.noteBlue}`}>
@@ -453,7 +487,7 @@ const beyondRight: SpreadItem[] = [
     "60%",
     -2,
   ),
-  sticker("beyond-mailbox", "mailbox", "76.2%", "44.2%", "22.4%", 3),
+  sticker("beyond-mailbox", "mailbox", "76.2%", "44.2%", "22.4%", 3, { live: "hop" }),
 ];
 
 const SPREADS: Spread[] = [
@@ -471,6 +505,26 @@ const STAGGER_MS = 220;
 /** Matches the entrance transition's own length (opacity 0.3s, transform 0.55s) plus a
     small buffer, so `busy` clears once the last staggered item has actually settled. */
 const ENTER_SETTLE_MS = 560;
+/** 2026-09-22 (v5.3): live feedback was that route-arrival into About showed no
+    elastic entrance at all for the first spread's own content (the photo, Quick
+    Facts note, stickers, …) — `phase` used to start at `"idle"`, so `itemStyle`
+    rendered every item at full opacity with `transition: "none"` from the very
+    first frame, same as an internal `goTo` settle. The fix below reuses `goTo`'s
+    existing leaving→pending→entering→idle machinery for the very first mount too,
+    so the first spread's items get the same per-item `STAGGER_MS` bounce
+    (`cubic-bezier(0.34, 1.56, 0.64, 1)`) as switching spreads already has. This
+    delay is when that first entrance kicks off, relative to mount — matched to
+    `.revealBook`'s own `animation-delay` in about-book.module.css so items start
+    popping in exactly as the notebook itself becomes visible, not while still
+    masked by the notebook's own zero opacity. Keep these two files' delay in sync
+    if either changes.
+
+    2026-09-23: was 480ms — live feedback was that the gap between the desk
+    background (added this round, appears instantly with no fade of its own) and
+    the notebook becoming visible read as too long. Cut to 150ms so the notebook
+    starts revealing much sooner after route arrival; the 570ms reveal itself is
+    unchanged. */
+const FIRST_ENTER_DELAY_MS = 150;
 
 function itemStyle(item: SpreadItem, phase: Phase, index: number, reducedMotion: boolean): CSSProperties {
   const base: CSSProperties = {
@@ -526,11 +580,20 @@ function ItemView({
   index: number;
   reducedMotion: boolean;
 }) {
-  const className = [bookStyles.el, item.kind === "sticker" ? bookStyles.st : null]
+  const live = item.kind === "sticker" ? item.live : undefined;
+  const className = [
+    bookStyles.el,
+    item.kind === "sticker" ? bookStyles.st : null,
+    live ? bookStyles.live : null,
+  ]
     .filter(Boolean)
     .join(" ");
   return (
-    <div className={className} style={itemStyle(item, phase, index, reducedMotion)}>
+    <div
+      className={className}
+      style={itemStyle(item, phase, index, reducedMotion)}
+      data-live={live}
+    >
       {item.kind === "sticker" ? (
         // Decorative/illustrated sticker, sized by its placed container's width (%), not intrinsic pixels.
         // eslint-disable-next-line @next/next/no-img-element
@@ -577,6 +640,7 @@ function PostcardNote() {
   const [sent, setSent] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
   const tapRef = useRef<HTMLButtonElement | null>(null);
   const hideTimer = useRef<number | null>(null);
 
@@ -613,6 +677,25 @@ function PostcardNote() {
       if (event.key === "Escape") {
         setSheetOpen(false);
         tapRef.current?.focus();
+        return;
+      }
+      // Keep Tab inside the dialog: textarea → Close → Send → textarea.
+      if (event.key !== "Tab") return;
+      const dialog = sheetRef.current;
+      if (!dialog) return;
+      const stops = Array.from(
+        dialog.querySelectorAll<HTMLElement>("textarea, button"),
+      ).filter((node) => !node.hasAttribute("disabled"));
+      if (stops.length === 0) return;
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !dialog.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !dialog.contains(active))) {
+        event.preventDefault();
+        first.focus();
       }
     }
     window.addEventListener("keydown", onKey);
@@ -640,6 +723,7 @@ function PostcardNote() {
         // filter, any of which would trap a position:fixed overlay inside the notebook.
         createPortal(
           <div
+            ref={sheetRef}
             className={`${bookStyles.sheet} ${handFont.variable} ${bodyFont.variable}`}
             role="dialog"
             aria-modal="true"
@@ -698,15 +782,38 @@ function getReducedMotionServer() {
 
 /** Must match the landscape-phone media query in about-book.module.css. */
 const PHONE_LANDSCAPE_QUERY = "(orientation: landscape) and (max-height: 500px)";
+/** Must match the portrait-phone media query in about-book.module.css. */
+const PHONE_PORTRAIT_QUERY = "(orientation: portrait) and (max-width: 600px)";
+
+function subscribePortrait(onChange: () => void) {
+  const mq = window.matchMedia(PHONE_PORTRAIT_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+function getPortrait() {
+  return window.matchMedia(PHONE_PORTRAIT_QUERY).matches;
+}
+function getPortraitServer() {
+  return false;
+}
 
 export default function AboutPage() {
+  const { stageClassName, onStageTransitionEnd } = usePageTransition();
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [renderIndex, setRenderIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>("idle");
+  // Starts "pending" (not "idle") so the very first mount plays the same entrance
+  // `goTo` uses when switching spreads — see the FIRST_ENTER_DELAY_MS comment above
+  // and the mount effect below. `itemStyle` already renders "pending" as invisible/
+  // scaled-down, so there's no flash of unstaggered content before that effect runs.
+  const [phase, setPhase] = useState<Phase>("pending");
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, getReducedMotionServer);
   const busyRef = useRef(false);
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [viewAnyway, setViewAnyway] = useState(false);
+  const phonePortrait = useSyncExternalStore(subscribePortrait, getPortrait, getPortraitServer);
+  /* The rotate card covers the page, so the notebook behind it is made inert: no tab
+     stops, nothing for a screen reader, until "View anyway" is pressed. */
+  const blocked = phonePortrait && !viewAnyway;
   const timers = useRef<number[]>([]);
 
   useEffect(
@@ -715,6 +822,31 @@ export default function AboutPage() {
     },
     [],
   );
+
+  // The very first entrance (mount into spread 0) — plays the same
+  // leaving→pending→entering→idle bounce `goTo` uses for every later spread switch,
+  // just triggered by mounting instead of a click. `phase` already starts "pending"
+  // above, so this only needs to flip it to "entering" (after FIRST_ENTER_DELAY_MS,
+  // synced with `.revealBook`'s own delay) and back to "idle" once the last
+  // staggered item has settled. Reduced-motion users skip straight to "idle" —
+  // `itemStyle` already renders every phase identically to "idle" when
+  // `reducedMotion` is true, so this is a formality for `busy`, not a visual fix.
+  useEffect(() => {
+    if (reducedMotion) {
+      setPhase("idle");
+      return;
+    }
+    busyRef.current = true;
+    const firstSpread = SPREADS[0];
+    const maxCount = Math.max(firstSpread.left.length, firstSpread.right.length);
+    const settleMs = maxCount * STAGGER_MS + ENTER_SETTLE_MS;
+    const t1 = window.setTimeout(() => setPhase("entering"), FIRST_ENTER_DELAY_MS);
+    const t2 = window.setTimeout(() => {
+      setPhase("idle");
+      busyRef.current = false;
+    }, FIRST_ENTER_DELAY_MS + settleMs);
+    timers.current.push(t1, t2);
+  }, [reducedMotion]);
 
   const goTo = useCallback(
     (target: number) => {
@@ -767,12 +899,13 @@ export default function AboutPage() {
     function onKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "TEXTAREA" || target.closest('[role="dialog"]'))) return;
+      if (blocked) return;
       if (event.key === "ArrowRight") goTo(spreadIndex + 1);
       if (event.key === "ArrowLeft") goTo(spreadIndex - 1);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goTo, spreadIndex]);
+  }, [goTo, spreadIndex, blocked]);
 
   const busy = phase !== "idle";
   const active = SPREADS[renderIndex];
@@ -783,20 +916,53 @@ export default function AboutPage() {
        users (the axe "scrollable-region-focusable" rule). */
     <div
       ref={shellRef}
-      className={[styles.shell, handFont.variable, bodyFont.variable, viewAnyway ? bookStyles.viewAnyway : ""]
-        .filter(Boolean)
-        .join(" ")}
-      tabIndex={0}
+      className={[styles.shell, handFont.variable, bodyFont.variable].filter(Boolean).join(" ")}
+      tabIndex={blocked ? -1 : 0}
     >
       <a className={styles.skipLink} href="#about-content">
         Skip to content
       </a>
 
-      <SiteHeader current="about" />
+      {/* display: contents — the wrapper only exists to carry `inert`. */}
+      <div className={bookStyles.chromeWrap} inert={blocked || undefined}>
+        <SiteHeader current="about" />
+      </div>
 
-      <main id="about-content" className={bookStyles.stageWrap} tabIndex={-1}>
+      {/* 2026-09-22: orienting banner above the notebook, same job as /experience's
+          `.intro` above its scene — see the `topIntro` comment above for the tags'
+          dash-marker styling (recolored to About's own palette, not Experience's). */}
+      {/* 2026-09-22 (v5): "text elements appear one by one" — heading/tags/stats each
+          carry their own `.reveal*` mount animation (see about.module.css), independent
+          of `stageClassName` above (which only ever does anything while THIS page is
+          departing, not while it's arriving) and independent of the notebook's own
+          `.revealBook` reveal below. */}
+      <div className={`${styles.intro} ${stageClassName}`} inert={blocked || undefined}>
+        <h1 className={`${styles.introHeading} ${styles.revealHeading}`}>{topIntro.heading}</h1>
+        <ul className={`${styles.tags} ${styles.revealTags}`}>
+          {topIntro.tags.map(tag => (
+            <li key={tag} className={styles.tag}>
+              {tag}
+            </li>
+          ))}
+        </ul>
+        <ul className={`${styles.stats} ${styles.revealStats}`}>
+          {topIntro.stats.map(stat => (
+            <li key={stat}>{stat}</li>
+          ))}
+        </ul>
+      </div>
+
+      <main
+        id="about-content"
+        className={`${bookStyles.stageWrap} ${stageClassName}`}
+        onTransitionEnd={onStageTransitionEnd}
+        tabIndex={-1}
+        inert={blocked || undefined}
+      >
+        {/* "notebook first" — the whole spread reveals as one unit, ahead of the intro
+            text above. See about-book.module.css's `.revealBook`. */}
         <div className={bookStyles.bookStage}>
-          <div className={bookStyles.book}>
+          <div className={`${bookStyles.book} ${bookStyles.revealBook}`}>
             <Page
               items={active.left}
               phase={phase}
@@ -822,15 +988,15 @@ export default function AboutPage() {
               &lsaquo;
             </button>
             <div className={bookStyles.label}>{SPREADS[spreadIndex].name}</div>
-            <div className={bookStyles.dots} role="tablist" aria-label="Choose spread">
+            <div className={bookStyles.dots} role="group" aria-label="Choose spread">
               {SPREADS.map((spread, i) => (
                 <button
                   key={spread.name}
                   type="button"
-                  role="tab"
                   className={bookStyles.dot}
                   aria-label={spread.name}
-                  aria-current={i === spreadIndex ? "true" : "false"}
+                  aria-current={i === spreadIndex ? "true" : undefined}
+                  disabled={busy}
                   onClick={() => goTo(i)}
                 />
               ))}
@@ -848,7 +1014,8 @@ export default function AboutPage() {
         </div>
       </main>
 
-      {/* Portrait phones only (CSS). */}
+      {/* Portrait phones. */}
+      {blocked && (
       <div className={bookStyles.rotate}>
         <svg viewBox="0 0 120 90" width="120" height="90" fill="none" stroke="#8c6a52" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="14" y="10" width="34" height="62" rx="6" />
@@ -863,6 +1030,7 @@ export default function AboutPage() {
           View anyway
         </button>
       </div>
+      )}
     </div>
   );
 }

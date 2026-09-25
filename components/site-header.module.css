@@ -7,8 +7,8 @@
  * Self-contained: values that used to come from experience.module.css's `.root` are
  * redeclared locally on `.siteHeader` so this header renders identically no matter
  * which route's shell it sits inside. The `--pw-hand` fallback chain picks up whichever
- * route's next/font variable (`--exp-hand` on /experience, `--about-hand` on /about) is
- * actually in scope.
+ * route's next/font variable (`--exp-hand` on /experience, `--about-hand` on /about,
+ * `--home-hand` on the desk-scene Home) is actually in scope.
  */
 
 .siteHeader {
@@ -17,7 +17,7 @@
   --pw-ink-faint: #918e88;
   --pw-accent: #d96a60;
   --pw-paper: #f7f1e7;
-  --pw-hand: var(--exp-hand, var(--about-hand, "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive));
+  --pw-hand: var(--exp-hand, var(--about-hand, var(--home-hand, "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive)));
 
   position: sticky;
   top: 0;
@@ -85,13 +85,22 @@
 }
 
 .lang {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   justify-self: end;
   font-family: var(--pw-hand);
   font-size: 19px;
   color: var(--pw-ink-soft);
 }
 
-.lang span {
+.langText {
+  white-space: nowrap;
+}
+
+/* Only the "EN" inside the label — NOT .langText itself, which is also a span and
+   would drag 中 into the accent colour with it. */
+.langText span {
   color: var(--pw-accent);
   border-bottom: 1.5px solid var(--pw-accent);
 }
@@ -167,6 +176,7 @@
   }
 
   .lang {
+    gap: 9px;
     font-size: 15px;
   }
 }

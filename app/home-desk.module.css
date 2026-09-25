@@ -1,0 +1,930 @@
+/**
+ * Home · "a room that wakes up" (2026-09-24). Spec: claude/home-opening-2026-09-24.md.
+ * Evening revision: the plate is the 2:1 widescreen repaint (1774x887) with little
+ * Peiwen's photo on the wall and the full desk lamp; its paper is blank, so the desk
+ * labels are DOM text (see `.labels`). Mask PNGs below are 1774x887 too.
+ *
+ * One painted plate, `master.webp` (1448x1086, the accepted `home-master-lit`, with the
+ * window graded to a deep-blue night, the baked title removed from the sky and the lamp
+ * shade's specular spot knocked back — sources in design-assets/home-desk/). Every stage
+ * of the opening is that same plate under different exposure; see home-desk.tsx.
+ *
+ * Masks (public/assets/home-desk/, all 1448x1086 alpha PNGs, same pixel grid as the plate):
+ *   glass-mask.png   the window glass only (2px feather), vine and pinned card excluded
+ *   spill-mask.png   a ~100px soft band around the glass, cut off before the desk's
+ *                    entrance row (y > ~58%) so the cool light never "wakes" an entrance
+ *   window-edge.png  a thin cool ring on the glass edge: the only thing you can make out
+ *                    in Stage 0
+ *
+ * Colours: `--pw-*` mirrors STYLE_GUIDE.md §2 (scoped locally, never on :root).
+ * `--pw-window-blue` is the §2 winter-night exception, re-sampled from the new plate.
+ */
+
+@property --home-lamp-r {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.viewport {
+  --pw-paper: #f7f3e9;
+  --pw-ink: #3b3837;
+  --pw-accent: #d74b3c;
+  --pw-window-blue: #5e72a3;
+  --pw-title: #f4ede1;
+  --pw-hint: #c9d3ea;
+
+  /* 2026-09-24 evening: the plate is now a native 2:1 widescreen painting
+     (1774x887), "cover"-fitted: 16:9 screens lose ~5% off each side (wall, books),
+     wider-than-2:1 screens lose a little top/bottom. */
+  --W: max(100vw, calc(100svh * 1774 / 887));
+  --H: max(100svh, calc(100vw * 887 / 1774));
+
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: #0f1119;
+  color: var(--pw-ink);
+}
+
+/* ------------------------------------------------------------------ header */
+.headerZone {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+}
+
+.viewport:not(.phase_lit) .headerZone {
+  visibility: hidden;
+  opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .phase_lit .headerZone {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+
+  .phase_lit .headerZone:hover,
+  .phase_lit .headerZone:focus-within {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------ skip + a11y */
+.skip {
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  z-index: 60;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--pw-paper);
+  color: var(--pw-ink);
+  font: inherit;
+  font-family: var(--home-body), system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transform: translateY(-160%);
+  transition: transform 0.2s ease-out;
+}
+
+.skip:focus {
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ stage
+ * Cover-sized and biased upward: 40% of any vertical crop comes off the top (window
+ * head, ceiling) and 60% off the bottom (chair), so the entrance row stays in frame
+ * on 16:9 and wider. Positioned with left/top rather than transform, because the
+ * shared page-transition classes animate `transform` on this same element. */
+.stage {
+  position: absolute;
+  width: var(--W);
+  height: var(--H);
+  left: calc((100vw - var(--W)) / 2);
+  top: calc((100svh - var(--H)) * 0.4);
+}
+
+/* The camera: every layer of the room lives in here, so Home can zoom into a desk
+   object as one picture when an entrance is clicked ("walk in through the object"; the
+   shared page transition fades the stage out around it — see page-transition.tsx's
+   `dive` departure). The transform itself is set inline from home-desk.tsx. */
+.camera {
+  position: absolute;
+  inset: 0;
+}
+
+.camera.diving {
+  transition: transform 860ms cubic-bezier(0.5, 0, 0.15, 1);
+  will-change: transform;
+}
+
+.phase_boot .stage {
+  visibility: hidden;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dark,
+.spill,
+.windowLayer {
+  background: url("/assets/home-desk/master.webp") center / 100% 100% no-repeat;
+}
+
+/* dark: the sleeping room */
+.dark {
+  filter: brightness(0.08) saturate(0.3);
+  transition: filter 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.phase_window .dark,
+.phase_lighting .dark {
+  filter: brightness(0.13) saturate(0.38);
+}
+
+/* Stage 2: the darkness is wiped away by an ellipse (1.4:1 in pixels on a 4:3 plate,
+   hence the 0.95 vertical factor) growing from the lamp bulb. The inner 60% of the
+   radius is fully clear, the outer 40% is the feathered edge. 200% reaches the far
+   bottom-left corner with the feather already past it. */
+.phase_lighting .dark {
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--home-lamp-r) calc(var(--home-lamp-r) * 1.43) at 83.4% 41%,
+    transparent 60%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse var(--home-lamp-r) calc(var(--home-lamp-r) * 1.43) at 83.4% 41%,
+    transparent 60%,
+    #000 100%
+  );
+  animation: lampReveal 1180ms cubic-bezier(0.3, 0, 0.2, 1) 120ms both;
+}
+
+.phase_lit .dark {
+  display: none;
+}
+
+@keyframes lampReveal {
+  from {
+    --home-lamp-r: 0.1%;
+  }
+
+  to {
+    --home-lamp-r: 200%;
+  }
+}
+
+/* spill: cool outside light on the frame, sill, vine and window-sill objects */
+.spill {
+  background:
+    linear-gradient(rgba(127, 147, 196, 0.16), rgba(127, 147, 196, 0.16)),
+    url("/assets/home-desk/master.webp") center / 100% 100% no-repeat;
+  background-blend-mode: screen, normal;
+  -webkit-mask: url("/assets/home-desk/spill-mask.png") center / 100% 100% no-repeat;
+  mask: url("/assets/home-desk/spill-mask.png") center / 100% 100% no-repeat;
+  filter: brightness(0.34) saturate(0.55);
+  opacity: 0;
+  transition: opacity 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.phase_window .spill {
+  opacity: 1;
+}
+
+.phase_lighting .spill {
+  opacity: 0;
+  transition-duration: 900ms;
+}
+
+.phase_lit .spill {
+  display: none;
+}
+
+/* window: the glass */
+.windowLayer {
+  -webkit-mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
+  mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
+  filter: brightness(0.16) saturate(0.45);
+  transition: filter 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.phase_window .windowLayer,
+.phase_lighting .windowLayer {
+  filter: brightness(1) saturate(1);
+}
+
+.phase_lit .windowLayer {
+  display: none;
+}
+
+.windowEdge {
+  background: url("/assets/home-desk/window-edge.png") center / 100% 100% no-repeat;
+  opacity: 0.18;
+  transition: opacity 800ms ease;
+}
+
+.viewport:not(.phase_sleep) .windowEdge {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------------- snow */
+.snow {
+  --fall: calc(var(--H) * 0.52);
+
+  overflow: hidden;
+  -webkit-mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
+  mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
+  opacity: 0;
+  transition: opacity 800ms ease 440ms;
+}
+
+.phase_window .snow,
+.phase_lighting .snow,
+.phase_lit .snow {
+  opacity: 1;
+}
+
+.phase_lit:not(.played) .snow {
+  transition: none;
+}
+
+.flakeNear,
+.flakeFar {
+  position: absolute;
+  top: -2%;
+  border-radius: 50%;
+  animation-name: snowFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.flakeNear {
+  background: rgba(236, 240, 250, 0.85);
+}
+
+.flakeFar {
+  background: rgba(214, 222, 242, 0.55);
+}
+
+@keyframes snowFall {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(var(--drift), var(--fall), 0);
+  }
+}
+
+/* ------------------------------------------------------------ lamp light
+ * Only exists during Stage 2: a small warm spark at the bulb, then a soft warm wash
+ * riding the same ellipse outwards and fading to nothing. The lit room carries no
+ * leftover warm overlay — its colour is the painting's own. */
+.lampSpark,
+.lampWarmth {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.lampSpark {
+  left: 83.4%;
+  top: 41%;
+  width: 4.5%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 217, 154, 1), rgba(255, 217, 154, 0) 70%);
+  mix-blend-mode: screen;
+}
+
+.lampWarmth {
+  left: 83.4%;
+  top: 41%;
+  width: 200%;
+  aspect-ratio: 1.4;
+  transform: translate(-50%, -50%) scale(0.05);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(244, 201, 138, 1) 0%, rgba(244, 201, 138, 0.6) 35%, rgba(244, 201, 138, 0) 70%);
+  mix-blend-mode: soft-light;
+}
+
+.phase_lighting .lampSpark {
+  animation: lampSpark 1450ms ease-out both;
+}
+
+.phase_lighting .lampWarmth {
+  animation: lampWarmth 1450ms cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+
+@keyframes lampSpark {
+  0% {
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.55;
+  }
+
+  45% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes lampWarmth {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.05);
+  }
+
+  41% {
+    opacity: 0.22;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------ title
+ * The last reveal. Paper-white, because it sits on the deep-blue night sky.
+ * Title, intro line and the "pick something up" invitation stack in one column
+ * (`.heading`) so they never need hand-tuned `top` values against each other. */
+.heading {
+  position: absolute;
+  left: 60%;
+  top: 5%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  /* the dusk sky is a mid blue-grey: a soft, wide shadow of the same hue (not a glow)
+     keeps the paper-white writing readable on it */
+  text-shadow: 0 1px 8px rgba(40, 50, 86, 0.35);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-weight: 400;
+  font-size: calc(var(--W) * 0.026);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--pw-title);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.subtitle {
+  display: block;
+  margin-top: 0.45em;
+  font-size: 0.42em;
+  
+  opacity: 0.86;
+}
+
+.subtitle::after {
+  content: "";
+  display: block;
+  width: 2.6em;
+  height: 1px;
+  margin: 0.7em auto 0;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.phase_lit .title {
+  opacity: 1;
+}
+
+.phase_lit.played .title {
+  animation: titleIn 900ms cubic-bezier(0.25, 0.1, 0.25, 1) 250ms both;
+}
+
+@keyframes titleIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* who she is, in one breath, right under the title */
+.intro {
+  margin: 0.95em 0 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: calc(var(--W) * 0.0102);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--pw-title);
+  opacity: 0;
+}
+
+.phase_lit .intro {
+  opacity: 1;
+}
+
+.phase_lit.played .intro {
+  animation: introIn 900ms cubic-bezier(0.25, 0.1, 0.25, 1) 650ms both;
+}
+
+@keyframes introIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------- invitation
+ * The room is lit, but nothing yet says the desk is clickable. A last handwritten line
+ * under the title, then each entrance glows once in turn (left to right), twice over.
+ * Both stop as soon as the visitor points at or tabs into the desk. */
+.invite {
+  margin: 1.1em 0 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: calc(var(--W) * 0.0098);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  color: var(--pw-title);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+.phase_lit .invite {
+  animation: inviteIn 900ms ease 1100ms both;
+}
+
+.phase_lit.played .invite {
+  animation-delay: 1500ms;
+}
+
+.invite.inviteDone {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes inviteIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+.entrance::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 236, 196, 0.55), rgba(255, 236, 196, 0) 100%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+}
+
+.phase_lit:not(.touched) .entrance::after {
+  animation: entranceInvite 1700ms ease-in-out calc(1900ms + var(--invite-delay, 0ms)) 2;
+}
+
+.phase_lit.played:not(.touched) .entrance::after {
+  animation-delay: calc(2400ms + var(--invite-delay, 0ms));
+}
+
+@keyframes entranceInvite {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 0.85;
+  }
+}
+
+/* ------------------------------------------------------------------ hints */
+.hint {
+  position: absolute;
+  margin: 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: calc(var(--W) * 0.012);
+  white-space: nowrap;
+  color: var(--pw-hint);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+/* on the dark wall just left of the window */
+.hintWindow {
+  right: 68.5%;
+  top: 40%;
+}
+
+/* on the window sill, pointing at the lamp */
+.hintLamp {
+  right: 23.5%;
+  top: 45%;
+}
+
+.phase_sleep .hintWindow {
+  animation: hintIn 600ms ease 700ms both;
+}
+
+.phase_window .hintLamp {
+  animation: hintIn 600ms ease 1500ms both;
+}
+
+@keyframes hintIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 0.75;
+    transform: translateX(0);
+  }
+}
+
+/* --------------------------------------------------------------- hotspots */
+.hotspot {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hotspot:disabled {
+  display: none;
+}
+
+.hotspot:focus-visible {
+  outline: 2px solid var(--pw-hint);
+  outline-offset: 4px;
+}
+
+.hsWindow {
+  left: 32%;
+  top: 0;
+  width: 48.5%;
+  height: 52%;
+}
+
+.hsLamp {
+  left: 77.5%;
+  top: 25%;
+  width: 17%;
+  height: 42%;
+}
+
+.entrances {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.entrance {
+  pointer-events: auto;
+  transition: backdrop-filter 300ms ease;
+}
+
+.viewport:not(.phase_lit) .entrance {
+  pointer-events: none;
+}
+
+.entrance:focus-visible {
+  outline-color: var(--pw-accent);
+}
+
+/* first version: a barely-there brightening under the pointer, nothing moves */
+@media (hover: hover) and (pointer: fine) {
+  .phase_lit .entrance:hover::after {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+.phase_lit .entrance:focus-visible::after {
+  animation: none;
+  opacity: 0.7;
+}
+
+.hsExperience {
+  left: 9.3%;
+  top: 59.5%;
+  width: 31.2%;
+  height: 29.5%;
+}
+
+.hsAbout {
+  left: 43%;
+  top: 65.5%;
+  width: 14%;
+  height: 20%;
+}
+
+.hsProjects {
+  left: 62%;
+  top: 69%;
+  width: 11.2%;
+  height: 15%;
+}
+
+.hsPlayground {
+  left: 73.3%;
+  top: 77.5%;
+  width: 6%;
+  height: 11.5%;
+}
+
+/* ------------------------------------------------------------ desk labels
+ * The painting's paper is blank; the words are real text (for the future 中/EN
+ * toggle) laid ON each sheet: every `.sheet` is a flat box the size of that paper in
+ * master pixels, mapped onto the paper's four measured corners with a perspective
+ * matrix (`matrix3d`), so the handwriting follows the tilt and foreshortening of the
+ * paper instead of floating flat above it. `.sheets` is a 1774x887 plane scaled to the
+ * stage by `--k` (set from home-desk.tsx), so all sizes below are master pixels.
+ * `multiply` makes the ink sit IN the paper: it takes the exposure of whatever is
+ * under it, so it is invisible in the dark stages and revealed by the lamp sweep. */
+.labels,
+.labelsLight {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* About sits on the red leather cover, so its ink is light; `overlay` keeps the same
+   behaviour as `multiply` in the dark stages. */
+.labelsLight {
+  mix-blend-mode: overlay;
+}
+
+.sheets {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1774px;
+  height: 887px;
+  transform-origin: 0 0;
+  /* sheets are laid out at 2x (sizes below) and scaled back by their own matrix, so
+     small handwriting keeps even letter spacing */
+  transform: scale(var(--k, 1));
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 0 0;
+  margin: 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: #4a3e33;
+}
+
+.labelsLight .sheet {
+  color: #fbf1e4;
+}
+
+.sheet span {
+  display: block;
+}
+
+.sheet .rule {
+  width: 32px;
+  height: 2px;
+  margin: 10px 0 12px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.sheetWall {
+  width: 248px;
+  height: 374px;
+  transform: matrix(0.48992, -0.09799, 0.05561, 0.49733, 287.10, 87.65);
+  padding: 46px 0 0 30px; font-size: 21px; line-height: 1.55;
+}
+
+.sheetTicket {
+  width: 244px;
+  height: 88px;
+  transform: matrix(0.48668, -0.11270, 0.12784, 0.48296, 186.27, 728.80);
+  justify-content: center; padding: 0 0 4px 32px; font-size: 26px;
+}
+
+.sheetProjects {
+  width: 348px;
+  height: 174px;
+  transform: matrix(0.49669, -0.05359, 0.08304, 0.49051, 1105.77, 648.97);
+  padding: 52px 0 0 44px; font-size: 28px;
+}
+
+.sheetPlayground {
+  width: 150px;
+  height: 160px;
+  transform: matrix(0.49167, 0.07333, -0.11718, 0.48750, 1311.92, 690.75);
+  justify-content: flex-end; align-items: center; padding: 0 0 24px; font-size: 20px; line-height: 1.15; text-align: center;
+}
+
+.sheetAbout {
+  width: 364px;
+  height: 278px;
+  transform: matrix(0.49862, 0.02377, -0.07122, 0.49047, 810.75, 588.52);
+  padding: 48px 0 0 60px; font-size: 30px;
+}
+
+.sheet .hi {
+  margin-bottom: 8px;
+  font-size: 1.2em;
+}
+
+.sheet .gap {
+  margin-top: 14px;
+}
+
+.sheet .sub {
+  font-size: 0.82em;
+}
+
+/* ------------------------------------------------------------------ cursor
+ * Home's own cursor: a little hand-drawn lantern (the room at night, lit by a lamp).
+ * Anything you can click turns into the site's shared hand-drawn hand. Fine pointers
+ * only — touch devices keep the system cursor. Tip hotspot is the small arrow, top-left. */
+@media (hover: hover) and (pointer: fine) {
+  .viewport {
+    cursor: url("/assets/ui/cursor-lantern.png") 3 3, auto;
+    cursor: image-set(url("/assets/ui/cursor-lantern.png") 1x, url("/assets/ui/cursor-lantern@2x.png") 2x) 3 3, auto;
+  }
+
+  .viewport .hotspot,
+  .viewport .headerZone a,
+  .viewport .headerZone button {
+    cursor: url("/assets/ui/cursor-hand.png") 15 4, pointer;
+    cursor: image-set(url("/assets/ui/cursor-hand.png") 1x, url("/assets/ui/cursor-hand@2x.png") 2x) 15 4, pointer;
+  }
+}
+
+/* The lantern's halo (2026-09-25): a soft warm pool of light that follows the mouse.
+   A cursor image can't be bigger than ~32px, so the glow is its own layer. `screen`
+   only ever brightens, so it reads as light on the painting rather than a disc on top.
+   Brighter while the room is dark — the lantern is the only light in there — and
+   quieter once the desk lamp is on. Mouse only; hidden until the pointer moves. */
+.lanternGlow {
+  --gx: -999px;
+  --gy: -999px;
+
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  /* two parts: a small, bright warm core hugging the lantern (normal blend, so it
+     still reads on the light wood), and a wider faint warmth around it (screen) */
+  background:
+    radial-gradient(
+      circle 58px at calc(var(--gx) + 12px) calc(var(--gy) + 12px),
+      rgba(255, 238, 196, 0.72) 0%,
+      rgba(255, 224, 170, 0.4) 40%,
+      rgba(255, 214, 150, 0) 100%
+    ),
+    radial-gradient(
+      circle 130px at calc(var(--gx) + 12px) calc(var(--gy) + 12px),
+      rgba(255, 206, 140, 0.18) 0%,
+      rgba(255, 200, 130, 0.08) 50%,
+      rgba(255, 190, 120, 0) 100%
+    );
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.lanternGlow[data-on] {
+  opacity: 1;
+  animation: lanternBreath 3.6s ease-in-out infinite;
+}
+
+/* In the dark stages the lantern is the only light in the room: it opens a soft hole
+   in the darkness layer so the painting underneath shows through (not all the way —
+   it's a small lantern), plus a faint warm tint from the glow above. */
+.phase_sleep .lanternGlow,
+.phase_window .lanternGlow {
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle 150px at calc(var(--gx) + 12px) calc(var(--gy) + 12px),
+    rgba(255, 196, 120, 0.14) 0%,
+    rgba(255, 196, 120, 0) 70%
+  );
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .phase_sleep .dark,
+  .phase_window .dark {
+    -webkit-mask-image: radial-gradient(circle 190px at var(--lx, -999px) var(--ly, -999px), rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.42) 25%, rgba(0, 0, 0, 0.68) 50%, rgba(0, 0, 0, 0.9) 75%, #000 100%);
+    mask-image: radial-gradient(circle 190px at var(--lx, -999px) var(--ly, -999px), rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.42) 25%, rgba(0, 0, 0, 0.68) 50%, rgba(0, 0, 0, 0.9) 75%, #000 100%);
+  }
+}
+
+@keyframes lanternBreath {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.86;
+  }
+}
+
+@media not ((hover: hover) and (pointer: fine)) {
+  .lanternGlow {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------- reduced motion
+ * home-desk.tsx already starts these visitors on the lit room; this only makes sure
+ * nothing animates if the preference flips mid-visit. Snow is frozen in place (the
+ * negative delays spread the flakes over the window). */
+@media (prefers-reduced-motion: reduce) {
+  .lanternGlow[data-on] {
+    animation: none;
+  }
+
+  .dark,
+  .spill,
+  .windowLayer,
+  .windowEdge,
+  .snow,
+  .hint,
+  .skip,
+  .headerZone {
+    transition: none !important;
+  }
+
+  .flakeNear,
+  .flakeFar {
+    animation-play-state: paused;
+  }
+
+  .phase_lighting .dark,
+  .phase_lighting .lampSpark,
+  .phase_lighting .lampWarmth,
+  .phase_sleep .hintWindow,
+  .phase_window .hintLamp,
+  .phase_lit.played .title,
+  .phase_lit .invite,
+  .entrance::after {
+    animation: none !important;
+  }
+
+  .phase_lit:not(.touched) .invite {
+    opacity: 0.9;
+  }
+
+  .phase_lit.played .intro {
+    animation: none;
+  }
+}

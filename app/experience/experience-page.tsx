@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/site-header";
+import { usePageTransition } from "@/components/page-transition";
 import { chapters, intro, type ExperienceChapter } from "@/lib/experience";
 import styles from "./experience.module.css";
 
@@ -135,6 +136,7 @@ type Particle = {
 
 export default function ExperiencePage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const { stageClassName, onStageTransitionEnd } = usePageTransition();
 
   useEffect(() => {
     const root = rootRef.current;
@@ -529,25 +531,33 @@ export default function ExperiencePage() {
       </a>
       <SiteHeader current="experience" />
 
-      <main id="experience-content">
+      <main id="experience-content" className={stageClassName} onTransitionEnd={onStageTransitionEnd}>
+        {/* 2026-09-22 (v5): "text second" — heading/stickers/facts stagger in as three
+            separate groups, each with its own `.reveal*` mount animation (see
+            experience.module.css). Independent of PageTransitionProvider entirely —
+            these fire because the component mounted, not because of any phase state. */}
         <div className={styles.intro}>
-          <h1>{intro.heading}</h1>
-          <ul className={styles.stickers}>
+          <h1 className={styles.revealHeading}>{intro.heading}</h1>
+          <ul className={`${styles.stickers} ${styles.revealStickers}`}>
             {intro.stickers.map(s => (
               <li key={s.label} className={s.tone === "blue" ? styles.stickerBlue : s.tone === "butter" ? styles.stickerButter : styles.stickerRose}>
                 {s.label}
               </li>
             ))}
           </ul>
-          <ul className={styles.facts}>
+          <ul className={`${styles.facts} ${styles.revealFacts}`}>
             {intro.facts.map(fact => (
               <li key={fact}>{fact}</li>
             ))}
           </ul>
         </div>
 
+        {/* "visual first" — the illustrated scene reveals ahead of the intro text
+            above, and ahead of the diary page beside it (2026-09-24: split into
+            `.revealLeft` / `.revealPage` on the two columns themselves — see
+            experience.module.css for the timing). */}
         <div className={styles.grid}>
-          <div data-leftcol className={styles.leftcol}>
+          <div data-leftcol className={`${styles.leftcol} ${styles.revealLeft}`}>
             <div data-found className={styles.found} aria-hidden="true" />
             <div data-stage className={styles.stage}>
               <div
@@ -614,7 +624,7 @@ export default function ExperiencePage() {
             </div>
           </div>
 
-          <div className={styles.pageWrap}>
+          <div className={`${styles.pageWrap} ${styles.revealPage}`}>
             <article data-page className={styles.page} aria-live="polite" dangerouslySetInnerHTML={{ __html: pageHTML(chapters[0]) }} />
           </div>
         </div>

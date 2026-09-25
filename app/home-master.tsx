@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Patrick_Hand } from "next/font/google";
+import { MusicToggle } from "@/components/music-toggle";
 import styles from "./home-master.module.css";
 import PeiwenPhaseOne from "./peiwen-phase-one";
 
@@ -24,6 +25,7 @@ export default function HomeMaster({ phaseOne = false, phaseTwo = false }: { pha
             <Link href="/#about">About</Link>
           </nav>
           <p className={styles.language} aria-label="Language: English">中 / <span>EN</span></p>
+        <MusicToggle className={styles.music} />
         </header>
         <h1 className={styles.title}>Peiwen Zhang</h1>
         <p className={styles.subtitle}>A small world of curiosity.</p>
