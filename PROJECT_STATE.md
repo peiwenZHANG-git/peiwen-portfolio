@@ -23,6 +23,9 @@
 - Shared chrome: `PageTransitionProvider`, `WorldLink`, and `SiteAudio` are mounted once
   in the root layout; the Projects header target is `/projects`; the About label is
   "About me".
+- Home opening: room lighting/window reveal timing is slower, window and lamp hints are
+  clearer, post-lamp text appears faster, and the entrance glow loops. The Projects
+  entrance remains `/projects`.
 - Merge-quality fixes were limited to lint compatibility: reduced-motion About settling
   is scheduled through a timer, and the inner-page keepsake uses Next `Link` instead of
   a raw internal anchor. No visual composition or interaction was changed.

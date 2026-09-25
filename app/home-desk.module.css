@@ -147,7 +147,7 @@
 /* dark: the sleeping room */
 .dark {
   filter: brightness(0.08) saturate(0.3);
-  transition: filter 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: filter 2600ms cubic-bezier(0.45, 0, 0.25, 1);
 }
 
 .phase_window .dark,
@@ -170,7 +170,7 @@
     transparent 60%,
     #000 100%
   );
-  animation: lampReveal 1180ms cubic-bezier(0.3, 0, 0.2, 1) 120ms both;
+  animation: lampReveal 2700ms cubic-bezier(0.45, 0, 0.2, 1) 550ms both;
 }
 
 .phase_lit .dark {
@@ -197,7 +197,7 @@
   mask: url("/assets/home-desk/spill-mask.png") center / 100% 100% no-repeat;
   filter: brightness(0.34) saturate(0.55);
   opacity: 0;
-  transition: opacity 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: opacity 2600ms cubic-bezier(0.45, 0, 0.25, 1);
 }
 
 .phase_window .spill {
@@ -218,7 +218,7 @@
   -webkit-mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
   mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
   filter: brightness(0.16) saturate(0.45);
-  transition: filter 1100ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: filter 2600ms cubic-bezier(0.45, 0, 0.25, 1);
 }
 
 .phase_window .windowLayer,
@@ -240,6 +240,21 @@
   opacity: 0;
 }
 
+.phase_sleep .windowEdge {
+  animation: windowWaiting 2600ms ease-in-out 1500ms infinite;
+}
+
+@keyframes windowWaiting {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
 /* ------------------------------------------------------------------- snow */
 .snow {
   --fall: calc(var(--H) * 0.52);
@@ -248,7 +263,7 @@
   -webkit-mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
   mask: url("/assets/home-desk/glass-mask.png") center / 100% 100% no-repeat;
   opacity: 0;
-  transition: opacity 800ms ease 440ms;
+  transition: opacity 1400ms ease 1100ms;
 }
 
 .phase_window .snow,
@@ -323,24 +338,38 @@
 }
 
 .phase_lighting .lampSpark {
-  animation: lampSpark 1450ms ease-out both;
+  animation: lampSpark 3400ms linear both;
 }
 
 .phase_lighting .lampWarmth {
-  animation: lampWarmth 1450ms cubic-bezier(0.3, 0, 0.2, 1) both;
+  animation: lampWarmth 3400ms cubic-bezier(0.4, 0, 0.2, 1) 350ms both;
 }
 
+/* an old bulb warming up: a couple of soft flickers, then it holds and the room
+   light takes over */
 @keyframes lampSpark {
   0% {
     opacity: 0;
   }
 
-  12% {
+  5% {
     opacity: 0.55;
   }
 
-  45% {
-    opacity: 0.4;
+  9% {
+    opacity: 0.15;
+  }
+
+  14% {
+    opacity: 0.8;
+  }
+
+  19% {
+    opacity: 0.55;
+  }
+
+  60% {
+    opacity: 0.5;
   }
 
   100% {
@@ -354,8 +383,8 @@
     transform: translate(-50%, -50%) scale(0.05);
   }
 
-  41% {
-    opacity: 0.22;
+  50% {
+    opacity: 0.24;
   }
 
   100% {
@@ -417,7 +446,7 @@
 }
 
 .phase_lit.played .title {
-  animation: titleIn 900ms cubic-bezier(0.25, 0.1, 0.25, 1) 250ms both;
+  animation: titleIn 450ms cubic-bezier(0.25, 0.1, 0.25, 1) 0ms both;
 }
 
 @keyframes titleIn {
@@ -449,7 +478,7 @@
 }
 
 .phase_lit.played .intro {
-  animation: introIn 900ms cubic-bezier(0.25, 0.1, 0.25, 1) 650ms both;
+  animation: introIn 450ms cubic-bezier(0.25, 0.1, 0.25, 1) 120ms both;
 }
 
 @keyframes introIn {
@@ -471,7 +500,7 @@
 .invite {
   margin: 1.1em 0 0;
   font-family: var(--home-hand), "Patrick Hand", cursive;
-  font-size: calc(var(--W) * 0.0098);
+  font-size: calc(var(--W) * 0.0112);
   letter-spacing: 0.03em;
   white-space: nowrap;
   color: var(--pw-title);
@@ -481,16 +510,27 @@
 }
 
 .phase_lit .invite {
-  animation: inviteIn 900ms ease 1100ms both;
+  animation:
+    inviteIn 450ms ease 260ms both,
+    inviteBreath 3200ms ease-in-out 900ms infinite;
 }
 
-.phase_lit.played .invite {
-  animation-delay: 1500ms;
-}
-
-.invite.inviteDone {
+/* the invitation stays on screen until the visitor actually picks something; it only
+   quietens a little once they've started pointing at things */
+.phase_lit .invite.inviteDone {
   animation: none;
-  opacity: 0;
+  opacity: 0.8;
+}
+
+@keyframes inviteBreath {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
 }
 
 @keyframes inviteIn {
@@ -517,21 +557,19 @@
   transition: opacity 260ms ease;
 }
 
-.phase_lit:not(.touched) .entrance::after {
-  animation: entranceInvite 1700ms ease-in-out calc(1900ms + var(--invite-delay, 0ms)) 2;
+.phase_lit .entrance::after {
+  animation: entranceInvite 5200ms ease-in-out calc(600ms + var(--invite-delay, 0ms)) infinite;
 }
 
-.phase_lit.played:not(.touched) .entrance::after {
-  animation-delay: calc(2400ms + var(--invite-delay, 0ms));
-}
-
+/* one soft glow per object per cycle (about 1.6s of the 5.2s), left to right */
 @keyframes entranceInvite {
   0%,
+  32%,
   100% {
     opacity: 0;
   }
 
-  45% {
+  14% {
     opacity: 0.85;
   }
 }
@@ -541,32 +579,93 @@
   position: absolute;
   margin: 0;
   font-family: var(--home-hand), "Patrick Hand", cursive;
-  font-size: calc(var(--W) * 0.012);
+  font-size: calc(var(--W) * 0.021);
+  line-height: 1.15;
   white-space: nowrap;
-  color: var(--pw-hint);
+  color: #fbe9c8;
+  /* soft dark halo: readable over the black room and over the bright snowy city */
+  text-shadow:
+    0 0 8px rgba(18, 22, 40, 0.9),
+    0 0 18px rgba(18, 22, 40, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.6);
   opacity: 0;
   pointer-events: none;
   transition: opacity 400ms ease;
 }
 
-/* on the dark wall just left of the window */
-.hintWindow {
-  right: 68.5%;
-  top: 40%;
+/* second, quieter line: why you'd want to */
+.hint small {
+  display: block;
+  margin-top: 0.25em;
+  font-size: 0.58em;
+  letter-spacing: 0.03em;
+  opacity: 0.8;
 }
 
-/* on the window sill, pointing at the lamp */
+/* on the dark wall just left of the window, right-aligned so the arrow meets the glass */
+.hintWindow {
+  right: 68.5%;
+  top: 38%;
+  text-align: right;
+}
+
+/* pointing at the lamp, right-aligned so the arrow points at it */
 .hintLamp {
   right: 23.5%;
-  top: 45%;
+  top: 43%;
+  text-align: right;
 }
 
 .phase_sleep .hintWindow {
-  animation: hintIn 600ms ease 700ms both;
+  animation:
+    hintInStrong 700ms ease 800ms both,
+    hintNudge 1800ms ease-in-out 1500ms infinite;
 }
 
 .phase_window .hintLamp {
-  animation: hintIn 600ms ease 1500ms both;
+  animation:
+    hintInStrong 700ms ease 2900ms both,
+    hintNudge 1800ms ease-in-out 3600ms infinite;
+}
+
+/* the bulb glows softly on and off while it waits to be switched on */
+.phase_window .lampSpark {
+  animation: lampWaiting 2400ms ease-in-out 3100ms infinite;
+}
+
+@keyframes lampWaiting {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.38;
+  }
+}
+
+@keyframes hintInStrong {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* a small push towards the lamp, then back */
+@keyframes hintNudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(6px);
+  }
 }
 
 @keyframes hintIn {
@@ -913,7 +1012,9 @@
   .phase_lighting .lampSpark,
   .phase_lighting .lampWarmth,
   .phase_sleep .hintWindow,
+  .phase_sleep .windowEdge,
   .phase_window .hintLamp,
+  .phase_window .lampSpark,
   .phase_lit.played .title,
   .phase_lit .invite,
   .entrance::after {

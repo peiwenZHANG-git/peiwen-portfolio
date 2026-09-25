@@ -35,7 +35,7 @@ import { handFont, bodyFont } from "./home-fonts";
 type Phase = "sleep" | "window" | "lighting" | "lit";
 
 const SEEN_KEY = "peiwen-home-intro-seen";
-const LIGHTING_MS = 1450;
+const LIGHTING_MS = 3400; // bulb warms up ~0.6s, then the light spreads across the desk
 
 type Entrance = { key: string; href: string; label: string; className: string };
 
@@ -383,15 +383,17 @@ export default function HomeDesk() {
               designing AI products and small interactive worlds.
             </p>
             <p className={`${styles.invite} ${touched ? styles.inviteDone : ""}`} aria-hidden="true">
-              pick something up from the desk &darr;
+              click anything on the desk to explore &darr;
             </p>
           </div>
 
           <p className={`${styles.hint} ${styles.hintWindow}`} aria-hidden="true">
-            open the window &rarr;
+            click the window &rarr;
+            <small>the city outside is waiting</small>
           </p>
           <p className={`${styles.hint} ${styles.hintLamp}`} aria-hidden="true">
-            light the room &rarr;
+            click the lamp &rarr;
+            <small>light up the room</small>
           </p>
 
           <button
