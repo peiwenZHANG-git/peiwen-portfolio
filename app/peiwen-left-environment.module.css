@@ -1,0 +1,252 @@
+@property --road-reveal {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+.environment {
+  position: absolute;
+  inset: -120px 0 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.source {
+  position: absolute;
+  inset: 0;
+  width: 1536px;
+  height: 1024px;
+  max-width: none;
+}
+
+.road {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  clip-path: path('M920 835 C750 880 600 890 480 820 C390 765 330 700 280 635 C245 585 200 570 168 592 C130 620 138 668 175 720 C230 795 320 875 450 925 C620 975 790 930 920 835 Z');
+  mask-image: linear-gradient(to left, black var(--road-reveal), transparent calc(var(--road-reveal) + 18%));
+  mask-repeat: no-repeat;
+  filter: contrast(1.045) saturate(1.06) brightness(1.025) sepia(.03);
+  transition: opacity 480ms ease;
+}
+
+.distant {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  mask-image:
+    radial-gradient(86px 52px at 220px 648px, #000 0 38%, transparent 76%),
+    radial-gradient(145px 42px at 620px 718px, #000 0 30%, transparent 74%);
+  mask-repeat: no-repeat;
+  filter: contrast(1.07) saturate(1.12) brightness(1.05);
+  transition: opacity 620ms ease 750ms;
+}
+
+.experienceCopy {
+  position: absolute;
+  left: 142px;
+  top: 476px;
+  opacity: 0;
+  color: #6f6a64;
+  transform: rotate(-4deg) translateY(8px);
+  transition: opacity 320ms ease 950ms, transform 380ms ease 950ms;
+}
+
+.experienceCopy span {
+  display: block;
+}
+
+.experienceCopy span:first-child {
+  font-size: 30px;
+  line-height: 38px;
+}
+
+.experienceCopy span + span {
+  font-size: 20px;
+  line-height: 28px;
+  color: #837d78;
+}
+
+:global([data-phase-one][data-environment="left"]) .road {
+  opacity: .38;
+  animation: roadWake 1250ms cubic-bezier(.33, .7, .35, 1) 150ms both;
+  transition: opacity 520ms ease 150ms;
+}
+
+:global([data-phase-one][data-environment="left"]) .distant {
+  opacity: .34;
+}
+
+:global([data-phase-one][data-environment="left"]) .experienceCopy {
+  opacity: 1;
+  transform: rotate(-4deg) translateY(0);
+}
+
+@keyframes roadWake {
+  from { --road-reveal: 0%; }
+  to { --road-reveal: 100%; }
+}
+
+.seedNear,
+.seedFar,
+.fireflyNear,
+.fireflyFar {
+  position: absolute;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.seedNear {
+  left: 732px;
+  top: 532px;
+  width: 82px;
+  height: 108px;
+  opacity: .045;
+}
+
+.seedFar {
+  left: 452px;
+  top: 616px;
+  width: 64px;
+  height: 81px;
+}
+
+.fireflyNear {
+  left: 596px;
+  top: 736px;
+  width: 32px;
+  height: 32px;
+}
+
+.fireflyFar {
+  left: 372px;
+  top: 704px;
+  width: 26px;
+  height: 26px;
+}
+
+.seedImage,
+.fireflyImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.seedImage {
+  filter: brightness(.97) contrast(1.05) drop-shadow(0 1px 1px rgba(100, 86, 64, .08));
+}
+
+.fireflyImage {
+  filter: brightness(1.12) saturate(1.2);
+}
+
+:global([data-phase-one][data-environment="left"]) .seedNear {
+  opacity: .72;
+  animation: seedNearDrift 5600ms ease-in-out infinite alternate;
+  transition: opacity 760ms ease 150ms;
+}
+
+:global([data-phase-one][data-environment="left"]) .seedFar {
+  opacity: .66;
+  animation: seedFarDrift 4900ms ease-in-out infinite alternate 480ms;
+  transition: opacity 760ms ease 600ms;
+}
+
+:global([data-phase-one][data-environment="left"]) .fireflyNear {
+  opacity: .3;
+  animation: fireflyWake 2800ms ease-in-out infinite alternate;
+  transition: opacity 760ms ease 550ms;
+}
+
+:global([data-phase-one][data-environment="left"]) .fireflyFar {
+  opacity: .22;
+  animation: fireflyWake 3300ms ease-in-out infinite alternate 620ms;
+  transition: opacity 780ms ease 700ms;
+}
+
+:global([data-phase-one][data-state="ABOUT_HOVER"]) .seedNear,
+:global([data-phase-one][data-state="RIGHT_PREVIEW"]) .seedNear {
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+@keyframes roadWake {
+  from { --road-reveal: 0%; }
+  to { --road-reveal: 100%; }
+}
+
+@keyframes seedNearDrift {
+  from { translate: 0 0; rotate: 0deg; }
+  to { translate: -28px -14px; rotate: -5deg; }
+}
+
+@keyframes seedFarDrift {
+  from { translate: 0 0; rotate: 0deg; }
+  to { translate: -20px -12px; rotate: -3deg; }
+}
+
+@keyframes fireflyWake {
+  from { opacity: .2; }
+  to { opacity: .32; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .road,
+  .distant,
+  .experienceCopy,
+  .seedNear,
+  .seedFar,
+  .fireflyNear,
+  .fireflyFar {
+    transition-duration: 120ms;
+    transition-delay: 0ms;
+    translate: none;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .road {
+    opacity: .38;
+    animation: none;
+    --road-reveal: 100%;
+    transition: opacity 120ms ease;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .distant {
+    opacity: .34;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .experienceCopy {
+    opacity: 1;
+    transform: rotate(-4deg);
+  }
+
+  :global([data-phase-one][data-environment="left"]) .seedNear {
+    opacity: .7;
+    transition: opacity 120ms ease;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .seedFar {
+    opacity: .66;
+    transition: opacity 120ms ease;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .fireflyNear,
+  :global([data-phase-one][data-environment="left"]) .fireflyFar {
+    transition: opacity 120ms ease;
+  }
+
+  :global([data-phase-one][data-state="ABOUT_HOVER"]) .seedNear,
+  :global([data-phase-one][data-state="RIGHT_PREVIEW"]) .seedNear {
+    opacity: 0;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .seedNear,
+  :global([data-phase-one][data-environment="left"]) .seedFar {
+    animation: none;
+  }
+
+  :global([data-phase-one][data-environment="left"]) .fireflyNear,
+  :global([data-phase-one][data-environment="left"]) .fireflyFar {
+    animation: none;
+  }
+}

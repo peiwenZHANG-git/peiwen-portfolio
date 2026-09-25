@@ -54,7 +54,7 @@ const ENTRANCES: Entrance[] = [
   },
   {
     key: "projects",
-    href: "/#projects",
+    href: "/projects",
     label: "A clipped index card, “Projects” — go to Projects",
     className: styles.hsProjects,
   },

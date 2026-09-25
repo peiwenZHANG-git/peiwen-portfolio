@@ -1,14 +1,19 @@
 import HomeDesk from "./home-desk";
+import HomeHub from "./home-hub";
 import HomeMaster from "./home-master";
 
-// 2026-09-21: Home replaced the frozen valley Static Master with the desk-scene
-// design (HomeDesk) as the default route — see claude/home-desk-2026-09-21.md and
-// STYLE_GUIDE.md §8.4. HomeMaster is kept only as a historical, rollback-only view
-// behind these query flags; it is not linked from anywhere in the live site.
+// 2026-09-24: the desk-scene Home (claude/home-opening-2026-09-24.md) is the default
+// `/`, same as on visual-direction-v2. The old valley hub stays reachable at ?hub=1.
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const query = await searchParams;
+  if (query["peiwen-phase5"] === "1") return <HomeMaster phaseOne phaseTwo phaseThree phaseFour phaseFive />;
+  if (query["peiwen-phase4"] === "1") return <HomeMaster phaseOne phaseTwo phaseThree phaseFour />;
+  if (query["peiwen-phase3"] === "1") return <HomeMaster phaseOne phaseTwo phaseThree />;
   if (query["peiwen-phase2"] === "1") return <HomeMaster phaseOne phaseTwo />;
   if (query["peiwen-phase1"] === "1") return <HomeMaster phaseOne />;
   if (query["static-reconstruction"] === "1") return <HomeMaster />;
+  // 2026-09-24: the desk-scene Home (claude/home-opening-2026-09-24.md) is the default
+  // `/`, same as on visual-direction-v2. The old valley hub stays reachable at ?hub=1.
+  if (query["hub"] === "1") return <HomeHub />;
   return <HomeDesk />;
 }

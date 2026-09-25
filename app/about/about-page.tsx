@@ -833,7 +833,8 @@ export default function AboutPage() {
   // `reducedMotion` is true, so this is a formality for `busy`, not a visual fix.
   useEffect(() => {
     if (reducedMotion) {
-      setPhase("idle");
+      const settleTimer = window.setTimeout(() => setPhase("idle"), 0);
+      timers.current.push(settleTimer);
       return;
     }
     busyRef.current = true;

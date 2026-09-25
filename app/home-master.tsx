@@ -7,7 +7,7 @@ import PeiwenPhaseOne from "./peiwen-phase-one";
 
 const hand = Patrick_Hand({ weight: "400", subsets: ["latin"], display: "swap" });
 
-export default function HomeMaster({ phaseOne = false, phaseTwo = false }: { phaseOne?: boolean; phaseTwo?: boolean }) {
+export default function HomeMaster({ phaseOne = false, phaseTwo = false, phaseThree = false, phaseFour = false, phaseFive = false }: { phaseOne?: boolean; phaseTwo?: boolean; phaseThree?: boolean; phaseFour?: boolean; phaseFive?: boolean }) {
   return (
     <main className={`${styles.viewport} ${hand.className}`} data-visual="master-static" data-state="IDLE">
       <a className={styles.skip} href="#master-navigation">Skip to navigation</a>
@@ -20,19 +20,19 @@ export default function HomeMaster({ phaseOne = false, phaseTwo = false }: { pha
           <nav id="master-navigation" className={styles.navigation} aria-label="Primary navigation">
             <Link href="/" aria-current="page">Home</Link>
             <Link href="/experience">Experience</Link>
-            <Link href="/#projects">Projects</Link>
+            <Link href="/projects">Projects</Link>
             <Link href="/#playground">Playground</Link>
-            <Link href="/#about">About</Link>
+            <Link href="/about">About</Link>
           </nav>
           <p className={styles.language} aria-label="Language: English">中 / <span>EN</span></p>
         <MusicToggle className={styles.music} />
         </header>
         <h1 className={styles.title}>Peiwen Zhang</h1>
         <p className={styles.subtitle}>A small world of curiosity.</p>
-        <p className={styles.prompt}>Where would you like to go?</p>
+        <p className={styles.prompt} data-home-prompt>Where would you like to go?</p>
         <p className={styles.footerLeft}>Different places,<br /><span>same curious me...</span></p>
         <p className={styles.footerRight}>More to come...</p>
-        {phaseOne && <PeiwenPhaseOne enableRight={phaseTwo} />}
+        {phaseOne && <PeiwenPhaseOne enableRight={phaseTwo} enableAbout={phaseThree} coordinated={phaseFour} enableEnvironment={phaseFive} />}
       </div>
     </main>
   );

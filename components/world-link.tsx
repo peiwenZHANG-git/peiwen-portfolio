@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePageTransition } from "@/components/page-transition";
 import styles from "./world-link.module.css";
@@ -89,7 +90,7 @@ export function WorldLink() {
         ))}
       </div>
       {keepsake && (
-        <a href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label}>
+        <Link href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label}>
           <span className={styles.object} aria-hidden="true">
             {keepsake.kind === "ticket" && <Ticket />}
             {keepsake.kind === "notebook" && <Notebook />}
@@ -98,7 +99,7 @@ export function WorldLink() {
           <span className={styles.caption} aria-hidden="true">
             back to the desk
           </span>
-        </a>
+        </Link>
       )}
     </>
   );

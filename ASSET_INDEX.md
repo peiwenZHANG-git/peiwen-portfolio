@@ -36,6 +36,65 @@
   derivatives are still generated and used, but for keepsake display (shelf slot,
   journal, the "found" flight animation), not for drift.
 - Cursors are used unchanged at their delivered 32/64px sizes; no processing needed.
+## Multi-Sensory Music VR case study
+
+`public/assets/projects/multi-sensory-music-vr/` contains seven selected WebP derivatives: one native-size 640×480 early Unity frame from the supplied WhatsApp recording, plus six frames from the supplied final 1920×1080 Unity demo. They are used by `/projects/multi-sensory-music-vr`.
+
+| Runtime asset | Source moment | Portfolio role |
+| --- | --- | --- |
+| `hero-sequencer.webp` | 0:35 final demo frame | Hero/poster: VR room, table, blocks, scanner and virtual character. |
+| `early-unity-scanner.webp` | 0:18 WhatsApp recording | Small early scanner-prototype evidence; kept below native visual scale. |
+| `grab-place.webp` | 0:32 final demo frame | Controller ray reaching toward blocks: direct manipulation. |
+| `scanner-trigger.webp` | 0:54 final demo frame | Scanner and particle response: triggered feedback. |
+| `particle-trigger.webp` | 0:40 final demo frame | Supporting particle-channel evidence. |
+| `haptic-mapping.webp` | 0:55 final demo frame | Supporting BPM and vibration-control context. |
+| `virtual-boy-feedback.webp` | 0:48 final demo frame, cropped | Character feedback evidence, framed around the virtual boy. |
+
+`resources/multi-sensory-music-vr-demo.mp4` is a browser-compatible 1280×720 H.264/AAC derivative of the supplied 78.1-second 1920×1080 H.264 final demo. It is linked from the case study in a secure new tab, where native browser playback controls are available; it does not autoplay. `hero-sequencer.webp` is the linked demo poster. The source report PDFs, presentation, 1 GB source archive and final build zip remain private: they contain unselected material and, in places, claims unsupported by a study. No raw hardware materials or participant data are published.
+
+## ZOO Desk Organizer case study
+
+`public/assets/projects/zoo-desk-organizer/` contains ten compressed WebP derivatives selected from Peiwen's public six-week documentation archive: a final assembled system, early system sketch, elephant prototype, fishbone CAD model, failed and revised chainmail prints, a large-print failure, storage-fit CAD image, cat pot and final poster. The original archive is not copied into the portfolio; no STL, STEP, 3MF or Fusion source model is published or claimed to be retained.
+
+## Tangram case study
+
+`public/assets/projects/tangram/` contains sixteen WebP derivatives extracted from embedded source images in Peiwen's Week 2–7 and Tangible Interface Show PDFs, plus one supplied 1536 × 2048 exhibition photograph. The set records CAD geometry, connector designs and physical tests, production/layout evidence, the final 500 × 500 mm board, exhibition image and four puzzle prompts. Low-resolution process photographs are displayed only in smaller evidence placements. The source PDFs, their page layouts and all non-selected images are not published.
+
+## Chess case study
+
+`public/assets/projects/chess/` contains eight selected WebP derivatives from original Figma Frame exports: the intent-first homepage, onboarding question, low-fidelity flow, duration selection, Game History, board controls, speech-recognition state and parallel-media state. The low-fidelity figure is a compact presentation crop that retains the complete flow, branches, arrows and node labels. They are the portfolio evidence for `/projects/chess`; no screenshot of the Figma canvas, raw research material, chess-engine code or production implementation is published. The original Figma prototype and YouTube demo remain external links.
+
+## Flight Booking Experience case study
+
+`public/assets/projects/flight-booking/` contains eleven WebP portfolio assets and the final course PDF. The research/breakdown and journey overview are English DOM content, not the original Chinese screenshots. Search, flight results and itinerary overview use their supplied original Figma Frames; the fare comparison and three multi-passenger states remain unchanged; apply-to-all, baggage and itinerary details use 2× Figma exports. Three supplied 180px-wide Figma sketches appear only as small process thumbnails. The public set excludes raw interview notes and does not imply a runnable prototype, live travel data or post-design usability evaluation.
+
+## Arm-Swing VR Locomotion case study
+
+`public/assets/projects/arm-swing-vr-locomotion/` contains the portfolio-ready evidence for
+`/projects/arm-swing-vr-locomotion`: a demo poster, three gameplay frames, a redrawn speed
+curve using the verified final Unity scene parameters, a Unity Inspector capture, banner and
+coin edge-case captures, one public testing photograph, and two anonymized result tables.
+Detailed source mapping and the course-scaffold attribution boundary are recorded in the
+directory's `README.md`.
+
+`resources/` contains a 1280px H.264/AAC derivative of Peiwen's supplied 76-second demo and
+a byte-identical copy of the supplied final presentation PDF. The course archive and APK remain
+external links. The public Unity repository is not copied or promoted because its README,
+starter-code attribution, generated files and history need cleanup. No raw participant data,
+unpublished notes or Unity build artifacts are included.
+
+## Reso case study
+
+`public/assets/projects/reso/` contains ten compressed, original PDF figures for
+`/projects/reso`: working prototype, two caption examples, two paper prototypes,
+control panel, Conditions A/B, emotion results and workload results. Provenance,
+slide/image-object mapping and limits are in that directory's `README.md`.
+`public/assets/projects/reso/resources/` additionally contains a responsive-ready
+30-second MP4 demo with English captions, byte-identical final paper and presentation
+PDFs, and a privacy-safe aggregate HTML analysis summary. The source analysis HTML is
+not shipped because it includes participant identifiers and individual-level data.
+AR/WoZ photographs and a verified rhythm-graph before/after pair are not available
+in the selected material. No replacement evidence was generated.
 
 ## Active Home master
 
@@ -56,6 +115,30 @@
   DOM uses Patrick Hand via next/font, reusing the typeface already available in the project.
 - Old `public/assets/home-v2/` crops remain preserved and are not a visual foundation for this mode.
   Character removal, movement frames, light, door and animated overlays are not produced in this phase.
+
+## Phase 5.2 revision — left-preview feedback assets
+
+- The revised Phase 5.2 road and destination feedback uses CSS `clip-path` / mask layers
+  over the frozen master image. No baked left-scene overlay is used by the app. The
+  earlier `left-wake-overlay.webp` experiment is retired/unreferenced and must not be
+  reintroduced.
+- Road wake uses one master-derived layer confined to a local route ribbon. A custom
+  property animates a directional mask from Peiwen toward the road curve; there is no
+  blur, soft-focus, white outline or route icon.
+- Distant response uses two small CSS mask anchors at the church and water. No full-village
+  clarity or broad saturation treatment is used.
+
+- `design-assets/peiwen-phase5/fluffy-dandelions-source.png` is the user-supplied 1254×1254
+  RGBA sheet of four fluffy dandelions. It is source-only and is not loaded by the app.
+- `public/peiwen-phase5/fluffy-dandelion-near.png` (140×185 RGBA) and
+  `public/peiwen-phase5/fluffy-dandelion-far.png` (96×122 RGBA) are deterministic crop +
+  resize derivatives from the two selected sheet entries. No redrawing, background matting
+  or color/pose alteration was applied.
+- Existing `public/assets/world/firefly-v2.webp` is reused at small scale for the two local
+  firefly wake points. No firefly asset was modified or newly created.
+- These feedback layers are active only on `/?peiwen-phase5=1` during Left Preview. The
+  near dandelion is the sole intentional preembedded element; all other overlays have zero
+  Idle opacity and active feedback exits fully on About, Right or Idle.
 
 ## Storage rules
 
@@ -297,3 +380,37 @@ Birds and butterflies are not CUC-specific. Use them sparsely across the journey
 ## Composition references
 
 `design-assets/references/experience-1.jpg` through `design-assets/references/experience-4.jpg`, plus `design-assets/references/house.jpg` and `design-assets/references/hub.jpg`, are reference-only images. They are kept in the private repository so another local coding agent can understand composition intent without chat history. They must not be treated as runtime assets or copied literally.
+
+## Maze of Wishes case study
+
+`public/assets/projects/maze-of-wishes/` contains eleven selected WebP assets for
+`/projects/maze-of-wishes`: a real classroom demo poster, early storyboard, phone-tilt tutorial,
+start screen, gameplay overview, potion/cake/success/timeout states, final illustrated map and Tiled
+authoring view. The directory-local `README.md` records source mapping and evidence limits.
+
+`resources/` contains a 1280×720 H.264 derivative of the supplied 12.73-second HEVC demo, a
+byte-identical copy of the early storyboard PDF and the supplied final project documentation DOCX.
+The public set excludes the source archive, compiled output and raw project workspace. The archived
+collision mask is not published because it does not fully match the final demonstrated build and
+would overstate the available implementation evidence.
+
+
+## Projects attic paper separation (2026-09-23)
+
+- `public/assets/projects/attic-layered.webp`: original `attic-clean.webp` with only
+  the five lower paper/clip polygons replaced by a built-in imagegen clean plate.
+  Prompt: remove the five lower hanging papers and clips, reconstruct the window behind,
+  preserve the rope and all other scene elements. Compositing masks protect original
+  pixels outside the removed papers. Original background retained unchanged.
+- `attic-botanical.webp`, `attic-flowers.webp`, `attic-peiwen.webp`, `attic-wip.webp` in the same directory:
+  polygon cutouts of the original decorative sheets, reused between Smaller projects.
+- Real project thumbnails reuse the published case-study assets; no synthetic project
+  evidence is introduced. This visual restoration is awaiting Peiwen acceptance.
+
+
+## Illustrated overview covers (supplied artwork)
+
+`public/assets/projects/overview-covers/` contains eight final supplied cover illustrations:
+Reso, Arm-Swing, Tangram, Music VR, Maze, Flight, Chess and ZOO. All are 1122 x 1402 WebP,
+quality 90, uncropped and unscaled with no filters. The directory README records mapping.
+Chess uses the separate follow-up illustration supplied after the initial duplicate Flight attachment. Real screenshots/photos remain in modal/detail content.

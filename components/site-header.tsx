@@ -27,7 +27,7 @@ import styles from "./site-header.module.css";
 const NAV_ITEMS = [
   { key: "home", href: "/", label: "Home" },
   { key: "experience", href: "/experience", label: "Experience" },
-  { key: "projects", href: "/#projects", label: "Projects", scroll: false },
+  { key: "projects", href: "/projects", label: "Projects" },
   { key: "playground", href: "/#playground", label: "Playground", scroll: false },
   { key: "about", href: "/about", label: "About me" },
 ] as const;

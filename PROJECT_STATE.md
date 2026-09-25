@@ -11,7 +11,29 @@
 - `implemented`: working code exists; required verification or visual approval is incomplete.
 - `verified`: implementation exists and the recorded checks passed.
 
-## Current goal — Experience v2 (`/experience`)
+## Current goal — Visual direction integration (`/` + `/projects`)
+
+- Status: implemented and route-verified as of 2026-09-25. The real Projects bundles
+  and detail routes from `codex/projects-real-bundles` are integrated with the approved
+  Home desk and visual-direction work, without changing the approved visual system.
+- Routing: `/` defaults to `HomeDesk`; `?hub=1` preserves `HomeHub`; all historical
+  `peiwen-phase1…5` and `static-reconstruction` HomeMaster flags remain available.
+  `/projects` and its eight case-study routes are live routes. `/experience` and
+  `/about` remain illustrated destinations.
+- Shared chrome: `PageTransitionProvider`, `WorldLink`, and `SiteAudio` are mounted once
+  in the root layout; the Projects header target is `/projects`; the About label is
+  "About me".
+- Merge-quality fixes were limited to lint compatibility: reduced-motion About settling
+  is scheduled through a timer, and the inner-page keepsake uses Next `Link` instead of
+  a raw internal anchor. No visual composition or interaction was changed.
+- Verification: `npm run lint` has 0 errors and 5 pre-existing-style warnings;
+  `npm run typecheck` passes; `npm run build` passes and prerenders all Projects routes.
+  Real-browser checks at 1440×900 covered `/`, `/experience`, `/projects`, `/about`, and
+  `/projects/reso`: all returned HTTP 200, rendered visible content, and had zero console
+  errors. The Reso video preload was interrupted by closing the browser, while a direct
+  HEAD request confirmed the 986,762-byte MP4 is served with HTTP 200.
+
+## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
   `b0edf06`, branch commit `53258f9`); not pushed.** Built in an isolated worktree
@@ -80,6 +102,233 @@
   `/lab/experience-3d` still prerender as static routes.
 - **Not verified:** real-device touch/performance; assistive-technology reading beyond
   the automated aria spot-checks above. **Not done:** push to the remote.
+## Projects attic demo (`/projects`)
+
+### Two-piece illustrated project covers — 2026-09-23
+
+- Structure visually approved by Peiwen; final artwork supplied: each project is an independent illustration
+  paper plus a narrower title note, with separate clips and keyboard-focusable buttons.
+  There is no shared paper backing. Both buttons open the existing project modal and
+  focus returns to the exact source button on close.
+- Eight user-supplied final covers are integrated from `public/assets/projects/overview-covers/`:
+  Reso, Arm-Swing, Tangram, Music VR, Maze, Flight, Chess and ZOO. Each WebP is 1122 x 1402,
+  converted at quality 90 without resizing, crop, sharpening, regeneration or filters.
+  Existing contain-fit preserves the complete artwork and paper geometry.
+- Chess now uses the separately supplied chess illustration; all eight cover slots are filled.
+  Authentic modal/detail visuals remain unchanged.
+- Featured order remains Reso, Arm-Swing, Tangram, Music VR, Maze. Short title/subtitle
+  copy follows the approved request. Illustration widths 160–180px, title notes 120px,
+  within-pair gap 12px, between-project gap 48px; fixed rotations and vertical offsets.
+  Desktop opening shows three full pairs and part of Music VR. Maze requires dragging.
+- Smaller pairs remain mixed with botanical, flower, Peiwen and WIP decorative sheets.
+  Mobile illustration/title widths are 58vw/34vw Featured and 46vw/32vw Smaller.
+  Next Featured project peeks as a narrow paper edge because the first pair occupies
+  most of the mobile width. Final illustration integration remains a visual-review step.
+- Upper Featured rope now uses a quadratic curve with a more visible drop, following the
+  lower-rope reference: 70px center sag on desktop, 32px on mobile. Fixed individual paper offsets follow its height; clip rotations are
+  +1/-1 degrees. Paper and clip hanging points follow the revised curve at both breakpoints.
+  Background, lower rope, spacing, paper dimensions, furniture and modal remain unchanged. Drag/inertia/wheel/touch/keyboard effect is unchanged.
+  Only one drag instruction remains. Case-study pages and source evidence are unchanged.
+- Lower-rope attachment correction (2026-09-24): desktop project papers now follow a
+  trace of the painted rope as their screen position changes during scroll/resize.
+  This fixes the detached Chess title clip. The background and drag effect are unchanged;
+  mobile retains its existing layout. Extra clipping space preserves raised clips without
+  intercepting pointer input above the lower track. A browser regression checks that the
+  Chess attachment changes height when horizontally scrolled.
+- Passed: lint, typecheck, production build (including static /projects prerender),
+  browser drag/wheel/swipe/keyboard on both ropes, modal opens from both paper pieces,
+  ESC/Close and exact focus return, eight case-study route links/media, reduced motion,
+  320–1920px body overflow, and browser runtime/HTTP error checks.
+- Current acceptance captures: 1440 x 900 opening and 40 percent drag, plus 390 x 844
+  opening. Eight covers load successfully and browser/production checks pass. Visual
+  approval and physical-device feel remain pending. Peiwen requested a local checkpoint
+  for Claude handoff; no push or merge is authorized. See CLAUDE_HANDOFF.md.
+
+### Multi-Sensory Music VR detail route — 2026-09-23
+
+- Status: verified; a Featured Case Study route is available at `/projects/multi-sensory-music-vr`. The Projects attic and all existing routes remain unchanged.
+- Context and attribution: 2026, four-week Advanced Immersive Interaction coursework at Universite Paris-Saclay. The project began as a team project; after the other teammates left, Peiwen completed the final prototype independently.
+- Story: the page follows an accessibility-oriented rhythm question through an AR/Arduino haptic prototype, an AR-to-VR technical pivot, block-based direct manipulation, BPM/note timing, a shared audio/particle/controller-haptic trigger path and virtual-character feedback.
+- Evidence boundary: no formal user study or Deaf/Hard-of-Hearing participants are documented. The route does not claim validated accessibility, usability, cognitive-load, therapeutic or emotional outcomes. It records implementation evidence only.
+- Materials: seven selected WebP derivatives: one native-size early Unity frame from the WhatsApp recording and six final-demo frames, plus a 1280×720 H.264/AAC derivative of that demo. The demo opens in a secure new tab with native browser playback controls and does not autoplay. The source archive, compiled build, raw reports and presentation are not published; their overbroad outcome language is not repeated as evidence.
+- Verification: lint, typecheck, production build, static prerender and `git diff --check` passed. A production browser check at 1440px, 390px and reduced motion covered image decoding, demo-resource availability, secure links, keyboard skip navigation, anchors, return navigation, overflow and console/page/HTTP errors.
+
+### ZOO Desk Organizer detail route — 2026-09-22
+
+- Status: verified; a short individual product-fabrication case study is available at `/projects/zoo-desk-organizer`. The Projects attic and existing routes remain unchanged.
+- Context and attribution: 2026, six-week CAD & 3D Printing coursework at Universite Paris-Saclay. Peiwen designed and prototyped the project independently.
+- Story: the route follows a desk-organizer ecosystem through its motivation, product family, chainmail clearance failure and revision, large-print failure, animal-shaped functional objects, storage fit and final system.
+- Evidence boundary: it documents CAD, 3D printing and physical product prototyping, without claims of electronics, sensors, software interaction, formal user research, quantified mechanical performance, production manufacturing or retained CAD source files.
+- Materials: ten selected WebP derivatives from the public project documentation archive. The original GitLab README is linked securely; the source archive, STL/STEP/3MF files and Fusion source model are not published or claimed to be retained.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. Production browser verification at 1440px, 390px and reduced motion covered decoded images, secure external link markup, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. `scripts/check-zoo-desk-organizer.mjs` records the repeatable Node/Playwright check.
+
+### Tangram detail route — 2026-09-22
+
+- Status: verified; an independent Featured-style tangible interaction and digital fabrication case study is available at `/projects/tangram`. The Projects attic and existing routes remain unchanged.
+- Context and attribution: 2026, seven-week Tangible Interface / Digital Fabrication coursework at Universite Paris-Saclay. Peiwen completed the project independently.
+- Story: the page follows fabrication decisions rather than weekly reports: modular geometry, an early dumbbell connector, reduced test units, 0.4 mm selection, a topology failure, three connector concepts, a double-anchor revision, planning for nine sets / 144 pieces, 500 × 500 mm border filling and exhibition play.
+- Evidence boundary: the project documents CAD, 3D printing and physical prototyping. It makes no claim about electronics, sensors, embedded systems, software interaction, formal mechanical validation or a user study. The final requirement is 500 × 500 mm; the earlier 1 m² brief is not presented as final.
+- Materials: sixteen WebP derivatives from original embedded images across the Week 2–7 and exhibition PDFs, plus a supplied 1536 × 2048 exhibition photograph for the Hero. They cover final installation, CAD, physical tests, production, layout and four puzzle prompts. A secure external link exposes the complete Week 1–7 fabrication log; the original PDFs and their full-page layouts are not published.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-tangram.mjs` passed against the production server at 1440px, 390px and reduced motion, covering image decoding, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/`.
+
+### Chess detail route — 2026-09-22
+
+- Status: verified; a Short HCI Interaction Concept Case Study is available at `/projects/chess`. The Projects attic and all existing routes remain unchanged.
+- Context and attribution: 2025, Fundamentals of Human-Computer Interaction, M1 HCI at Universite Paris-Saclay. Team of four. Peiwen contributed to Research, Concept Development, Low-fidelity Prototyping, Prototype Interaction and User Testing.
+- Story: the short page follows an intent-first chess concept through an onboarding question, low-fidelity flow, duration choice, learning history, board notes/voice states and parallel media. It records informal feedback about discoverability, noisy spaces and constrained screen space without treating those observations as validated results.
+- Evidence boundary: this was a one-week Figma interaction concept. It does not claim a production chess engine, front-end or backend implementation, real-time multiplayer, rule validation, a formal usability study, participant count, formal protocol or metrics.
+- Materials: eight selected, high-resolution Figma Frame exports converted to WebP. The original Figma prototype and YouTube demo are secure external links; no Figma canvas, raw research material or production-code claim ships.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-chess.mjs` passed against the production server at 1440px, 390px and reduced motion, covering image decoding, secure external-link markup, keyboard skip navigation, internal anchors, return navigation, responsive overflow, evidence-boundary copy and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/`.
+
+### Flight Booking Experience detail route — 2026-09-22
+
+- Status: verified; a Short UX Case Study is available at `/projects/flight-booking`. The Projects attic overview and the other case studies remain unchanged.
+- Context and attribution: 2025 Fundamentals of HCI 1 at Universite Paris-Saclay. Team of four. Peiwen contributed to Story Interviews, research synthesis, prototype and presentation.
+- Story: 20 Story Interviews with mainly classmates/friends led to four recurring breakdowns. The short page focuses on price/rule comparison, multi-passenger configuration and post-booking itinerary support, then shows the high-fidelity prototype scope from search through airport support.
+- Evidence boundary: complete raw notes and a formal coding process are not retained; the classroom presentation is not a post-design usability study. No validated improvement, production implementation or live data integration is claimed.
+- Materials: eleven selected WebP derivatives and the final course PDF. The former PDF-derived search, results and itinerary-overview images now use supplied original Figma Frames; three supplied Figma sketches are displayed only as small process thumbnails; research/breakdown and journey scope are English DOM content. No raw research material or Figma workspace is published.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-flight-booking.mjs` passed against the production server at 1440px, 390px and reduced motion, covering decoded images, the PDF resource, secure external linking, keyboard skip navigation, internal anchors, Back to Projects/top navigation, responsive overflow, evidence boundaries and zero observed console/page/HTTP errors.
+
+### Maze of Wishes detail route — 2026-09-22
+
+- Status: verified; Case Study v1 implemented at `/projects/maze-of-wishes`. The Projects attic overview and its interaction remain unchanged.
+- Implemented: a static Server Component case study reusing the existing About/case-study shell, fonts, warm-paper palette, chapter navigation, materials treatment and responsive rules. The story follows keyboard concept → phone tilt → sensor pipeline → mapping → game loop → collision → classroom demo → reflection. No dependency or client-side component was added.
+- Attribution: identifies Maze of Wishes as Peiwen's individual 2025 project and states that she designed and implemented the complete prototype independently: concept, interaction design, sensor mapping, UI/game design, Java implementation, debugging and live demo.
+- Interaction account: phone gravity data passes through ZigSim and OSC/UDP to Java, then through `TiltController` into predicted movement, map checks and JavaFX rendering. The page documents the verified gx/gy directions, Space calibration, threshold/bias/bounded-speed treatment, mainly single-axis movement and unused gz value without inventing a parameter rationale.
+- Product scope: tutorial, Easy Mode, 90-second timer, cake-gated goal, win/fail states, potion boost and supporting feedback are shown. Hard Mode is explicitly menu-only; multiple levels and other abandoned storyboard ideas are not claimed.
+- Evidence boundary: the final demonstrated build prevented wall traversal through a map-based collision approach, but the archived semantic mask does not fully match that build and is not published as proof of robust pixel-perfect collision. The classroom recording is labelled as a working live demonstration, not a user study or validated result.
+- Materials: a 13-second browser-compatible H.264 demo, early storyboard PDF and supplied project documentation DOCX. Eleven selected WebP assets cover the demo setup, concept shift, tutorial, map authoring, game states and final map. No raw source archive, participant data or unselected research material ships.
+- Verified: lint, typecheck, production build, static prerender and `git diff --check`. `scripts/check-maze-of-wishes.mjs` passed against the production server at 1440px, 390px and reduced motion, covering video metadata/play/pause, secure materials links and resource responses, keyboard skip/video focus, internal anchors, decoded images, Back to top/Projects navigation, responsive overflow, evidence boundaries and zero observed console/page/HTTP errors. Captures are ignored under `visualizations/maze-of-wishes/`.
+- Optional follow-up: real-device/assistive-technology testing, documented user evaluation and a final collision-mask archive that matches the demonstrated build.
+
+### Arm-Swing VR Locomotion detail route — 2026-09-21
+
+- Status: verified; Case Study v1 implemented for direct review at
+  `/projects/arm-swing-vr-locomotion`. The Projects attic overview and its interaction
+  remain unchanged.
+- Implemented: a static Server Component case study reusing the Reso/About fonts, shell,
+  spacing, materials treatment and responsive rules. The story follows Explore → Choose →
+  Map body movement → Build → Debug → Test → Reflect, with restrained motion/direction
+  diagrams and no new dependency or client-side component.
+- Attribution: explicitly separates Peiwen's individual locomotion concept, custom Unity
+  implementation, integration, runtime debugging, formative testing and synthesis from the
+  course-provided parkour environment, coin course, scoring and base task framework.
+- Interaction account: either index trigger is a movement clutch; combined controller-speed
+  magnitude feeds a quadratic curve and speed cap; the HMD forward vector supplies continuous
+  3D direction; release uses damping. The page explicitly rejects a separate walking/flying
+  state or arms-open switch. Final scene parameters shown are exponent 2.0, sensitivity 12,
+  max speed 15 and damping 5.
+- Engineering evidence: high-speed collider-trigger misses lead to coin and banner proximity
+  fallbacks. The section is presented as a first-class runtime debugging story rather than a
+  footnote.
+- Evaluation: three formative runs are labelled, including the designer's own run. Participant
+  times, coin counts and single-item ratings are shown as directional observations; the page
+  states there was no baseline, control condition, validated scale or statistical test and makes
+  no causal sickness, presence, enjoyment or speed-accuracy claim.
+- Materials: a responsive 76-second H.264/AAC demo, final presentation PDF, course archive and
+  public APK link. The public Unity repository is intentionally omitted as a primary CTA pending
+  attribution, README and generated-file cleanup.
+- Assets: ten displayed WebP figures plus the demo poster, including three gameplay frames,
+  a verified-parameter speed plot, Unity settings, banner/coin edge cases, a public testing photo
+  and two anonymized result tables. Provenance is recorded in ASSET_INDEX.md and the asset-local
+  README; no Unity repository dump, generated build artifacts or unpublished research material ships.
+- Verified: lint, typecheck, production build and `git diff --check`; the route prerenders
+  statically. `scripts/check-arm-swing.mjs` passed against the production server at 1440px,
+  390px and reduced motion, covering demo metadata/playback, local and external resource
+  responses, secure new-tab links, keyboard skip/video focus, internal anchors, image decoding,
+  responsive overflow, scaffold/evidence boundaries, return navigation and zero observed
+  console/page/HTTP errors. Captures are ignored under
+  `visualizations/arm-swing-vr-locomotion/`.
+- Testing-photo status: Peiwen confirmed that the pictured classmate permits public portfolio use;
+  the existing public testing photograph is retained without anonymization.
+- Optional follow-up: physical-device/assistive-technology testing, a controlled joystick
+  comparison and repository cleanup before exposing code.
+
+### Reso detail route — 2026-09-21
+
+- Status: verified; Case Study v1 complete.
+- Implemented: `/projects/reso` is a static Server Component case study with metadata,
+  existing Patrick Hand / Nunito fonts, warm-paper styling, route-scoped scrolling,
+  semantic sections, a chapter index and native full-size image links. Files:
+  `app/projects/reso/page.tsx` and `reso.module.css`.
+- Content: hero/overview, gap/design space, DP1 prototypes and first study, scope
+  decision, working system, evaluation, results/what failed, personal revision,
+  reflection/limitations. Explicitly separates Peiwen's contribution and team outcomes,
+  hearing proxy participants and intended DHH context, and combined-condition effects.
+- Project materials: five restrained text links expose a 30-second embedded MP4 demo,
+  the live experiment, final paper, final presentation and privacy-safe aggregate
+  analysis summary. Study copy includes a second inline experiment link. All new-tab
+  links use `noopener noreferrer`; the video does not autoplay, retains controls and
+  audio, and provides an English WebVTT caption track.
+- Refined: the hero prototype poster is the native inline demo player; results follow
+  insight then evidence for accuracy and workload; and the rhythm iteration records the
+  DP1 blocks, DP2 graph and Peiwen's label/scale revision as a restrained pencil timeline.
+  No visual before/after is shown because a verified post-study screenshot is unavailable.
+- Assets: ten compressed PDF figures (about 312 KiB), a 964 KiB H.264/AAC demo derived
+  from the local MOV, byte-identical final paper/presentation PDFs, and a public HTML
+  analysis derivative. Provenance is documented in ASSET_INDEX.md and
+  `public/assets/projects/reso/README.md`. The source analysis HTML is excluded because
+  it contains participant names and individual-level results; no raw research data ships.
+- Projects integration is one direct reading link below the attic introduction.
+  Existing demo cards, dialog, clothesline, art and project data are preserved.
+- Verified: lint, typecheck and production build; `/projects/reso` prerenders statically.
+  `scripts/check-reso.mjs` checks desktop 1440px, mobile 390px and reduced motion,
+  responsive layout, image decoding, secure links, resource responses, video metadata
+  and playback, caption loading, video keyboard focus, section/document overflow, skip-link and keyboard
+  scrolling, internal anchors, return/entry navigation, evidence-boundary copy and zero
+  observed console/page/HTTP errors. The aggregate analysis resource is checked at
+  desktop/mobile widths for overflow and excluded identifiers. Captures: ignored
+  `visualizations/reso/`.
+- Optional follow-up: physical-device/assistive-technology testing, AR/WoZ imagery,
+  a verified graph before/after screenshot and exact DP1/DP2 month ranges.
+  No claim of a follow-up evaluation of the graph revision. No deployment performed.
+
+### Historical category-demo attic implementation (superseded by real-project bundles)
+
+- Implemented: isolated server route reuses About's Patrick Hand / Nunito font instances,
+  scoped palette and navigation styles. Home, Experience, About and global styles are unchanged.
+  Existing navigation on those routes still points to the historical Projects hash; open
+  `/projects` directly for this demo. Navigation integration is deferred to the main-site owner.
+- `app/projects/` contains the page, clothesline, card/clip, native dialog preview and
+  route CSS; `lib/projectsData.ts` contains four demo categories plus a WIP note. Role,
+  year and tools are explicit placeholders. Case-study text is visibly pending and inert.
+- Pointer events provide mouse drag with bounded, frame-time-adjusted inertia; native
+  horizontal scrolling provides trackpad/touch support. Arrow/Home/End keys and tab focus
+  expose all cards. A native modal dialog traps focus; WAAPI scales the paper from/to its
+  source card. ESC/Close preserve scroll position and restore focus. Reduced motion skips
+  inertia, zoom and decorative motion. No application dependency was added.
+- Artwork: source reference and a cleaned derivative are in `public/assets/projects/`,
+  with provenance in its README. Imagegen removed baked upper UI/cards to prevent duplicate
+  content; lower rope and scene remain decorative. This is a generative edit, not a
+  pixel-identical clean plate. Background uses cover/center; mobile crops the scene and
+  gives each card 76vw. Project images reuse existing About illustrations.
+- Visual harmony pass: shared card/preview image treatment reduces saturation and contrast,
+  adds a subtle paper texture, and warms the paper field. Tags use the existing handwriting
+  font; clips have irregular silhouettes and the rope uses two light uneven strokes. WIP
+  is a text-only note. Existing illustration subjects/brushwork remain placeholders; this
+  styling pass does not claim a fully matched illustration set. Browser regression, lint,
+  typecheck and build passed again; visual approval remains pending.
+- Verified on 2026-09-18: lint, typecheck, production build, and browser interaction checks
+  (mouse, wheel, emulated touch, keyboard bounds, modal focus/ESC/Close/position retention,
+  reduced motion, no horizontal document overflow at 320–1920px, no observed runtime/HTTP
+  errors). Runnable check: `scripts/check-projects.mjs`; screenshots: `visualizations/projects/`.
+- Pending: human visual approval and physical-device touch testing. The original reference
+  has smaller, more numerous paper pieces; this demo uses larger legible cards and a gentler
+  rope curve. The lower rope is intentionally non-interactive. No full case studies.
+- Tunable values: project images/copy/rotation/size in `lib/projectsData.ts`; line height,
+  gaps/card dimensions/mobile width in `projects.module.css`; drag damping in
+  `project-clothesline.tsx`; preview durations in `project-preview.tsx`.
+- Card-scale correction: desktop cards now span 150–235px (previously 190–320px),
+  with smaller covers and a compact layout below 800px viewport height. Desktop captures
+  at 1440×900 and 1440×760 show the character's head unobstructed. Mobile keeps the 76vw
+  swipe target with shorter covers. All cards may fit on wide screens; dragging is tested
+  at 1024px where the line overflows. Visual approval remains pending.
+- Lower-clothesline style match (2026-09-21): card backgrounds now use a lightweight
+  transparent blank-paper asset generated from the user's lower-row reference. Removed
+  the scalloped inner paper, CSS frame/shadow and visible sequence numbers; centered the
+  handwritten labels with looser spacing, and replaced geometric pegs with pencil-outline
+  SVG clips. The compact dimensions and interactive behavior are preserved. Cover art
+  remains placeholder imagery; final visual acceptance is pending.
 
 ## Current goal — About me page (`/about`)
 
@@ -149,7 +398,7 @@
   `/?static-reconstruction=1` preserves `app/home-master.tsx` and its frozen CSS/art.
   Do not change scene, typography, Idle character position/scale, or rebuild the master.
   `public/peiwen-phase1/frozen-master-sha256.json` records protected asset/CSS checksums.
-- **Peiwen overlay Phase 1 implemented; manual visual approval pending.**
+- **Peiwen overlay Phase 1 approved by the user (2026-09-15).**
   `/?peiwen-phase1=1` adds ONLY left preview and return to the same Master component.
   `app/peiwen-phase-one.tsx` / CSS provide 220ms left intent, 420ms return intent,
   54px left / 8px down travel over 1080ms, three restrained alternating foot strides,
@@ -170,6 +419,137 @@
   in `visualizations/build-saclay-contact-sheet.mjs`. Human acceptance remains required
   for exposed background, same-character feeling, grounding and the overlay/master handoff.
 - The default `/` still uses the older HomeHub below; this review pass does not switch it.
+
+### Peiwen Dynamic Overlay — Phase 2
+
+- **Phase 2 manually approved by the user (2026-09-15).**
+  `/?peiwen-phase2=1` enables ONLY RIGHT_PREVIEW in the existing overlay component.
+  `/?peiwen-phase1=1` retains left-only behavior; static/default routes are unchanged.
+- Right travel is +54px / -8px, following the rising path, over 1080ms and three small
+  strides. Same original RGB sprite, same alpha cutout, same clean plate, same scale:
+  no generated/replaced/mirrored assets and no changes to the frozen master or its CSS.
+  The left timing, displacement and foot keyframes remain equivalent to Phase 1.
+- Added a transparent right intent region and ArrowRight/native-button activation;
+  return uses the existing center/Escape handoff. No visible copy or navigation changes.
+  No Opening, About, lighting/door, Entering, cross-direction optimization or mobile work.
+- `scripts/check-peiwen-phase1.mjs` passes unchanged. `scripts/check-peiwen-phase2.mjs`
+  verifies frozen asset hashes, exact initial/returned Idle equality, left pixel regression,
+  right hover/keyboard/reduced-motion behavior, and zero console/runtime errors.
+  Right Preview changes zero RGB channels outside the local character overlay area.
+  Run the Phase 1 script first to supply its comparison capture on a fresh checkout.
+- Lint passes with one pre-existing unrelated warning; typecheck and production build pass.
+  Review screenshots and the actual desktop recording: `visualizations/peiwen-phase2/`.
+  Desktop captures/detail/recording frames inspected; human acceptance of right walking,
+  exposed background, grounding, return handoff and left/right balance is still required.
+
+### Peiwen Dynamic Overlay — Phase 3
+
+- **Phase 3 manually approved by the user (2026-09-15).**
+  `/?peiwen-phase3=1` adds only ABOUT_HOVER; Phase 1/2/static/default URLs retain their behavior.
+  `app/peiwen-about-hover.tsx` and CSS are a small overlay beside the existing walk controls.
+  No new image assets, generated faces, dependencies or background edits. The same original
+  head pixels tilt -2 degrees about the neck (-0.5 degrees under reduced motion); body/feet
+  stay on the frozen plate. A head-only crop of the existing clean plate is feathered at
+  the hair base. This is a restrained back-view head tilt, not a newly drawn face turn.
+- Peiwen's invisible 130×238 hit area adds 16px around the original character. It has
+  priority over directional zones. Fine-pointer trusted movement after entering Idle
+  is required; pointerenter alone, stationary reload/return and touch do not arm About.
+  Keyboard focus supports About, Tab/blur and Escape restore Idle; clicks never navigate.
+  Directional movement is not started while About has keyboard focus. No other state added.
+- Handwritten `About me` / `Meet Peiwen.` sits at (937,546), separate from the character;
+  only the question fades to 55% opacity. Hero title remains unchanged. Entry/exit fades
+  take 220ms, head response 280ms; reduced-motion transitions take 80ms.
+- Verified: initial/returned/fresh-return Idle exactly match frozen RGB; Phase 1/2 original
+  scripts pass unchanged, and both preview captures in Phase 3 match their approved baselines.
+  Fresh reload/return with stationary cursor does not open About; fresh movement does.
+  Focus, keyboard priority, no click navigation, reduced motion, touch suppression and zero
+  console/runtime errors checked. Tests: `scripts/check-peiwen-phase3.mjs` (run Phase 1/2 first).
+  Lint/typecheck/build pass (one unrelated pre-existing lint warning); `git diff --check` passes.
+- Evidence: `visualizations/peiwen-phase3/` contains Idle/About/Return screenshots, enlarged
+  character detail and an approximately six-second actual browser recording. Desktop captures
+  inspected; same-character feeling, subtlety and handoff still await the user's approval.
+  No Opening, entering, house effects, About page work or mobile layout adaptation performed.
+
+### Peiwen Home Interaction — Phase 4
+
+- **Implemented / verified, continuous interaction aesthetic approval pending.**
+  `/?peiwen-phase4=1` opts into coordinated input on the existing overlay controller.
+  Phase 1–3 review routes remain available. No image assets, CSS visuals, endpoints,
+  character scale, clean plates, title/navigation copy or other pages changed.
+- One owner coordinates walking and About. About's component is presentation-only in
+  Phase 4; its prior controller remains for the approved Phase 3 route. Pointer, keyboard
+  and focus feed one latest intent, not a backlog of intermediate commands.
+- About-hover priority fix: a trusted fine-pointer `pointerenter` with real cursor
+  movement immediately promotes About over directional/pending intent. In coordinated
+  mode the hit area remains enterable during walking. Element movement under a
+  stationary cursor, fresh load/return arming, keyboard/focus ownership and Escape are
+  unchanged; Phase 3's separate controller keeps its approved behavior.
+- Left/right crosses use consecutive approved 1080ms/54px walks: center is a planted-foot
+  checkpoint without Idle publication, fading the walking plate or a visible stop.
+  Each short walk completes before latest intent is consumed. Into About, walking returns
+  to the original anchor and hands back to the master before the approved head response.
+  Out of About, the existing CSS head/fade transitions finish before walking starts.
+- Peiwen's existing hit area follows the moving sprite, wins over directional zones,
+  and accepts explicit fine-pointer movement during a walk as the latest intent.
+  Stationary reload/returned Idle cannot auto-arm About. Keyboard focus, arrows, Escape,
+  reduced motion and coarse-pointer/touch suppression use the same coordinated flow.
+- Verified all 12 requested transitions; initial/returned Idle and Left/Right/About
+  screenshots are pixel-identical to approved captures. Frame audit checks no teleport,
+  no simultaneous walking/About overlay visibility and no Idle stop between directions.
+  Rapid keyboard and pointer latest-intent sequences, focus/Tab/Escape, hover arming,
+  reduced motion, touch and zero console/runtime errors passed.
+- Lint/typecheck/production build and `git diff --check` passed; lint retains one unrelated
+  old warning. `scripts/check-peiwen-phase4.mjs` writes evidence to
+  `visualizations/peiwen-phase4/` (copy approved Phase 1–3 captures into `baselines/` first).
+  `--record-only` refreshes the real continuous recording without rerunning checks.
+- 2026-09-15 priority-fix regression: Phase 1–4 scripts, lint/typecheck/build and
+  `git diff --check` pass; the Phase 4 recording is Left → About → Right → About → Idle.
+- User review remains required for the continuous feeling, not individual state art.
+  No Opening, Entering, house effects, new UI, Experience changes or mobile layout work.
+
+### Left Preview Environment Feedback — Phase 5 / 5.1 / 5.2
+
+- **Phase 5 is technically approved. Phase 5.1 visibility tuning and the Phase 5.2
+  revision (progressive road wake, pre-embedded dandelions and delayed copy) are
+  implemented and technically verified. Human aesthetic approval remains pending.**
+  `/?peiwen-phase5=1` enables ONLY a quiet left-road response on the approved Phase 4
+  interaction. Phase 1–4 routes retain their exact behavior; the default/static master
+  remains unchanged.
+- User-marked long left walk: only the Phase 5 route extends LEFT_PREVIEW to -330px
+  (sprite center near master x=530) as six consecutive approved-gait short steps of about
+  55px, reusing the same cadence and foot framing as Right Preview. Phase 1–4
+  retain the approved -54px travel; Right remains +54px. Cross-direction and About return
+  still pass through the planted-foot center checkpoint.
+- About-hover interruption: trusted fine-pointer entry/movement over the hit area during a
+  walk immediately freezes the interpolated character frame, cancels the queued gait, and
+  starts the About return sequence instead of waiting for the current step to finish.
+  Because WAAPI motion does not reliably synthesize hit-area boundary events, the
+  controller polls the last trusted cursor position per animation frame against the moving
+  hit rectangle; this is the robust contact path during Peiwen's own movement.
+- Phase 5.2 revision replaces the baked wake overlay with two local CSS-mask layers over
+  the frozen master. Road wake is confined to a route ribbon and animates directional
+  reveal from Peiwen toward the first curve; distant response is limited to small
+  church/water anchors. Blur, soft-focus, broad clarity/saturation, outlines and route
+  icons are not used.
+- Two fluffy dandelion guides are used. The near seed is intentionally preembedded in Idle
+  at 4.5% opacity, then wakes in place to 70–72%; the far seed enters later at 66%. Two
+  small reused fireflies provide local wake only. `Experience / How I got here.` is visual
+  copy delayed until about 950ms. The supplied dandelion sheet is source-only; its two
+  runtime derivatives are deterministic crops/resizes. No character, copy system,
+  navigation or mobile composition was modified. No new dependency.
+- Feedback starts after the left walk begins, exits by Escape/About/Right, and reduced
+  motion retains the final road/destination/dandelion/firefly opacity with no progressive
+  reveal, drift or pulse.
+- Verified by `scripts/check-peiwen-phase5.mjs`: frozen asset/CSS hashes; underlying Frozen
+  Idle unchanged except the declared near-seed bounding box; localized left-only changes;
+  progressive reveal timing; delayed copy; full exit; Left -> About approved equality;
+  Left -> Right approved equality with no residue; touch regression and zero browser
+  errors. It writes screenshots, staged reveal frames, a continuous review and a dedicated
+  4–6s Idle -> Left -> Idle recording under `visualizations/peiwen-phase5/`.
+- Phase 1–4 scripts, lint/typecheck/production build and `git diff --check` pass; lint
+  retains the one pre-existing unrelated warning. Human review must confirm quietness,
+  illustration fit, Peiwen priority and complete restoration before this state is called
+  final.
 
 ### Historical HomeHub implementation (not the approved master)
 
@@ -536,4 +916,5 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
-2026-09-16
+2026-09-25
+2026-09-24
