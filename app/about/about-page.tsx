@@ -65,6 +65,68 @@ function cssVars(vars: Record<`--${string}`, string>): CSSProperties {
   return vars as CSSProperties;
 }
 
+const EMAIL = "peiwen.zhang@universite-paris-saclay.fr";
+
+/**
+ * "Email" on the intro page copies the address instead of opening a mail app
+ * (2026-09-25): many visitors use web mail, where a bare mailto: link does nothing.
+ * A small paper note pops up above it with the address, so it can also be read or
+ * selected by hand if the clipboard is blocked.
+ */
+function CopyEmail() {
+  const [note, setNote] = useState<"copied" | "manual" | null>(null);
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) window.clearTimeout(timer.current);
+  }, []);
+
+  async function copy() {
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      ok = true;
+    } catch {
+      // older browsers / non-secure origins: the hidden-textarea fallback
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = EMAIL;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand("copy");
+        ta.remove();
+      } catch {
+        ok = false;
+      }
+    }
+    setNote(ok ? "copied" : "manual");
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setNote(null), ok ? 2600 : 6000);
+  }
+
+  return (
+    <span className={bookStyles.copyWrap}>
+      <button type="button" className={bookStyles.copyBtn} onClick={copy} title={`Copy ${EMAIL}`} aria-label={`Copy email address: ${EMAIL}`}>
+        <EmailIcon />
+        <span className={bookStyles.wrap}>
+          Email
+          <span className={bookStyles.wave} />
+        </span>
+      </button>
+      <span className={`${bookStyles.copyNote} ${note ? bookStyles.copyNoteOn : ""}`} role="status" aria-live="polite">
+        {note === "copied" && (
+          <>
+            <b>copied &#10003;</b> {EMAIL}
+          </>
+        )}
+        {note === "manual" && <>{EMAIL}</>}
+      </span>
+    </span>
+  );
+}
+
 function EmailIcon() {
   return (
     <svg className={bookStyles.ln} viewBox="0 0 24 24" aria-hidden="true">
@@ -308,13 +370,7 @@ const introRight: SpreadItem[] = [
       className={bookStyles.contact}
       style={{ justifyContent: "center", gap: "12%", ...cssVars({ "--contact-fs": "4.3cqw" }) }}
     >
-      <a href="mailto:peiwen.zhang@universite-paris-saclay.fr">
-        <EmailIcon />
-        <span className={bookStyles.wrap}>
-          Email
-          <span className={bookStyles.wave} />
-        </span>
-      </a>
+      <CopyEmail />
       <a href="https://github.com/peiwenZHANG-git" target="_blank" rel="noopener noreferrer">
         <GithubIcon />
         <span className={bookStyles.wrap}>

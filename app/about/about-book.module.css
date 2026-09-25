@@ -480,7 +480,8 @@
   align-items: center;
 }
 
-.contact a {
+.contact a,
+.copyBtn {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -490,13 +491,68 @@
   text-decoration: none;
 }
 
-.contact a:hover .wave {
+.contact a:hover .wave,
+.copyBtn:hover .wave {
   filter: brightness(0.82);
 }
 
+.copyBtn:focus-visible,
 .contact a:focus-visible {
   outline: 2px solid var(--dust-blue);
   outline-offset: 3px;
+}
+
+/* "Email" copies the address (see CopyEmail in about-page.tsx) */
+.copyWrap {
+  position: relative;
+  display: flex;
+  font-size: var(--contact-fs, 3.8cqw);
+}
+
+.copyBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.copyNote {
+  position: absolute;
+  bottom: calc(100% + 0.5em);
+  left: 50%;
+  padding: 0.35em 0.8em 0.4em;
+  border-radius: 0.5em;
+  text-align: center;
+  line-height: 1.35;
+  background: #fbf6ea;
+  box-shadow: 0 2px 8px rgb(94 71 58 / 18%), inset 0 0 0 1px rgb(140 123 105 / 30%);
+  color: #5e4a3c;
+  font-size: max(12px, 0.72em);
+  white-space: nowrap;
+  user-select: all;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.4em) rotate(-1.5deg);
+  transition: opacity 220ms ease, transform 260ms ease;
+}
+
+.copyNote b {
+  display: block;
+  font-weight: inherit;
+  color: #6f8a6b;
+}
+
+.copyNoteOn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0) rotate(-1.5deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copyNote {
+    transition: none;
+  }
 }
 
 .contact svg {
