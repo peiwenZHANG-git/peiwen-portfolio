@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
+import { useEffect, useRef, useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePageTransition } from "@/components/page-transition";
@@ -12,10 +12,17 @@ import styles from "./world-link.module.css";
  * Mounted once in app/layout.tsx; renders on every route except Home itself.
  *  - Snow: a few very faint flakes drifting across the page — the same snowfall seen
  *    outside Home's window, so every room feels like it's in the same winter night.
- *  - A small desk keepsake pinned in the bottom-left corner, one per page, matching the
+ *  - A small desk keepsake pinned in the top-left corner, one per page, matching the
  *    object on the desk that led here (ticket → Experience, red notebook → About, the
  *    clipped card → Projects). Clicking it walks back to the desk. It's a real link with
  *    a label, so it also works by keyboard / screen reader.
+ *
+ * 2026-09-25: the tag moved to the top-left, just under the site header. Its `top` is
+ * measured from the real header (the header's height differs per page and per width).
+ * Below 1000px there is no free space beside the page titles, so the element right after
+ * the header gets a margin as tall as the tag — the tag gets its own row instead of
+ * sitting on a heading. Between 1000 and 1499px the words fold away (CSS) and only the
+ * object + arrow show until hover / focus.
  */
 
 type Keepsake = { kind: "ticket" | "notebook" | "card"; label: string };
@@ -52,6 +59,65 @@ export function WorldLink() {
   const { navigate } = usePageTransition();
   // client-only: avoids any server/client mismatch in the flake markup
   const mounted = useSyncExternalStore(subscribeNothing, () => true, () => false);
+  const tagRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const tag = tagRef.current;
+    if (!tag) return;
+    const header = document.querySelector<HTMLElement>("header");
+    const narrow = window.matchMedia("(max-width: 999px)");
+    let spaced: HTMLElement | null = null;
+    let prevMargin = "";
+
+    // the first element that follows the header in the page flow (walking up if the
+    // header is the last child of its wrapper), skipping anything that holds the tag
+    function nextAfterHeader(): HTMLElement | null {
+      let el: Element | null = header;
+      while (el && el !== document.body) {
+        let n = el.nextElementSibling;
+        while (n && n.contains(tag)) n = n.nextElementSibling;
+        if (n instanceof HTMLElement) return n;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    function release() {
+      if (spaced) spaced.style.marginTop = prevMargin;
+      spaced = null;
+    }
+
+    function place() {
+      if (!tag) return;
+      const stickyTop = header ? parseFloat(getComputedStyle(header).top) || 0 : 0;
+      const headerBottom = header ? stickyTop + header.offsetHeight : 80;
+      tag.style.setProperty("--kt", `${Math.round(headerBottom + 10)}px`);
+      if (narrow.matches) {
+        const target = nextAfterHeader();
+        if (target !== spaced) {
+          release();
+          spaced = target;
+          prevMargin = target ? target.style.marginTop : "";
+        }
+        if (spaced) spaced.style.marginTop = `${tag.offsetHeight + 16}px`;
+      } else {
+        release();
+      }
+    }
+
+    place();
+    const ro = new ResizeObserver(place);
+    if (header) ro.observe(header);
+    ro.observe(tag);
+    window.addEventListener("resize", place);
+    narrow.addEventListener("change", place);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", place);
+      narrow.removeEventListener("change", place);
+      release();
+    };
+  }, [pathname, mounted]);
 
   const base = "/" + (pathname.split("/")[1] ?? "");
   if (base === "/" || !mounted) return null;
@@ -90,14 +156,15 @@ export function WorldLink() {
         ))}
       </div>
       {keepsake && (
-        <Link href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label}>
+        <Link ref={tagRef} href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label}>
           <span className={styles.object} aria-hidden="true">
             {keepsake.kind === "ticket" && <Ticket />}
             {keepsake.kind === "notebook" && <Notebook />}
             {keepsake.kind === "card" && <Card />}
           </span>
           <span className={styles.caption} aria-hidden="true">
-            back to the desk
+            <span className={styles.arrow}>&larr;</span>
+            <span className={styles.words}>back to the desk</span>
           </span>
         </Link>
       )}

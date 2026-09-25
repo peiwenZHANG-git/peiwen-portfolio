@@ -36,6 +36,16 @@
   errors. The Reso video preload was interrupted by closing the browser, while a direct
   HEAD request confirmed the 986,762-byte MP4 is served with HTTP 200.
 
+## Inner-page return keepsake — 2026-09-25
+
+- Implemented: `WorldLink` sits at the top-left beneath the measured site header.
+  At 1000–1499px, the words fold away and unfold on hover or keyboard focus;
+  below 1000px, content after the header receives margin for a dedicated tag row.
+- The Next development indicator is positioned at bottom-right.
+- Verified for this checkpoint: `npm run lint` (0 errors, 5 warnings outside the
+  changed files), `npx tsc --noEmit`, and `npm run build` (17/17 static pages).
+  Browser visual and interaction checks were not rerun for this commit-only task.
+
 ## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
