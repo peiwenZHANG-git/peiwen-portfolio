@@ -1,0 +1,140 @@
+/* Background-music switch (components/music-toggle.tsx).
+ *
+ * Lives in the header row after 中 / EN. Off is a still, faded record; on is a darker
+ * record turning slowly with the note lit beside it — the difference has to read at a
+ * glance, since this is the only clue that the site has sound at all.
+ *
+ * Placeholder artwork: when the hand-drawn record sticker lands, the <svg> is replaced
+ * and the .disc/.groove/.hole colour rules go with it. The spin and the note stay.
+ */
+
+.toggle {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--pw-accent, #d96a60);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.record {
+  display: block;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  opacity: 0.62;
+  transition: opacity 0.25s ease;
+}
+
+.disc {
+  fill: #2f2a26;
+}
+
+.groove {
+  fill: none;
+  stroke: rgb(247 241 231 / 22%);
+  stroke-width: 1.1;
+}
+
+.sheen {
+  fill: none;
+  stroke: rgb(255 252 244 / 42%);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.hole {
+  fill: #d96a60;
+}
+
+/* The one off-centre mark on the label; without it the spin is invisible. */
+.speck {
+  fill: rgb(247 241 231 / 78%);
+}
+
+.note {
+  display: block;
+  flex: none;
+  width: 13px;
+  height: 18px;
+  fill: #4a423a;
+  stroke: #4a423a;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.3;
+  transition: opacity 0.25s ease;
+}
+
+.note path {
+  fill: none;
+}
+
+.toggle:hover .record,
+.toggle:focus-visible .record {
+  opacity: 0.85;
+}
+
+.toggle:hover .note,
+.toggle:focus-visible .note {
+  opacity: 0.5;
+}
+
+/* Playing */
+.toggle[data-playing] .record {
+  opacity: 1;
+  animation: spin 3.4s linear infinite;
+}
+
+.toggle[data-playing] .note {
+  opacity: 0.85;
+  animation: float 2.6s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .record {
+    width: 22px;
+    height: 22px;
+  }
+
+  .note {
+    width: 11px;
+    height: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle[data-playing] .record,
+  .toggle[data-playing] .note {
+    animation: none;
+  }
+
+  .record,
+  .note {
+    transition: none;
+  }
+}

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { bodyFont, handFont } from "../../about/fonts";
-import shell from "../../about/about.module.css";
+import shell from "../shell.module.css";
+import { SiteHeader } from "@/components/site-header";
 import styles from "./tangram.module.css";
 
 const root = "/assets/projects/tangram";
@@ -18,7 +19,7 @@ export const metadata: Metadata = { title: "Tangram · Peiwen Zhang", descriptio
 export default function TangramPage() {
   return <div className={`${shell.shell} ${handFont.variable} ${bodyFont.variable} ${styles.root}`} tabIndex={-1}>
     <a className={shell.skipLink} href="#tangram-content">Skip to case study</a>
-    <header className={shell.header}><Link className={shell.logo} href="/" aria-label="Peiwen Zhang, Home"><span className={shell.logoName}>Peiwen Zhang</span><span className={shell.logoRole}>HCI · PRODUCT · CREATIVE TECH</span></Link><nav aria-label="Primary navigation"><Link href="/">Home</Link><Link href="/experience">Experience</Link><Link href="/projects" aria-current="location">Projects</Link><Link href="/#playground">Playground</Link><Link href="/about">About me</Link></nav></header>
+    <SiteHeader current="projects" />
     <main id="tangram-content" className={styles.main} tabIndex={-1}>
       <Link className={styles.back} href="/projects">← Back to the attic</Link>
       <header className={styles.hero}><div><p className={styles.eyebrow}>Tangible Interaction · Digital Fabrication · 2026</p><h1>Tangram</h1><p className={styles.lead}>Designing a modular system for fabrication and play.</p><p>A seven-week physical prototyping project that turned a traditional Tangram into a repeatable 3D-printed modular system through connector experiments, thickness testing and fabrication-scale iteration.</p><p className={styles.meta}>Université Paris-Saclay · Tangible Interface / Digital Fabrication coursework · 7 weeks · Independent project</p><a className={styles.logLink} href="https://the-art-of-fabricating-tangible-interfaces-2026.gitlab.dsi.universite-paris-saclay.fr/peiwen/" target="_blank" rel="noopener noreferrer">View full fabrication log ↗</a><a className={styles.jump} href="#constraints">Start with the constraints ↓</a></div><Figure name="final-exhibition" width={1536} height={2048} alt="Final multicolour Tangram board at the exhibition with Peiwen Zhang project sign" caption="The final 500 × 500 mm installation at the Tangible Interface Show." /></header>

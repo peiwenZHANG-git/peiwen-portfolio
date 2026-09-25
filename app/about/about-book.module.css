@@ -1,0 +1,982 @@
+/* The notebook redesign — all three spreads (① Intro, ② My Journey,
+ * ③ Beyond).
+ *
+ * Ported 1:1 from design-assets/about/about-prototype-stickers.html per
+ * design-assets/about/IMPLEMENTATION.md and layout.js: coordinates, rotation, zoom and
+ * saturation values below are copied verbatim from that data and must not be adjusted
+ * here. See PROJECT_STATE.md "Current goal — About me page" for the superseded
+ * desk-scene approach that the header/shell rules in about.module.css still serve.
+ *
+ * `.book` is the single illustration (notebook.webp) for both page panels; `.page`
+ * establishes `container-type: inline-size` so every font-size below can be written in
+ * cqw (1cqw = 1% of that panel's own width), exactly as the prototype does. Neither
+ * `.book` nor `.page` clips overflow: some stickers are intentionally positioned partly
+ * outside the page (e.g. left:-2.9%), poking off the paper on purpose.
+ */
+
+/* Only carries `inert` for the portrait rotate card; contributes no box of its own. */
+.chromeWrap {
+  display: contents;
+}
+
+.stageWrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 1rem 1rem 2.2rem;
+}
+
+.bookStage {
+  --paper: #f7f1e7;
+  --ink: #5b5147;
+  --ink-soft: #8a8072;
+  --rose-brown: #af886c;
+  --rose-deep: #8c6a52;
+  --sage: #9caf88;
+  --dust-blue: #93a8ac;
+  --straw: #d9be7a;
+  --butter: #ead48f;
+
+  width: 100%;
+}
+
+/* 2026-09-23: background enrichment — a quiet desk environment behind the notebook.
+   The asset (public/assets/about/01-notebook-desk-scene.webp) is the `desk-scene`
+   from about-asset-spec.md §1: generated specifically to pair with the current
+   notebook.webp (same asset-delivery batch, same "01-notebook-*" prefix) but never
+   wired into code until now. Restrained by the spec's own rules — daisies, a plain
+   book stack, ginkgo leaves, a folded letter, only at the outer edges; the centre
+   64%×78% is kept a quiet desk for the notebook to sit on. This is a different,
+   simplified asset from the old all-in-one `desk-scene.webp` (superseded, see
+   about.module.css's file comment) — that one baked the notebook itself into the
+   same image and doesn't match the current notebook.webp's cover art.
+
+   Sits as `.stageWrap`'s own `::before`, not `.book`'s — so it scales with the whole
+   stage area and stays centered under `.book`, which `.stageWrap`'s flex layout also
+   centers, keeping the asset's quiet centre roughly aligned under the notebook at
+   the sizes `.book`'s `max-width: 1000px` actually renders at. A radial mask feathers
+   the image's own edges into the shell's flat paper field (`--field`, in
+   about.module.css) so a `background-size: cover` crop never shows a hard rectangle,
+   whatever the viewport's aspect ratio — matching the spec's "四周化进纸里" note.
+
+   Desktop/tablet only: per the spec ("移动端不使用，只保留一层淡晕染"), narrow
+   viewports keep the existing flat paper + noise texture only — the two-page spread
+   is already tight below this width (see about-page.tsx's phone-portrait rotate
+   prompt at 600px), so a busy desk scene would only compete with it. */
+/* 2026-09-23 (follow-up): live feedback was "the notebook doesn't feel centered".
+   `.book` itself is centered correctly (block-level, `margin: 0 auto`, symmetric
+   `.stageWrap` padding) — the illusion comes from the desk-scene art's own prop
+   weight: the book stack (top-right of the source image) reads visually heavier
+   than the daisy jar (top-left), and it sits right next to the notebook's own
+   clasp/button, which already extends the cover's silhouette rightward. At this
+   viewport's `cover` fit the image's full width already shows with zero horizontal
+   slack (scaled to match container width exactly, cropped top/bottom instead), so
+   `background-position` has nothing to shift — the fix instead nudges the mask's
+   own center left (50%→46%), which both extends the visible jar area further left
+   and fades the book stack out a little sooner on the right, rebalancing the two
+   sides without touching the notebook or regenerating the asset. */
+.stageWrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/assets/about/01-notebook-desk-scene.webp");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  -webkit-mask-image: radial-gradient(ellipse 62% 58% at 46% 50%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 58% at 46% 50%, #000 55%, transparent 100%);
+}
+
+@media (max-width: 640px) {
+  .stageWrap::before {
+    content: none;
+  }
+}
+
+.book {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  aspect-ratio: 1390 / 853;
+  filter: drop-shadow(0 8px 20px rgb(90 70 45 / 12%));
+
+  /* 2026-09-24: live feedback after the desk-scene background — "the book overall
+     should sit a little further right". A plain nudge via `left` (not `transform`):
+     `.revealBook`'s own `bookReveal` keyframes own the `transform` property (its
+     `to` state, `translateY(0)`, sticks permanently once the animation settles
+     thanks to `fill-mode: both`), so a static `transform: translateX()` here would
+     get silently overwritten the moment the mount animation finishes. `left` is a
+     separate property the animation never touches, so it holds regardless of
+     animation state. */
+  left: 1.6%;
+}
+
+/* 2026-09-22 (v5): page-specific arrival — "notebook first". Plain CSS `animation`,
+   fires on mount, no JS. `.book` already carries a permanent drop-shadow via `filter`,
+   so the keyframes include it in both states rather than letting the animation
+   overwrite it. Gated behind `prefers-reduced-motion: no-preference` (see
+   page-transition.tsx's top comment for how this fits the provider's own,
+   departure-only, transition).
+
+   2026-09-22 (v5.2): live feedback was "still no elastic overshoot on the first
+   page". v5's soft, linear-ish `cubic-bezier(0.25, 0.1, 0.25, 1)` settle read as
+   too calm next to the notebook's own internal spread-flip (`goTo`, further down
+   this file), which springs in on `cubic-bezier(0.34, 1.56, 0.64, 1)`. User's
+   explicit choice: reuse that exact curve here too, so the route-arrival and the
+   internal page-turn read as one consistent motion language. Only the easing
+   changed — same keyframes, same 570ms/480ms timing (a separate "maybe 880ms"
+   question was left undecided this round and not folded in here). This curve's
+   ~10% overshoot is gentle at these small travel distances (10px / 0.8px): it
+   settles as a visible little spring-back — translateY dips ~1px past 0 — rather
+   than a cartoon bounce; opacity/blur briefly overshoot their rest values by a
+   similarly tiny, harmlessly-clamped amount, the same way `goTo` already relies on
+   this curve elsewhere in this file.
+
+   2026-09-23: delay cut from 480ms to 150ms. With the desk-scene background added
+   this round (`.stageWrap::before` above), the background appears instantly at
+   mount while the notebook still waited out the old 480ms delay before starting to
+   reveal — live feedback was that gap read as too long. Duration/curve unchanged;
+   about-page.tsx's `FIRST_ENTER_DELAY_MS` must stay in sync with this value. */
+@keyframes bookReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(0.8px) drop-shadow(0 8px 20px rgb(90 70 45 / 12%));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0) drop-shadow(0 8px 20px rgb(90 70 45 / 12%));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .revealBook {
+    opacity: 0;
+    animation: bookReveal 570ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
+  }
+}
+
+/* The notebook illustration lives on its own layer, behind `.page`, so its
+   VISUAL_UNIFY.md §3 color-correction filter doesn't also tint the real DOM content
+   (text, stickers) sitting on top of it. */
+.book::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background-image: url("/assets/about/notebook.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  filter: saturate(0.65) sepia(0.2) brightness(1.06) contrast(0.93);
+}
+
+/* Two writable page areas, measured from the notebook illustration. Do not change. */
+.page {
+  position: absolute;
+  z-index: 1;
+  top: 9%;
+  height: 81%;
+  width: 31.6%;
+  container-type: inline-size;
+}
+
+.pageLeft {
+  left: 12.4%;
+}
+
+.pageRight {
+  left: 50.9%;
+}
+
+/* ---------------------------------------------------------------- placed elements */
+
+.el {
+  position: absolute;
+}
+
+.st {
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ hover reactions
+ * 2026-09-21: the objects answer the mouse (hop for solid things, sway for light ones —
+ * a full spin was tried on the globe and the carousel and looked wrong, since it turns
+ * their stands too). Only stickers marked `live` in
+ * about-page.tsx take pointer events — everything else stays click-through so the text
+ * under a sticker's transparent corner is still selectable.
+ *
+ * The animation runs on the <img>, never on `.el`: `.el` carries the item's own
+ * rotate/scale from React's inline style, and animating it would fight the entrance.
+ */
+.live {
+  pointer-events: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .live img {
+    transform-origin: 50% 85%;
+  }
+
+  .live:hover img {
+    animation: hop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .live[data-live="sway"]:hover img {
+    transform-origin: 50% 90%;
+    animation: sway 0.9s ease-in-out;
+  }
+}
+
+@keyframes hop {
+  30% {
+    transform: translateY(-9%) scale(1.04);
+  }
+
+  55% {
+    transform: translateY(0) scale(0.99);
+  }
+
+  75% {
+    transform: translateY(-3%) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sway {
+  25% {
+    transform: rotate(-5deg);
+  }
+
+  55% {
+    transform: rotate(3.5deg);
+  }
+
+  80% {
+    transform: rotate(-1.5deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live:hover img,
+  .live[data-live="sway"]:hover img {
+    animation: none;
+  }
+}
+
+.st img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* VISUAL_UNIFY.md §3: every sticker image, pulled back from the About-only
+     saturation build-up so /about and /experience read as one site. */
+  filter: saturate(0.7);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: var(--title-fs, 12cqw);
+  line-height: 1.05;
+  color: var(--rose-deep);
+}
+
+.sub {
+  margin-top: 2px;
+  font-family: var(--hand);
+  font-size: var(--sub-fs, 4.2cqw);
+  color: var(--ink-soft);
+}
+
+.bodyText {
+  margin: 0;
+  font-size: var(--body-fs, 3.3cqw);
+  line-height: 1.5;
+}
+
+/* photo frame */
+.polaroid {
+  position: relative;
+  padding: 6% 6% 5%;
+  background: #fbf9f4;
+  box-shadow: 0 2px 7px rgb(90 70 45 / 16%);
+}
+
+.polaroidBack {
+  position: relative;
+  aspect-ratio: 1 / 1.22;
+  background: #f6f2ea;
+  box-shadow: 0 1px 5px rgb(90 70 45 / 14%);
+}
+
+.photoInner {
+  aspect-ratio: 1 / 1.02;
+  background-image: url("/assets/about/portrait.webp");
+  background-position: center 22%;
+  background-size: cover;
+  /* VISUAL_UNIFY.md §3 */
+  filter: saturate(0.87) sepia(0.07);
+}
+
+.cap {
+  margin-top: 4%;
+  font-family: var(--hand);
+  font-size: var(--cap-fs, 4.4cqw);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* hand-drawn underline stroke asset, reused for the contact "wave" flourish too */
+.uline {
+  display: block;
+  width: 100%;
+  height: 0.42em;
+  margin-top: 2px;
+  background-image: url("/assets/about/uline.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* note card (Quick Facts) */
+.note {
+  position: relative;
+  padding: 7% 8%;
+}
+
+.note::before {
+  position: absolute;
+  inset: -3% -4%;
+  z-index: -1;
+  content: "";
+  background: var(--tint, rgb(234 212 143 / 50%));
+  mask-image: url("/assets/about/notemask.webp");
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("/assets/about/notemask.webp");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+.noteButter {
+  --tint: rgb(238 214 138 / 62%);
+}
+
+.noteBig {
+  padding: var(--note-pady, 6%) var(--note-padx, 3.5%);
+  border-radius: 3px;
+}
+
+.noteBig h3 {
+  margin: 0 0 5%;
+  text-align: center;
+}
+
+.note h3 {
+  margin: 0 0 5%;
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: var(--note-title-fs, 7.2cqw);
+  color: var(--rose-deep);
+}
+
+/* Quick Facts rows: label tag + arrow + value */
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fact-gap, 4%);
+}
+
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--fact-colgap, 1.8cqw);
+}
+
+.tag2 {
+  flex: 0 0 auto;
+  padding: var(--tag-pady, 0.5cqw) var(--tag-padx, 1.6cqw);
+  font-family: var(--hand);
+  font-size: var(--tag-fs, 5.2cqw);
+  color: var(--ink);
+  white-space: nowrap;
+  background: rgb(217 190 122 / 55%);
+  border-radius: 5px;
+}
+
+.arw {
+  flex: 0 0 auto;
+  font-size: 0.9em;
+  color: var(--ink-soft);
+}
+
+.val {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--hand);
+  font-size: var(--val-fs, 5.2cqw);
+  color: var(--ink);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 1.8cqw;
+}
+
+.chip {
+  padding: 1.6% 5%;
+  font-family: var(--hand);
+  font-size: var(--chip-fs, 3.4cqw);
+  color: var(--rose-deep);
+  white-space: nowrap;
+  background-image: url("/assets/about/pill.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* filled CV pill — currently a static label; see about-page.tsx for why it has no href */
+.cvfill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 3.6% 0;
+  font-family: var(--hand);
+  font-size: var(--cv-fs, 5.2cqw);
+  color: var(--rose-deep);
+  text-decoration: none;
+  background-image: url("/assets/about/pill.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.cvfill::before {
+  position: absolute;
+  inset: 6% 3%;
+  z-index: -1;
+  content: "";
+  background: rgb(214 166 166 / 34%);
+  border-radius: 999px;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+}
+
+.contact a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--contact-fs, 3.8cqw);
+  color: #4a423a;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.contact a:hover .wave {
+  filter: brightness(0.82);
+}
+
+.contact a:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 3px;
+}
+
+.contact svg {
+  width: 1.45em;
+  height: 1.45em;
+}
+
+.ln {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.8;
+}
+
+.fl {
+  fill: currentcolor;
+  stroke: none;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.wave {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-top: 1px;
+  background-image: url("/assets/about/uline.webp");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ---------------------------------------------------------- spread ②/③ content blocks
+ *
+ * Element positioning/animation for all three spreads is computed inline in
+ * about-page.tsx (per-item left/top/width/rotate/zoom/saturate/z-index from layout.js,
+ * plus the enter/exit transition for the cross-spread swap — see IMPLEMENTATION.md §5).
+ * The rules below only style each block's own inner markup, ported from
+ * about-prototype-stickers.html's extracted stylesheet.
+ */
+
+/* "② My Journey" timeline */
+.tl {
+  position: relative;
+  padding-left: 7%;
+}
+
+.tl::before {
+  position: absolute;
+  top: 4%;
+  bottom: 6%;
+  left: 2.2%;
+  content: "";
+  border-left: 1.4px dashed var(--rose-brown);
+}
+
+.tlItem {
+  position: relative;
+  margin-bottom: 9%;
+}
+
+.tlItem:last-child {
+  margin-bottom: 0;
+}
+
+.tlItem::before {
+  position: absolute;
+  top: 0.5em;
+  left: -5.6%;
+  width: 7px;
+  height: 7px;
+  content: "";
+  background: var(--rose-brown);
+  border-radius: 50%;
+}
+
+.tlYear {
+  font-family: var(--hand);
+  font-size: var(--yr-fs, 9cqw);
+  line-height: 1;
+  color: var(--rose-deep);
+}
+
+.tlSchool {
+  margin-top: 2px;
+  font-weight: 700;
+  font-size: var(--sch-fs, 5.6cqw);
+}
+
+.tlMeta {
+  font-size: var(--meta-fs, 4.6cqw);
+  color: var(--ink-soft);
+}
+
+.tlTag {
+  margin-top: 2px;
+  font-family: var(--hand);
+  font-size: var(--tltag-fs, 5cqw);
+  color: var(--sage);
+}
+
+/* "② My Journey" pull-quote */
+.quote {
+  font-family: var(--hand);
+  font-size: var(--quote-fs, 6.6cqw);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* "③ Beyond" "Currently exploring" note — reuses .note/.note::before's masked-paper
+   background (see the "note card" rules above), just a different tint. */
+.noteBlue {
+  --tint: rgb(147 168 172 / 50%);
+}
+
+/* "③ Beyond" write-a-note module */
+/* The airmail postcard doubles as the write-a-note module (see PostcardNote in
+   about-page.tsx). Writing area measured from user-postcard-airmail.webp (900x566):
+   left of the dashed divider, x 55-520, y 60-510. */
+.postcard {
+  position: relative;
+}
+
+.postcardArt {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.7); /* same as every other sticker, VISUAL_UNIFY.md §3 */
+}
+
+.postcardWrite {
+  position: absolute;
+  left: 6.1%;
+  top: 10.6%;
+  width: 51.7%;
+  height: 79.5%;
+}
+
+/* The postcard on the page is a button that opens the writing dialog (.sheet below). */
+.postcardTap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--hand);
+  font-size: 4.3cqw;
+  line-height: 1.5;
+  color: rgb(125 105 90 / 85%);
+  text-align: left;
+  white-space: pre-wrap;
+  vertical-align: top;
+  cursor: text;
+  /* The card's paper colour after the saturate(0.7) on .postcardArt, so the lettering
+     baked into the artwork is covered seamlessly. */
+  background: #f6efe6;
+  border: none;
+  border-radius: 4px;
+  transition: box-shadow 0.2s ease;
+}
+
+.postcardTap:hover {
+  box-shadow: 0 0 0 1.5px rgb(175 136 108 / 45%);
+}
+
+.postcardTap:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--dust-blue);
+}
+
+/* ---------------------------------------------------------------- cross-spread nav */
+
+.controls {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: clamp(16px, 2.6vw, 24px);
+}
+
+.navBtn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--rose-deep);
+  cursor: pointer;
+  background: var(--paper);
+  border: 1.5px solid var(--rose-brown);
+  border-radius: 50%;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: var(--butter);
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}
+
+.navBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.label {
+  min-width: 118px;
+  font-family: var(--hand);
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.dots {
+  display: flex;
+  gap: 7px;
+}
+
+.dot {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  cursor: pointer;
+  background: rgb(90 70 45 / 22%);
+  border: none;
+  border-radius: 50%;
+}
+
+.dot[aria-current="true"] {
+  width: 22px;
+  background: var(--rose-brown);
+  border-radius: 5px;
+}
+
+.dot:disabled {
+  cursor: not-allowed;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ phones
+ * design-assets/about/MOBILE.md (approved 2026-09-20). Nothing above this line changes
+ * for desktop. Phones keep the two-page spread; they never get a re-flowed column.
+ */
+
+/* The writing dialog, on every device (PostcardNote). 18px text: iOS zooms the page when
+   an input under 16px is focused. Capped at 720px wide so it stays a postcard on desktop. */
+.sheet {
+  --hand: var(--about-hand), "Segoe Print", "Bradley Hand", cursive;
+  --ink: #5b5147;
+  --rose-brown: #af886c;
+  --rose-deep: #8c6a52;
+  --dust-blue: #93a8ac;
+
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: rgb(60 48 38 / 38%);
+  animation: sheetIn 0.25s ease-out;
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
+
+.sheetCard {
+  position: relative;
+  width: min(100%, 720px, calc((100dvh - 76px) * 900 / 566));
+}
+
+.sheetWrite {
+  position: absolute;
+  left: 6.1%;
+  top: 10.6%;
+  width: 51.7%;
+  height: 79.5%;
+}
+
+.sheetWrite textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  font-family: var(--hand);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: #f6efe6;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  resize: none;
+}
+
+.sheetWrite textarea::placeholder {
+  color: rgb(125 105 90 / 85%);
+}
+
+@media (pointer: fine) {
+  .sheet {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, auto;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, auto;
+  }
+
+  .sheet button {
+    cursor: url("/assets/ui/cursor-pencil.png") 3 3, pointer;
+    cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, pointer;
+  }
+}
+
+.sheetBar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sheetBar button {
+  padding: 4px 16px;
+  font-family: var(--hand);
+  font-size: 18px;
+  color: var(--rose-deep);
+  cursor: pointer;
+  background: #fbf5e8;
+  border: 1.3px solid var(--rose-brown);
+  border-radius: 16px;
+}
+
+.sheetBar button:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 2px;
+}
+
+.sheetSent {
+  font-family: var(--hand);
+  font-size: 17px;
+  color: #fff;
+  transition: opacity 0.3s ease;
+}
+
+/* Landscape phones: scale the notebook up to the page width and crop it to the area the
+   content actually uses (x 3.5%–85.5%, y 5%–95% of the illustration, measured across all
+   three spreads). Percentage margins resolve against the container's width, so the
+   crop is exact at any phone width: width 1/0.82, left -0.035/0.82, top/bottom
+   -0.05/0.82 × 853/1390. The shell (about.module.css) is the vertical scroller. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .stageWrap {
+    display: block;
+    padding: 0 0 44px;
+    overflow-x: clip;
+  }
+
+  .book {
+    width: 121.951%;
+    max-width: none;
+    margin: -3.742% 0 -3.742% -4.268%;
+  }
+
+  .controls {
+    margin: 0;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .navBtn {
+    position: fixed;
+    top: calc(50% + 19px);
+    z-index: 15;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    background: rgb(247 241 231 / 92%);
+    transform: translateY(-50%);
+  }
+
+  .navPrev {
+    left: max(8px, env(safe-area-inset-left));
+  }
+
+  .navNext {
+    right: max(8px, env(safe-area-inset-right));
+  }
+
+  /* The dot still reads as 9px; the pseudo-element grows the touch target to ~29px. */
+  .dot::after {
+    position: absolute;
+    inset: -10px -5px;
+    content: "";
+  }
+
+  .dots {
+    position: fixed;
+    bottom: 2px;
+    left: 50%;
+    z-index: 15;
+    padding: 0 8px;
+    background: rgb(247 241 231 / 85%);
+    border-radius: 10px;
+    transform: translateX(-50%);
+  }
+}
+
+/* Portrait phones: ask for landscape, but never lock anyone out. `.viewAnyway` is set
+   on the route shell (the rotate card's direct parent) by the "View anyway" button. */
+.viewAnyway {
+  /* marker class, no styles of its own */
+}
+
+.rotate {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  :not(.viewAnyway) > .rotate {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    background: #f4ede1;
+  }
+}
+
+.rotateTitle {
+  margin: 18px 0 4px;
+  font-family: var(--hand);
+  font-size: 26px;
+  color: #8c6a52;
+}
+
+.rotateText {
+  margin: 0 0 22px;
+  font-size: 14px;
+  color: #8a8072;
+}
+
+.rotateBtn {
+  padding: 5px 16px;
+  font-family: var(--hand);
+  font-size: 17px;
+  color: #8c6a52;
+  cursor: pointer;
+  background: rgb(255 255 255 / 55%);
+  border: 1.3px solid #af886c;
+  border-radius: 16px;
+}
+
+.rotateBtn:focus-visible {
+  outline: 2px solid #93a8ac;
+  outline-offset: 2px;
+}

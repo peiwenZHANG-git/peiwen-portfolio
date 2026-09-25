@@ -1,0 +1,153 @@
+/* Background-music control (components/site-audio.tsx).
+ *
+ * Fixed to the bottom-right corner on every route. Deliberately quiet: line art in the
+ * site's ink colour, the label only appears on hover/focus, and the record only spins
+ * while something is actually playing.
+ *
+ * The SVG here is placeholder line art; when the hand-drawn turntable sticker is
+ * approved it replaces the <svg> and most of these stroke rules go away.
+ */
+
+.dock {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 40;
+}
+
+.button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px 6px 6px;
+  color: #5b5147;
+  cursor: pointer;
+  background: rgb(247 241 231 / 82%);
+  border: 1.3px solid rgb(175 136 108 / 55%);
+  border-radius: 24px;
+  backdrop-filter: blur(2px);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.button:hover {
+  background: rgb(247 241 231 / 96%);
+  border-color: rgb(175 136 108 / 85%);
+}
+
+.button:focus-visible {
+  outline: 2px solid #93a8ac;
+  outline-offset: 3px;
+}
+
+.art {
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 34px;
+}
+
+.art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.record {
+  transform-origin: 24px 26px;
+}
+
+.recordCenter {
+  fill: rgb(175 136 108 / 70%);
+  stroke: none;
+}
+
+.arm {
+  opacity: 0.75;
+}
+
+.note,
+.noteHead {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.noteHead {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Playing */
+.art[data-playing] .record {
+  animation: spin 6s linear infinite;
+}
+
+.art[data-playing] .note,
+.art[data-playing] .noteHead {
+  opacity: 0.8;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The label is a whisper: only on hover/focus, and never on touch (no hover there). */
+.label {
+  max-width: 0;
+  overflow: hidden;
+  font-family: var(--exp-hand, var(--about-hand, "Patrick Hand", "Segoe Print", cursive));
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.3s ease, opacity 0.25s ease;
+}
+
+.button:hover .label,
+.button:focus-visible .label {
+  max-width: 90px;
+  opacity: 0.85;
+}
+
+/* Landscape phones: the notebook's own nav already owns the edges, so shrink a little. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .dock {
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .art {
+    width: 28px;
+    height: 28px;
+  }
+
+  .label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art[data-playing] .record {
+    animation: none;
+  }
+
+  .button,
+  .label,
+  .note,
+  .noteHead {
+    transition: none;
+  }
+}
+
+@media print {
+  .dock {
+    display: none;
+  }
+}

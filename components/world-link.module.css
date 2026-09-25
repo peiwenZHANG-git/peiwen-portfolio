@@ -1,0 +1,124 @@
+/* See world-link.tsx. Shared by every inner page; Home renders none of this. */
+
+/* ---- snow: very faint, slow, never in the way ---- */
+.snow {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.snow span {
+  position: absolute;
+  top: -12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 2px rgba(140, 150, 175, 0.55);
+  animation-name: worldSnow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes worldSnow {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(var(--drift, 0), 104vh, 0);
+  }
+}
+
+/* ---- the desk keepsake that walks you back ---- */
+.keepsake {
+  position: fixed;
+  left: clamp(14px, 2.2vw, 36px);
+  bottom: clamp(14px, 2.6vh, 34px);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #7c6d60;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.object {
+  display: block;
+  line-height: 0;
+  filter: drop-shadow(1px 3px 3px rgba(94, 71, 58, 0.18));
+  transform: rotate(var(--rest, -6deg));
+  transform-origin: 50% 90%;
+  transition: transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ticket .object {
+  --rest: -8deg;
+}
+
+.notebook .object {
+  --rest: -10deg;
+}
+
+.card .object {
+  --rest: 5deg;
+}
+
+.caption {
+  font-family: var(--hand, var(--about-hand, var(--exp-hand, "Patrick Hand"))), "Patrick Hand", cursive;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 240ms ease, transform 240ms ease;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .keepsake:hover .object {
+    transform: rotate(calc(var(--rest, -6deg) * 0.3)) translateY(-4px) scale(1.06);
+  }
+
+  .keepsake:hover .caption {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+.keepsake:focus-visible {
+  outline: 2px solid #d74b3c;
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+.keepsake:focus-visible .caption {
+  opacity: 0.9;
+  transform: translateY(0);
+}
+
+/* touch: the caption is always shown faintly so the object reads as a way back */
+@media (hover: none) {
+  .caption {
+    opacity: 0.7;
+    transform: none;
+    font-size: 12px;
+  }
+
+  .object svg {
+    width: 70%;
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snow {
+    display: none;
+  }
+
+  .object,
+  .caption {
+    transition: none;
+  }
+}

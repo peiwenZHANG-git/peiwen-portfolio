@@ -19,9 +19,9 @@ export default function HomeMaster({ phaseOne = false, phaseTwo = false, phaseTh
           <nav id="master-navigation" className={styles.navigation} aria-label="Primary navigation">
             <Link href="/" aria-current="page">Home</Link>
             <Link href="/experience">Experience</Link>
-            <Link href="/#projects">Projects</Link>
+            <Link href="/projects">Projects</Link>
             <Link href="/#playground">Playground</Link>
-            <Link href="/#about">About</Link>
+            <Link href="/about">About</Link>
           </nav>
           <p className={styles.language} aria-label="Language: English">中 / <span>EN</span></p>
         </header>

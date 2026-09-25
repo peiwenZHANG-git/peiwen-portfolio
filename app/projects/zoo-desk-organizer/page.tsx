@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { bodyFont, handFont } from "../../about/fonts";
-import shell from "../../about/about.module.css";
+import shell from "../shell.module.css";
+import { SiteHeader } from "@/components/site-header";
 import styles from "./zoo-desk-organizer.module.css";
 
 const root = "/assets/projects/zoo-desk-organizer";
@@ -18,7 +19,7 @@ export const metadata: Metadata = { title: "ZOO Desk Organizer · Peiwen Zhang",
 export default function ZooDeskOrganizerPage() {
   return <div className={`${shell.shell} ${handFont.variable} ${bodyFont.variable} ${styles.root}`}>
     <a className={shell.skipLink} href="#zoo-content">Skip to case study</a>
-    <header className={shell.header}><Link className={shell.logo} href="/" aria-label="Peiwen Zhang, Home"><span className={shell.logoName}>Peiwen Zhang</span><span className={shell.logoRole}>HCI · PRODUCT · CREATIVE TECH</span></Link><nav aria-label="Primary navigation"><Link href="/">Home</Link><Link href="/experience">Experience</Link><Link href="/projects" aria-current="location">Projects</Link><Link href="/#playground">Playground</Link><Link href="/about">About me</Link></nav></header>
+    <SiteHeader current="projects" />
     <main id="zoo-content" className={styles.main} tabIndex={-1}>
       <Link className={styles.back} href="/projects">← Back to the attic</Link>
       <header className={styles.hero}><div><p className={styles.eyebrow}>Product Fabrication · CAD &amp; 3D Printing · 2026</p><h1>ZOO Desk Organizer</h1><p className={styles.lead}>Turning everyday desk tools into one playful modular ecosystem.</p><p>A six-week individual CAD and 3D-printing project exploring how phone support, cable management, storage and small desk objects could share one animal-inspired product language.</p><p className={styles.meta}>Université Paris-Saclay · CAD &amp; 3D Printing · 6 weeks · Individual project</p><a className={styles.logLink} href="https://gitlab.com/u8739516597-dotcom/3dprinting-documentation-peiwenzhang/-/blob/main/README.md?ref_type=heads" target="_blank" rel="noopener noreferrer">View original project documentation ↗</a><a className={styles.jump} href="#motivation">Start with the motivation ↓</a></div><Figure name="final-system" width={1257} height={1322} alt="Final ZOO Desk Organizer with the elephant phone stand, storage modules and animal-inspired desk objects arranged on one tray" caption="The final ZOO system brought different desk objects into one shared setting." /></header>

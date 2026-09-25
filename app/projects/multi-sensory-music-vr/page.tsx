@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { bodyFont, handFont } from "../../about/fonts";
-import shell from "../../about/about.module.css";
+import shell from "../shell.module.css";
+import { SiteHeader } from "@/components/site-header";
 import styles from "./music-vr.module.css";
 
 const assetRoot = "/assets/projects/multi-sensory-music-vr";
@@ -51,17 +52,7 @@ export default function MultiSensoryMusicVrPage() {
   return (
     <div className={`${shell.shell} ${handFont.variable} ${bodyFont.variable} ${styles.root}`} tabIndex={-1}>
       <a className={shell.skipLink} href="#music-vr-content">Skip to case study</a>
-      <header className={shell.header}>
-        <Link className={shell.logo} href="/" aria-label="Peiwen Zhang, Home">
-          <span className={shell.logoName}>Peiwen Zhang</span>
-          <span className={shell.logoRole}>HCI · PRODUCT · CREATIVE TECH</span>
-        </Link>
-        <nav aria-label="Primary navigation">
-          <Link href="/">Home</Link><Link href="/experience">Experience</Link>
-          <Link href="/projects" aria-current="location">Projects</Link>
-          <Link href="/#playground">Playground</Link><Link href="/about">About me</Link>
-        </nav>
-      </header>
+      <SiteHeader current="projects" />
 
       <main id="music-vr-content" className={styles.main} tabIndex={-1}>
         <Link className={styles.back} href="/projects">← Back to the attic</Link>

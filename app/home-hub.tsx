@@ -106,9 +106,7 @@ export default function HomeHub() {
         router.push("/experience");
         return;
       }
-      const label = target === "RIGHT" ? "Projects" : "About me";
-      router.push(target === "RIGHT" ? "/#projects" : "/#about", { scroll: false });
-      setAnnouncement(`${label} is linked from Home; its internal page is not part of this pass.`);
+      router.push(target === "RIGHT" ? "/projects" : "/about");
       setEnterTarget(null);
       setState("IDLE");
     }, delay);
@@ -214,9 +212,9 @@ export default function HomeHub() {
         <nav id="hub-navigation" aria-label="Primary navigation">
           <Link href="/" aria-current="page">Home</Link>
           <Link href="/experience">Experience</Link>
-          <Link href="/#projects" scroll={false}>Projects</Link>
+          <Link href="/projects">Projects</Link>
           <Link href="/#playground" scroll={false}>Playground</Link>
-          <Link href="/#about" scroll={false}>About me</Link>
+          <Link href="/about">About</Link>
         </nav>
         <div className={styles.headerTools} aria-label="Language and music controls">
           <span>中 / <b>EN</b></span><span className={styles.record} aria-hidden="true"><i /> </span><span className={styles.musicNote} aria-hidden="true">♪</span>
