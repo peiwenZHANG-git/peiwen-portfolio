@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CS
 import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
+import { playEffect } from "@/components/music-store";
 import { aboutAsset, type AboutAssetKey } from "./about-assets";
 import { bodyFont, handFont } from "./fonts";
 import styles from "./about.module.css";
@@ -308,7 +309,7 @@ const introRight: SpreadItem[] = [
         <div className={bookStyles.fact}>
           <span className={bookStyles.tag2}>Languages</span>
           <span className={bookStyles.arw}>&rarr;</span>
-          <span className={bookStyles.val}>Chinese &middot; English &middot; French</span>
+          <span className={bookStyles.val}>Chinese &middot; English &middot; French (learning)</span>
         </div>
         <div className={bookStyles.fact}>
           <span className={bookStyles.tag2}>Location</span>
@@ -912,6 +913,8 @@ export default function AboutPage() {
       if (target === spreadIndex) return;
 
       busyRef.current = true;
+      // a soft page-turn sound (only if the visitor has chosen sound; see music-store)
+      playEffect("page");
 
       // Landscape phones scroll through a spread; start the next one at its top.
       if (window.matchMedia(PHONE_LANDSCAPE_QUERY).matches) {

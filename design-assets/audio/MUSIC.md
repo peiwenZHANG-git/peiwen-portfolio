@@ -1,45 +1,62 @@
-# 背景音乐（2026-09-21）
+# 背景音乐与声音（2026-09-25 重做，替代 2026-09-21 的单曲占位版）
 
-用户确认的方案：**全站一首**、**手绘唱片机开关**、曲子先用占位。
+## 用户决定
+
+- 背景音乐是 **9 首随机播放**：每次来访从随机一首开始，放完再随机换一首，不会连着
+  两次同一首。点列表里的某首就先放它，之后继续随机。候选里的 Cold Winter Night 没有选。
+- 点右上角的唱片会**展开一个小纸片面板**，里面只有播放/暂停和曲目列表（2026-09-25 用户决定去掉雪声、音效两个开关）。
+- **默认全部出声**：音乐、窗外的雪声（很轻，无缝循环）、About 和 Experience 的翻页声、
+  Experience 里佩文走路时雪地上的脚步声、Projects 戳猫的叫声。
+  唱片面板里的暂停**只停背景音乐**，雪声和音效一直保持开着（用户决定）。暂停会被记住。
+- 猫有**四种叫声**，分别对应它的四种气泡：Mew! / Mrrp? / Prrr… / Meow~。随机出现，
+  但不会连续两次一样。
 
 ## 机制
 
-- 拆成三块：
-  - `components/site-audio.tsx`：只有 `<audio>` 元素，挂在 `app/layout.tsx` 的 `<body>` 里，
-    只挂载一次，所以 Home / Experience / About 之间跳转时音乐不中断、不重新开始。
-  - `components/music-toggle.tsx`：可见的开关，放在**顶栏 中 / EN 后面**（2026-09-21 用户决定）。
-    因为按钮在顶栏、音频在根布局，是两棵树，所以用下面这个共享状态连起来。
-  - `components/music-store.ts`：模块级单例 + `useSyncExternalStore`，管播放状态、淡入淡出、
-    localStorage 和被拦截后的手势补播。
-- 顶栏有两套：`components/site-header.tsx`（Experience / About）和 `app/home-master.tsx`
-  （Home 自己的绝对定位顶栏，`.music` 放在 left 1380 / top 30）。两处都要放开关。
-  **Home 是冻结的 static master，这是唯一加进去的元素。**
-- **默认关闭**。浏览器不允许自动播放有声音的媒体，而且不该对着陌生人直接出声。
-- 开关状态记在 `localStorage["pw-music"]`。回访的人如果上次是开的，进站会尝试恢复；
-  浏览器拒绝时（还没有交互手势）不弹提示，而是挂一次性监听，等他第一次点击/按键时开始。
-- 音量 0.22，开关都带 700ms 淡入淡出，不会"砰"一下。
-- `prefers-reduced-motion`：唱片不转，淡入淡出也跳过。
-- 私密模式下 localStorage 抛异常时静默失败，保持关闭。
+- `components/sound-library.ts`：曲目表、雪声和音效文件的路径。
+- `components/music-store.ts`：模块级单例，用 `useSyncExternalStore` 读取。
+  - `<audio>` 元素由它创建，所以跨页面跳转声音不断。
+  - 管理音乐、雪声、音效三路声音，以及淡入淡出和 localStorage 记忆（`pw-sound`，
+    会兼容读取旧的 `pw-music`）。
+- `components/music-toggle.tsx`：顶栏的唱片和展开的面板。Esc 或点击面板外面会关闭。
+- `components/site-audio.tsx`：挂在 layout 里，页面加载时恢复访客上次的选择。
+- 声音规则：
+  - **默认开启**。浏览器不允许自动播放有声音的媒体，所以第一次来访时，声音从访客第一次
+    点击或按键开始（在 Home 上就是点开窗户那一下）。
+  - 暂停只停背景音乐；雪声和音效（翻页、脚步、猫）始终开着。音乐的暂停状态记在
+    localStorage（`pw-sound`），下次来访继续暂停。
+- 音量：音乐 0.22，雪声 0.10，音效 0.32；音乐和雪声开关时有 700ms 淡入淡出。
+  `prefers-reduced-motion` 下不做淡入淡出，唱片也不转。
 
 ## 素材
 
-- 音频：`public/assets/audio/theme-loop.ogg` + `.mp3`（两个格式，Chrome/Firefox 走 ogg，
-  Safari 走 mp3）。当前是占位：软钢琴，Am7–Fmaj7–Cmaj7–G6，72 BPM，26.67 秒，首尾无缝。
-  换正式曲子时保持同样的文件名和时长量级即可，代码不用改。
-- 控件图形：**当前是 SVG 占位**，画在 `music-toggle.tsx` 里。正式版应为手绘黑胶贴纸，
-  批准后替换 `<svg>`，同时删掉 CSS 里的 .disc / .groove / .hole 颜色规则。转动的只能是唱片本体。
+- 全部来自 Pixabay（Pixabay Content License：可免费商用，不要求署名；面板底部仍然写了
+  “Music & sounds from Pixabay”）。
+- 原始下载放在 `design-assets/audio/incoming/`，不进 Git，因为太大。
+- 由 `scripts/prepare-audio.sh` 生成网站用的文件：
+  - 音乐（`public/assets/audio/music/*.ogg|mp3`）：去掉首尾静音，响度统一到 -18 LUFS，
+    1.2 秒淡入、3 秒淡出，96 kbps。
+  - 雪声（`public/assets/audio/ambience/snow.*`）：取 56 秒一段，首尾交叉淡化做成无缝循环，
+    响度 -26 LUFS。
+  - 音效（`public/assets/audio/effects/*`）：翻页一个、猫叫四个，裁剪后统一响度。
 
-## 外观
+| id | 曲名 | 作者 | Pixabay |
+|---|---|---|---|
+| echoes-of-winter | Echoes of Winter v1 | pardeeppatel | 274285 |
+| snowy | Snowy | musingmoon | 269988 |
+| nostalgic-winter | Nostalgic Winter Reflections | Metriko | 364732 |
+| magical-celesta | Magical Fantasy Celesta | MusicViktor11 | 410854 |
+| ballerina-shoes | Ballerina Shoes | geoffharvey | 222867 |
+| fairys-farewell | Fairy's Farewell | Whatssmooth | 426378 |
+| dreamy-whispers | Dreamy Whispers | Mohamed_hassan | 360533 |
+| music-box-lullaby | Music Box Lullaby | Music_For_Videos | 165273 |
+| music-box-melody | Music Box Melody | AmarantaMusic | 163538 |
+| (snow) | Cold Snowfall Ambience | joelfazhari | 164512 |
+| page-turn | Turn a Page | creatorshome | 336933 |
+| cat-mew | Cute Cat Meow | dragon-studio | 472372 |
+| cat-meow | Cat Meow Sound | virtual_vibes | 383823 |
+| cat-mrrp | Cutie Cat | koiroylers | 355747 |
+| cat-purr | Cat Purr SFX | dragon-studio | 482870 |
+| snow-steps | Footsteps in thin snow | freesound_community | 46199 |
 
-一张实心黑胶（26px，手机横屏 22px）加一个音符：
-- **关**：唱片和音符都是淡的（0.62 / 0.3），静止。
-- **开**：唱片变实、3.4 秒转一圈，音符亮起并轻轻上下浮动。
-- 唱片上有两道高光弧和标签旁一个小白点。**同心圆是完全对称的，没有这两样东西，
-  转多快都看不出在转**，换手绘贴纸时也必须保留某种不对称的标记。
-- `prefers-reduced-motion`：不转、不浮动、不做过渡。
-
-## 待办
-
-- 正式曲子（可商用授权）。
-- 手绘唱片机贴纸。
-- 是否需要首次进站的一次性提示（"有背景音乐"），目前没有做。
+旧的占位曲 `public/assets/audio/theme-loop.*` 已不再使用，可以删掉。

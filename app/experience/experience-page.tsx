@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
+import { playEffect } from "@/components/music-store";
 import { chapters, intro, type ExperienceChapter } from "@/lib/experience";
 import styles from "./experience.module.css";
 
@@ -212,6 +213,8 @@ export default function ExperiencePage() {
           return;
         }
         pw.classList.toggle(styles.peiwenFlip, to < from);
+        // soft footsteps in the snow for this stretch of the walk (silent if sound is off)
+        playEffect("steps", { ms, randomStart: true });
         const t0 = performance.now();
         let last = t0;
         function tick(now: number) {
@@ -377,6 +380,7 @@ export default function ExperiencePage() {
       const dir = n > idx ? 1 : -1;
       await walk(HOME_X, dir > 0 ? 104 : -24, 1000);
       pageEl.classList.add(styles.pageTurning);
+      playEffect("page");
       back.style.transition = "none";
       back.className = [styles.scene, styles.sceneFinal, dir > 0 ? styles.sceneOutRight : styles.sceneOutLeft].join(" ");
       back.style.backgroundImage = sceneImage(chapters[n].id);

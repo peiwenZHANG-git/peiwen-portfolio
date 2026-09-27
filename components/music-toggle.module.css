@@ -1,4 +1,4 @@
-/* Background-music switch (components/music-toggle.tsx).
+/* Background-music record + sound panel (components/music-toggle.tsx).
  *
  * Lives in the header row after 中 / EN. Off is a still, faded record; on is a darker
  * record turning slowly with the note lit beside it — the difference has to read at a
@@ -7,6 +7,11 @@
  * Placeholder artwork: when the hand-drawn record sticker lands, the <svg> is replaced
  * and the .disc/.groove/.hole colour rules go with it. The spin and the note stay.
  */
+
+.root {
+  position: relative;
+  display: inline-flex;
+}
 
 .toggle {
   display: inline-flex;
@@ -136,5 +141,151 @@
   .record,
   .note {
     transition: none;
+  }
+}
+
+/* ---- the sound panel: a small paper card under the record (2026-09-25) ---- */
+.panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -6px;
+  z-index: 60;
+  width: min(300px, calc(100vw - 24px));
+  padding: 14px 14px 10px;
+  border-radius: 16px;
+  background: #fbf6ea;
+  box-shadow: 0 8px 26px rgb(94 71 58 / 20%), inset 0 0 0 1px rgb(140 123 105 / 30%);
+  color: #5e4a3c;
+  font-family: var(--pw-hand, "Patrick Hand"), "Patrick Hand", cursive;
+  text-align: left;
+  animation: panelIn 220ms ease-out both;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.play {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: #2f2a26;
+  color: #fbf6ea;
+  cursor: pointer;
+}
+
+.play svg {
+  width: 18px;
+  height: 18px;
+  fill: currentcolor;
+}
+
+.play:hover {
+  background: #4a423a;
+}
+
+.now {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.label {
+  color: #9a8877;
+  font-size: 13px;
+}
+
+.nowTitle {
+  overflow: hidden;
+  font-size: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tracks {
+  max-height: min(270px, 42vh);
+  margin: 0 -6px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  column-gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.track:hover {
+  background: rgb(241 226 198 / 55%);
+}
+
+.trackOn {
+  background: rgb(241 226 198 / 80%);
+}
+
+.trackMark {
+  grid-row: span 2;
+  align-self: center;
+  color: #9a8877;
+  font-size: 14px;
+  text-align: center;
+}
+
+.trackOn .trackMark {
+  color: #d96a60;
+}
+
+.trackTitle {
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.trackArtist {
+  color: #9a8877;
+  font-size: 12.5px;
+  line-height: 1.2;
+}
+
+.credit {
+  margin: 8px 0 0;
+  color: #a8978a;
+  font-size: 12px;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
   }
 }

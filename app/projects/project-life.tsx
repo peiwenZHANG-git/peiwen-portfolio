@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { playEffect } from "@/components/music-store";
 import styles from "./projects.module.css";
 
 /**
@@ -8,8 +9,8 @@ import styles from "./projects.module.css";
  * herself in a little hand-lettered bubble, and the sleeping cat answers a poke with a
  * meow. Everything here is decoration on top of the painting: the bubbles are hidden
  * from assistive tech, the two hotspots are ordinary buttons, and nothing runs on its own
- * when the visitor prefers reduced motion. The meow is synthesised (no audio file) and
- * only ever plays in answer to a click.
+ * when the visitor prefers reduced motion. The meow (a real recording since 2026-09-25,
+ * public/assets/audio/effects/cat-*) only ever plays in answer to a click.
  */
 
 const MUTTERINGS = [
@@ -32,46 +33,22 @@ const MUTTERINGS = [
   "In VR, swinging your arms is walking. Funny.",
   "Tea first. Then the next idea.",
 ];
-const MEOWS = ["Mew!", "Mrrp?", "Prrr…", "Meow~"];
+// each bubble has its own real cat sound (components/sound-library.ts)
+const MEOWS = [
+  { text: "Mew!", sound: "mew" },
+  { text: "Mrrp?", sound: "mrrp" },
+  { text: "Prrr…", sound: "purr" },
+  { text: "Meow~", sound: "meow" },
+] as const;
 const BUBBLE_MS = 4400;
 
 type Bubble = { id: number; who: "peiwen" | "cat"; text: string };
-
-function meow(ctx: AudioContext) {
-  const t = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  osc.type = "sawtooth";
-  osc.frequency.setValueAtTime(520, t);
-  osc.frequency.exponentialRampToValueAtTime(900, t + 0.14);
-  osc.frequency.exponentialRampToValueAtTime(600, t + 0.55);
-  const vibrato = ctx.createOscillator();
-  const vibratoDepth = ctx.createGain();
-  vibrato.frequency.value = 6;
-  vibratoDepth.gain.value = 12;
-  vibrato.connect(vibratoDepth).connect(osc.frequency);
-  const formant = ctx.createBiquadFilter();
-  formant.type = "bandpass";
-  formant.Q.value = 4;
-  formant.frequency.setValueAtTime(900, t);
-  formant.frequency.linearRampToValueAtTime(1900, t + 0.16);
-  formant.frequency.linearRampToValueAtTime(1000, t + 0.55);
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.linearRampToValueAtTime(0.22, t + 0.06);
-  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
-  osc.connect(formant).connect(gain).connect(ctx.destination);
-  osc.start(t);
-  vibrato.start(t);
-  osc.stop(t + 0.7);
-  vibrato.stop(t + 0.7);
-}
 
 export default function ProjectLife() {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const idRef = useRef(0);
   const lineRef = useRef(0);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const audioRef = useRef<AudioContext | null>(null);
 
   const say = useCallback((who: Bubble["who"], text: string) => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
@@ -102,16 +79,14 @@ export default function ProjectLife() {
     };
   }, [say, nextLine]);
 
+  // a different voice every poke: random, but never the same one twice in a row
+  const lastMeow = useRef(-1);
   function pokeCat() {
-    try {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      audioRef.current ??= new Ctx();
-      void audioRef.current.resume();
-      meow(audioRef.current);
-    } catch {
-      // No sound is fine; the bubble still answers.
-    }
-    say("cat", MEOWS[Math.floor(Math.random() * MEOWS.length)]);
+    let i = Math.floor(Math.random() * (MEOWS.length - 1));
+    if (i >= lastMeow.current) i += 1;
+    lastMeow.current = i;
+    playEffect(MEOWS[i].sound);
+    say("cat", MEOWS[i].text);
   }
 
   return (

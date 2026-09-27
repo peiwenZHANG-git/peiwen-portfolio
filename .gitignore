@@ -48,3 +48,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw Pixabay downloads; the site uses the processed files in public/assets/audio (scripts/prepare-audio.sh)
+/design-assets/audio/incoming/
