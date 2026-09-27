@@ -9,6 +9,8 @@ import {
   COMPANION_EMAIL,
   COMPANION_FREEFORM,
   COMPANION_GREETING,
+  companionPageLine,
+  matchCompanionAnswer,
   type CompanionAction,
 } from "@/lib/companion";
 import styles from "./peiwen-companion.module.css";
@@ -18,9 +20,10 @@ import styles from "./peiwen-companion.module.css";
  *
  * A small Peiwen stands in the bottom-right corner of every page. Click her → a paper
  * speech bubble opens above her head with a greeting and a few questions; she answers
- * in first person. "Ask me anything…" is already there, but in phase 1 a free question
- * gets an honest "I can't chat yet" + a way to email the real Peiwen. Phase 2 (a real
- * AI conversation, still first person) will plug into the same bubble.
+ * in first person. "Ask me anything…" matches a typed question to the closest answer
+ * locally (lib/companion.ts, no AI and no server — Peiwen only wants her to talk about
+ * Peiwen and this site); anything else gets a gentle "I only know about me and this
+ * little world" with a few questions to try.
  *
  * Art (2026-09-25, user-approved): the flower-fairy Peiwen — daisy crown, pink tulle,
  * small see-through wings, star wand — hovering with a soft warm glow. Cut out of the
@@ -31,9 +34,13 @@ import styles from "./peiwen-companion.module.css";
  * `data-home-phase` and `data-guide` on Home's <main>.
  */
 
-type View = { kind: "menu" } | { kind: "answer"; id: string } | { kind: "free"; question: string };
+type View =
+  | { kind: "menu" }
+  | { kind: "answer"; id: string; typed?: string }
+  | { kind: "free"; question: string };
 
 const HINT_KEY = "peiwen-companion-hint";
+const LINE_KEY = "peiwen-companion-line:";
 const THINK_MS = 550;
 
 function subscribeBody(cb: () => void) {
@@ -90,7 +97,9 @@ export function PeiwenCompanion() {
   const [thinking, setThinking] = useState(false);
   const [copied, setCopied] = useState<"ok" | "manual" | null>(null);
   const [draft, setDraft] = useState("");
-  const [hint, setHint] = useState(false);
+  // what she says to herself on arriving at a page (its own guide line, or a first
+  // "psst… ask me!"); tied to the page it was said on
+  const [hint, setHint] = useState<{ path: string; text: string } | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -106,22 +115,36 @@ export function PeiwenCompanion() {
     return () => list.forEach((t) => window.clearTimeout(t));
   }, []);
 
-  // one quiet "psst" per session, a moment after she first appears
+  // On arriving at a page she says one short line to herself: how this page works
+  // (lib/companion.ts, companionPageLine), once per page per visit. Pages without a
+  // line get a single "psst… ask me!" per visit instead. The "seen" mark is written
+  // when the line actually shows, so React's double-run of effects in dev can't eat it.
   useEffect(() => {
     if (!ready) return;
+    const touch = window.matchMedia("(hover: none)").matches;
+    const line = companionPageLine(pathname, touch);
+    const key = line ? LINE_KEY + pathname : HINT_KEY;
     try {
-      if (window.sessionStorage.getItem(HINT_KEY)) return;
-      window.sessionStorage.setItem(HINT_KEY, "1");
+      if (window.sessionStorage.getItem(key)) return;
     } catch {
       return;
     }
-    const a = window.setTimeout(() => setHint(true), 2400);
-    const b = window.setTimeout(() => setHint(false), 8400);
+    const text = line ?? "psst\u2026 ask me!";
+    const a = window.setTimeout(() => {
+      try {
+        window.sessionStorage.setItem(key, "1");
+      } catch {
+        /* ignore */
+      }
+      setHint({ path: pathname, text });
+    }, 1400);
+    // page guide lines stay 20s (Peiwen's call): long enough to read and try it out
+    const b = window.setTimeout(() => setHint(null), 1400 + (line ? 20000 : 6000));
     return () => {
       window.clearTimeout(a);
       window.clearTimeout(b);
     };
-  }, [ready]);
+  }, [ready, pathname]);
 
   // while open: Escape closes, a click anywhere else closes
   useEffect(() => {
@@ -152,7 +175,7 @@ export function PeiwenCompanion() {
   }
 
   function toggle() {
-    setHint(false);
+    setHint(null);
     if (open) {
       close(false);
       return;
@@ -195,7 +218,8 @@ export function PeiwenCompanion() {
     const q = draft.trim();
     if (!q) return;
     setDraft("");
-    show({ kind: "free", question: q });
+    const hit = matchCompanionAnswer(q);
+    show(hit ? { kind: "answer", id: hit.id, typed: q } : { kind: "free", question: q });
   }
 
   async function copyEmail() {
@@ -214,7 +238,7 @@ export function PeiwenCompanion() {
   if (!ready) return null;
 
   const answer = view.kind === "answer" ? COMPANION_ANSWERS.find((a) => a.id === view.id) : null;
-  const asked = view.kind === "answer" ? answer?.question : view.kind === "free" ? view.question : null;
+  const asked = view.kind === "answer" ? (view.typed ?? answer?.question) : view.kind === "free" ? view.question : null;
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
@@ -243,7 +267,7 @@ export function PeiwenCompanion() {
           <div className={styles.body} aria-live="polite">
             {view.kind === "menu" ? (
               <ul className={styles.chips} aria-label="Things you can ask">
-                {COMPANION_ANSWERS.map((a, i) => (
+                {COMPANION_ANSWERS.filter((a) => !a.hidden).map((a, i) => (
                   <li key={a.id}>
                     <button
                       type="button"
@@ -279,6 +303,19 @@ export function PeiwenCompanion() {
                             <button key="copy" type="button" className={styles.action} onClick={copyEmail}>
                               {copied === "ok" ? "copied ✓" : act.label}
                             </button>
+                          ) : act.kind === "ask" ? (
+                            <button
+                              key={`ask-${act.id}`}
+                              type="button"
+                              className={styles.action}
+                              onClick={() => show({ kind: "answer", id: act.id })}
+                            >
+                              {act.label}
+                            </button>
+                          ) : /^https?:/.test(act.href) ? (
+                            <a key={act.href} href={act.href} className={styles.action} target="_blank" rel="noopener noreferrer">
+                              {act.label}
+                            </a>
                           ) : (
                             <a
                               key={act.href}
@@ -322,9 +359,9 @@ export function PeiwenCompanion() {
         </div>
       )}
 
-      {hint && !open && (
+      {hint && hint.path === pathname && !open && (
         <p className={styles.hint} aria-hidden="true">
-          psst&hellip; ask me!
+          {hint.text}
         </p>
       )}
 
