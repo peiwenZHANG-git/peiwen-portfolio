@@ -72,15 +72,13 @@ export function SiteHeader({ current }: { current?: SiteHeaderCurrent }) {
       <nav className={styles.nav} aria-label="Main">
         {NAV_ITEMS.map((item) => {
           const isCurrent = item.key === current;
-          const scroll = "scroll" in item ? item.scroll : undefined;
           return (
             <Link
               key={item.key}
               className={[styles.drawU, isCurrent ? styles.navCurrent : ""].filter(Boolean).join(" ")}
               href={item.href}
-              {...(scroll !== undefined ? { scroll } : {})}
               {...(isCurrent ? { "aria-current": "page" as const } : {})}
-              onClick={(e) => handleClick(item.href, scroll, e)}
+              onClick={(e) => handleClick(item.href, undefined, e)}
             >
               {item.label}
             </Link>
