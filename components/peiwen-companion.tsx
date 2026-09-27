@@ -4,14 +4,18 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore, type FormEven
 import { usePathname } from "next/navigation";
 import { usePageTransition } from "@/components/page-transition";
 import { bodyFont, handFont } from "@/app/home-fonts";
+import { L, useLang } from "@/components/lang";
 import {
   COMPANION_ANSWERS,
   COMPANION_EMAIL,
   COMPANION_FREEFORM,
   COMPANION_GREETING,
+  COMPANION_GREETING_ZH,
+  COMPANION_PSST,
   companionPageLine,
   matchCompanionAnswer,
   type CompanionAction,
+  type CompanionPageLine,
 } from "@/lib/companion";
 import styles from "./peiwen-companion.module.css";
 
@@ -99,7 +103,8 @@ export function PeiwenCompanion() {
   const [draft, setDraft] = useState("");
   // what she says to herself on arriving at a page (its own guide line, or a first
   // "psst… ask me!"); tied to the page it was said on
-  const [hint, setHint] = useState<{ path: string; text: string } | null>(null);
+  const [hint, setHint] = useState<{ path: string; line: CompanionPageLine } | null>(null);
+  const lang = useLang();
 
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -129,14 +134,14 @@ export function PeiwenCompanion() {
     } catch {
       return;
     }
-    const text = line ?? "psst\u2026 ask me!";
+    const shown = line ?? COMPANION_PSST;
     const a = window.setTimeout(() => {
       try {
         window.sessionStorage.setItem(key, "1");
       } catch {
         /* ignore */
       }
-      setHint({ path: pathname, text });
+      setHint({ path: pathname, line: shown });
     }, 1400);
     // page guide lines stay 20s (Peiwen's call): long enough to read and try it out
     const b = window.setTimeout(() => setHint(null), 1400 + (line ? 20000 : 6000));
@@ -238,8 +243,10 @@ export function PeiwenCompanion() {
   if (!ready) return null;
 
   const answer = view.kind === "answer" ? COMPANION_ANSWERS.find((a) => a.id === view.id) : null;
-  const asked = view.kind === "answer" ? (view.typed ?? answer?.question) : view.kind === "free" ? view.question : null;
+  const asked = view.kind === "answer" ? view.typed : view.kind === "free" ? view.question : null;
+  const askedFallback = view.kind === "answer" ? answer : null;
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
+  const linesZh = view.kind === "answer" ? (answer?.answerZh ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answerZh : [];
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
 
@@ -255,18 +262,20 @@ export function PeiwenCompanion() {
           className={styles.bubble}
           role="dialog"
           aria-modal="false"
-          aria-label="Ask little Peiwen"
+          aria-label={lang === "zh" ? "问问小佩文" : "Ask little Peiwen"}
         >
           <div className={styles.bubbleHead}>
-            <p className={styles.greeting}>{COMPANION_GREETING}</p>
-            <button type="button" className={styles.close} onClick={() => close(true)} aria-label="Close">
+            <p className={styles.greeting}>
+              <L en={COMPANION_GREETING} zh={COMPANION_GREETING_ZH} />
+            </p>
+            <button type="button" className={styles.close} onClick={() => close(true)} aria-label={lang === "zh" ? "关闭" : "Close"}>
               &times;
             </button>
           </div>
 
           <div className={styles.body} aria-live="polite">
             {view.kind === "menu" ? (
-              <ul className={styles.chips} aria-label="Things you can ask">
+              <ul className={styles.chips} aria-label={lang === "zh" ? "可以问的问题" : "Things you can ask"}>
                 {COMPANION_ANSWERS.filter((a) => !a.hidden).map((a, i) => (
                   <li key={a.id}>
                     <button
@@ -275,16 +284,24 @@ export function PeiwenCompanion() {
                       onClick={() => show({ kind: "answer", id: a.id })}
                       data-autofocus={i === 0 ? "" : undefined}
                     >
-                      {a.question}
+                      <L en={a.question} zh={a.questionZh} />
                     </button>
                   </li>
                 ))}
               </ul>
             ) : (
               <div className={styles.answer}>
-                {asked && <p className={styles.asked}>&ldquo;{asked}&rdquo;</p>}
+                {asked ? (
+                  <p className={styles.asked}>&ldquo;{asked}&rdquo;</p>
+                ) : (
+                  askedFallback && (
+                    <p className={styles.asked}>
+                      &ldquo;<L en={askedFallback.question} zh={askedFallback.questionZh} />&rdquo;
+                    </p>
+                  )
+                )}
                 {thinking ? (
-                  <p className={styles.thinking} aria-label="Little Peiwen is thinking">
+                  <p className={styles.thinking} aria-label={lang === "zh" ? "小佩文在思考" : "Little Peiwen is thinking"}>
                     <span />
                     <span />
                     <span />
@@ -293,7 +310,7 @@ export function PeiwenCompanion() {
                   <>
                     {lines.map((line, i) => (
                       <p key={i} className={`${styles.line} ${line === COMPANION_EMAIL ? styles.email : ""}`}>
-                        {line}
+                        {line === COMPANION_EMAIL ? line : <L en={line} zh={linesZh[i] ?? line} />}
                       </p>
                     ))}
                     {actions.length > 0 && (
@@ -301,7 +318,7 @@ export function PeiwenCompanion() {
                         {actions.map((act) =>
                           act.kind === "copy-email" ? (
                             <button key="copy" type="button" className={styles.action} onClick={copyEmail}>
-                              {copied === "ok" ? "copied ✓" : act.label}
+                              {copied === "ok" ? <L en="copied ✓" zh="已复制 ✓" /> : <L en={act.label} zh={act.labelZh} />}
                             </button>
                           ) : act.kind === "ask" ? (
                             <button
@@ -310,11 +327,11 @@ export function PeiwenCompanion() {
                               className={styles.action}
                               onClick={() => show({ kind: "answer", id: act.id })}
                             >
-                              {act.label}
+                              <L en={act.label} zh={act.labelZh} />
                             </button>
                           ) : /^https?:/.test(act.href) ? (
                             <a key={act.href} href={act.href} className={styles.action} target="_blank" rel="noopener noreferrer">
-                              {act.label}
+                              <L en={act.label} zh={act.labelZh} />
                             </a>
                           ) : (
                             <a
@@ -323,7 +340,7 @@ export function PeiwenCompanion() {
                               className={styles.action}
                               onClick={(e) => follow(e, act.href)}
                             >
-                              {act.label}
+                              <L en={act.label} zh={act.labelZh} />
                             </a>
                           ),
                         )}
@@ -331,7 +348,7 @@ export function PeiwenCompanion() {
                     )}
                     {copied === "manual" && <p className={`${styles.line} ${styles.email}`}>{COMPANION_EMAIL}</p>}
                     <button type="button" className={styles.back} onClick={backToMenu} data-autofocus="">
-                      &larr; other questions
+                      <L en={<>&larr; other questions</>} zh={<>&larr; 换个问题</>} />
                     </button>
                   </>
                 )}
@@ -341,18 +358,18 @@ export function PeiwenCompanion() {
 
           <form className={styles.ask} onSubmit={submit}>
             <label className={styles.srOnly} htmlFor={`${bubbleId}-ask`}>
-              Ask me anything
+              <L en="Ask me anything" zh="问我点什么吧" />
             </label>
             <input
               id={`${bubbleId}-ask`}
               className={styles.input}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask me anything…"
+              placeholder={lang === "zh" ? "问我点什么吧…" : "Ask me anything…"}
               autoComplete="off"
               maxLength={200}
             />
-            <button type="submit" className={styles.send} aria-label="Ask" disabled={!draft.trim()}>
+            <button type="submit" className={styles.send} aria-label={lang === "zh" ? "发送" : "Ask"} disabled={!draft.trim()}>
               &rarr;
             </button>
           </form>
@@ -361,7 +378,7 @@ export function PeiwenCompanion() {
 
       {hint && hint.path === pathname && !open && (
         <p className={styles.hint} aria-hidden="true">
-          {hint.text}
+          <L en={hint.line.en} zh={hint.line.zh} />
         </p>
       )}
 
@@ -372,7 +389,15 @@ export function PeiwenCompanion() {
         onClick={toggle}
         aria-expanded={open}
         aria-controls={open ? bubbleId : undefined}
-        aria-label={open ? "Close little Peiwen’s questions" : "Ask little Peiwen a question"}
+        aria-label={
+          lang === "zh"
+            ? open
+              ? "关闭小佩文的提问"
+              : "问问小佩文"
+            : open
+              ? "Close little Peiwen’s questions"
+              : "Ask little Peiwen a question"
+        }
       >
         <span className={styles.float} aria-hidden="true">
           <span className={styles.aura} />

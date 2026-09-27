@@ -270,3 +270,23 @@ a { color: inherit; }
   .milestone-copy[data-active="true"],
   .milestone-copy[data-phase="approaching"] { transition: none; }
 }
+
+/* ---- 中 / EN (components/lang.tsx) ----
+   Both languages are in the page; <html data-lang> picks one. Default English. */
+html:not([data-lang="zh"]) [data-l="zh"],
+html[data-lang="zh"] [data-l="en"] {
+  display: none !important;
+}
+
+/* LXGW WenKai GB (SIL OFL 1.1), cut down to just the characters the site's Chinese
+   text uses — scripts/prepare-zh-font.py. Only downloaded once Chinese is showing. */
+@font-face {
+  font-family: "PW WenKai";
+  src: url("/fonts/lxgw-wenkai-subset.woff") format("woff");
+  font-display: swap;
+}
+
+[data-l="zh"] {
+  font-family: "PW WenKai", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  letter-spacing: 0.02em;
+}

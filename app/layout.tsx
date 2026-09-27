@@ -5,6 +5,7 @@ import { SiteAudio } from "@/components/site-audio";
 import { WorldLink } from "@/components/world-link";
 import { PeiwenCompanion } from "@/components/peiwen-companion";
 import { PageTransitionProvider } from "@/components/page-transition";
+import { LANG_BOOT_SCRIPT } from "@/components/lang";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +28,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // data-lang is set before paint by the script below (see components/lang.tsx)
+      suppressHydrationWarning
     >
+      <head>
+        {/* fetched immediately, in parallel with the page shell, so the Chinese
+            handwritten font is ready before any 中文 text paints — see components/lang.tsx */}
+        <link rel="preload" href="/fonts/lxgw-wenkai-subset.woff" as="font" type="font/woff" crossOrigin="anonymous" />
+        <script dangerouslySetInnerHTML={{ __html: LANG_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         {/* Mounted here, not per route, so the wash overlay survives client-side
             navigation and the same instance carries every route change — see

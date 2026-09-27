@@ -3,6 +3,7 @@
 import type { MouseEvent } from "react";
 import Link from "next/link";
 import { MusicToggle } from "./music-toggle";
+import { LangToggle } from "./lang-toggle";
 import { usePageTransition } from "./page-transition";
 import styles from "./site-header.module.css";
 
@@ -28,7 +29,8 @@ const NAV_ITEMS = [
   { key: "home", href: "/", label: "Home" },
   { key: "experience", href: "/experience", label: "Experience" },
   { key: "projects", href: "/projects", label: "Projects" },
-  { key: "playground", href: "/#playground", label: "Playground", scroll: false },
+  // Playground removed 2026-09-27 (Peiwen's decision): it had no destination — /#playground
+  // was never a real anchor and /playground 404s. Bring it back once there's a page for it.
   { key: "about", href: "/about", label: "About me" },
 ] as const;
 
@@ -86,9 +88,7 @@ export function SiteHeader({ current }: { current?: SiteHeaderCurrent }) {
         })}
       </nav>
       <div className={styles.lang}>
-        <span className={styles.langText}>
-          中 / <span>EN</span>
-        </span>
+        <LangToggle />
         <MusicToggle />
       </div>
     </header>

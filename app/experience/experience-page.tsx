@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
 import { playEffect } from "@/components/music-store";
+import { L } from "@/components/lang";
 import { chapters, intro, type ExperienceChapter } from "@/lib/experience";
 import styles from "./experience.module.css";
 
@@ -34,20 +35,24 @@ const ICON_SVG: Record<ExperienceChapter["items"][number]["icon"], string> = {
 
 const SPRIG_SVG = '<svg viewBox="0 0 16 22" fill="none" stroke="#7d8566" stroke-width="1.2" stroke-linecap="round"><path d="M8 21V3"/><path d="M8 8C5 7 3 5 3 2c3 0 5 2 5 5"/><path d="M8 13c3-1 5-3 5-6-3 0-5 2-5 5"/></svg>';
 
+function bl(en: string, zh: string): string {
+  return `<span data-l="en">${en}</span><span data-l="zh" lang="zh-CN">${zh}</span>`;
+}
+
 function pageHTML(c: ExperienceChapter): string {
   return `
-    <div class="${styles.ticket}"><div class="${styles.ticketFrom}">${c.place}</div><div class="${styles.ticketDates}">${c.when}</div></div>
+    <div class="${styles.ticket}"><div class="${styles.ticketFrom}">${bl(c.place, c.placeZh)}</div><div class="${styles.ticketDates}">${bl(c.when, c.whenZh)}</div></div>
     <div class="${styles.keepsake}" aria-hidden="true">${keepsakeImg(c.keepsake, 180)}</div>
-    <h2>${c.title}</h2><p class="${styles.pageMeta}">${c.meta}</p>
-    <p class="${styles.pageDesc}">${c.desc}</p>
-    <div class="${styles.during}">${SPRIG_SVG}What I did here</div>
+    <h2>${bl(c.title, c.titleZh)}</h2><p class="${styles.pageMeta}">${bl(c.meta, c.metaZh)}</p>
+    <p class="${styles.pageDesc}">${bl(c.desc, c.descZh)}</p>
+    <div class="${styles.during}">${SPRIG_SVG}${bl("What I did here", "我在这里做了什么")}</div>
     ${c.items
       .map(
-        it => `<div class="${styles.item}"><div class="${styles.itemIcon}">${ICON_SVG[it.icon]}</div><div><h3>${it.heading}</h3><div class="${styles.itemRole}">${it.role}</div>
-      <ul class="${styles.bullets}">${it.bullets.map(x => `<li>${x}</li>`).join("")}</ul></div></div>`,
+        it => `<div class="${styles.item}"><div class="${styles.itemIcon}">${ICON_SVG[it.icon]}</div><div><h3>${bl(it.heading, it.headingZh)}</h3><div class="${styles.itemRole}">${bl(it.role, it.roleZh)}</div>
+      <ul class="${styles.bullets}">${it.bullets.map((x, i) => `<li>${bl(x, it.bulletsZh[i])}</li>`).join("")}</ul></div></div>`,
       )
       .join("")}
-    <p class="${styles.learnedNote}">${c.note}</p>`;
+    <p class="${styles.learnedNote}">${bl(c.note, c.noteZh)}</p>`;
 }
 
 const WALK_FRAMES = [1, 2, 3, 4].map(n => `/assets/experience/walk/walk-0${n}.webp`);
@@ -177,7 +182,7 @@ export default function ExperiencePage() {
         btn.dataset.here = String(isHere);
         btn.setAttribute("aria-current", isHere ? "step" : "false");
       });
-      countEl.textContent = `${got.size} of ${chapters.length} kept`;
+      countEl.innerHTML = bl(`${got.size} of ${chapters.length} kept`, `已收集 ${got.size} / ${chapters.length}`);
       prevBtn.disabled = idx === 0;
       nextBtn.disabled = idx === chapters.length - 1;
     }
@@ -531,7 +536,7 @@ export default function ExperiencePage() {
           go() assigns it as a background-image during a chapter transition. */}
       <link rel="preload" as="image" href={`/assets/experience/scenes/${chapters[0].id}-1400.webp`} />
       <a className={styles.skipLink} href="#experience-content">
-        Skip to content
+        <L en="Skip to content" zh="跳到正文内容" />
       </a>
       <SiteHeader current="experience" />
 
@@ -541,17 +546,17 @@ export default function ExperiencePage() {
             experience.module.css). Independent of PageTransitionProvider entirely —
             these fire because the component mounted, not because of any phase state. */}
         <div className={styles.intro}>
-          <h1 className={styles.revealHeading}>{intro.heading}</h1>
+          <h1 className={styles.revealHeading}><L en={intro.heading} zh={intro.headingZh} /></h1>
           <ul className={`${styles.stickers} ${styles.revealStickers}`}>
             {intro.stickers.map(s => (
               <li key={s.label} className={s.tone === "blue" ? styles.stickerBlue : s.tone === "butter" ? styles.stickerButter : styles.stickerRose}>
-                {s.label}
+                <L en={s.label} zh={s.labelZh} />
               </li>
             ))}
           </ul>
           <ul className={`${styles.facts} ${styles.revealFacts}`}>
-            {intro.facts.map(fact => (
-              <li key={fact}>{fact}</li>
+            {intro.facts.map((fact, i) => (
+              <li key={fact}><L en={fact} zh={intro.factsZh[i]} /></li>
             ))}
           </ul>
         </div>
@@ -584,8 +589,8 @@ export default function ExperiencePage() {
 
             <nav className={styles.shelf} aria-label="Places, most recent first">
               <div className={styles.shelfHead}>
-                <span>Along the way</span>
-                <em data-count>1 of {chapters.length}</em>
+                <span><L en="Along the way" zh="沿途经过的地方" /></span>
+                <em data-count><L en={`1 of ${chapters.length}`} zh={`已收集 1 / ${chapters.length}`} /></em>
               </div>
               <ol data-shelf className={styles.shelfList}>
                 {chapters.map((c, i) => (
@@ -601,10 +606,10 @@ export default function ExperiencePage() {
                         <img src={`/assets/experience/keepsakes/${c.keepsake}-64.webp`} width={44} height={44} alt="" />
                       </span>
                       <span className={styles.place}>
-                        <span className={styles.drawU}>{c.city}</span>
+                        <span className={styles.drawU}><L en={c.city} zh={c.cityZh} /></span>
                       </span>
-                      <span className={styles.when}>{c.year}</span>
-                      <span className={styles.learned}>{c.learned}</span>
+                      <span className={styles.when}><L en={c.year} zh={c.yearZh} /></span>
+                      <span className={styles.learned}><L en={c.learned} zh={c.learnedZh} /></span>
                     </button>
                   </li>
                 ))}
@@ -617,8 +622,8 @@ export default function ExperiencePage() {
                 </svg>
               </button>
               <span className={styles.walkHint}>
-                <span className={styles.hintDesk}>← → to walk, or tap a keepsake</span>
-                <span className={styles.hintTouch}>Swipe, or tap a keepsake</span>
+                <span className={styles.hintDesk}><L en="← → to walk, or tap a keepsake" zh="← → 移动，或者点一个纪念品" /></span>
+                <span className={styles.hintTouch}><L en="Swipe, or tap a keepsake" zh="滑动，或者点一个纪念品" /></span>
               </span>
               <button type="button" data-next aria-label="Walk to the next place">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -633,8 +638,8 @@ export default function ExperiencePage() {
           </div>
         </div>
         <div className={styles.footnotes}>
-          <span>Explore at your own pace.</span>
-          <span>More to come…</span>
+          <span><L en="Explore at your own pace." zh="按自己的节奏慢慢看。" /></span>
+          <span><L en="More to come…" zh="还有更多，敬请期待…" /></span>
         </div>
       </main>
     </div>

@@ -22,7 +22,7 @@
 .heroDemo { min-width: 0; margin: 0; }
 .heroDemo video { display: block; width: 100%; height: auto; aspect-ratio: 1280 / 766; border: 1px solid var(--pw-rule); background: #e9e3d7; }
 .heroDemo figcaption { margin-top: 12px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
-.heroDemo figcaption span { display: block; margin-bottom: 3px; font: 21px/1.35 var(--hand); color: var(--pw-ink); }
+.heroDemo figcaption span:not([data-l]) { display: block; margin-bottom: 3px; font: 21px/1.35 var(--hand); color: var(--pw-ink); }
 .root .eyebrow { font: 600 12px/1.7 var(--body); text-transform: uppercase; letter-spacing: .15em; color: var(--pw-secondary); }
 .root .lead { font-size: 25px; line-height: 1.4; margin: 24px 0 16px; }
 .root .annotation { font: 23px/1.4 var(--hand); color: #685840; margin-top: 22px; }
@@ -59,7 +59,7 @@
 .prototypePair .figure:last-child { rotate: 1deg; }
 .flow { list-style: none; padding: 0; margin: 30px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .flow li { border-top: 2px solid #9fa991; padding: 14px 0; font-size: 15px; line-height: 1.55; }
-.flow span { display: block; font: 24px/1.5 var(--hand); color: #59664e; margin-bottom: 8px; }
+.flow span:not([data-l]) { display: block; font: 24px/1.5 var(--hand); color: #59664e; margin-bottom: 8px; }
 .systemDetail { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: 40px; align-items: center; }
 .systemDetail h3 { margin-top: 0; }
 .contribution { padding: 14px 0; border-block: 1px solid var(--pw-rule); }
@@ -71,7 +71,7 @@
 .resultInsight > p:last-child { display: inline-block; margin: 8px 0 0; }
 .emotionHighlights { display: flex; gap: 32px; margin: 26px 0 -6px; }
 .emotionHighlights p { margin: 0; font: 22px/1.5 var(--hand); color: #685840; }
-.emotionHighlights span { display: inline-block; margin-right: 7px; rotate: -8deg; }
+.emotionHighlights span:not([data-l]) { display: inline-block; margin-right: 7px; rotate: -8deg; }
 .iteration { position: relative; list-style: none; padding: 0 0 0 34px; margin: 28px 0 18px; }
 .iteration::before { content: ""; position: absolute; left: 8px; top: 12px; bottom: 12px; border-left: 1px dashed #9b9286; rotate: -.4deg; }
 .iteration li { position: relative; padding: 0 0 25px; }
@@ -80,7 +80,7 @@
 .iteration li > span { font: 23px/1.45 var(--hand); }
 .iteration li p { margin: 5px 0 0; }
 .pencilNote { margin: 8px 0 24px 18px !important; font: 22px/1.4 var(--hand); color: #685840; rotate: -1deg; }
-.pencilNote span { display: inline-block; margin-right: 6px; rotate: -8deg; }
+.pencilNote span:not([data-l]) { display: inline-block; margin-right: 6px; rotate: -8deg; }
 .footer { display: flex; gap: 28px; flex-wrap: wrap; }
 .footer p { width: 100%; color: var(--pw-secondary); font-size: 14px; }
 .footer a { font: 22px/1.5 var(--hand); }

@@ -121,7 +121,9 @@ export function WorldLink() {
 
   const base = "/" + (pathname.split("/")[1] ?? "");
   if (base === "/" || !mounted) return null;
-  const keepsake = KEEPSAKES[base];
+  // only on the section pages themselves: a project case study (/projects/reso) has its
+  // own "← Back to the attic" link in that corner
+  const keepsake = pathname.split("/").filter(Boolean).length === 1 ? KEEPSAKES[base] : undefined;
 
   function goHome(e: MouseEvent<HTMLAnchorElement>) {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

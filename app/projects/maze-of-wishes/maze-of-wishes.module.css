@@ -105,7 +105,7 @@
   font-size: 14px;
   line-height: 1.55;
 }
-.heroDemo figcaption span {
+.heroDemo figcaption span:not([data-l]) {
   display: block;
   margin-bottom: 3px;
   font: 20px/1.35 var(--hand);
@@ -285,7 +285,7 @@
   font: 23px/1.4 var(--hand) !important;
   rotate: -0.5deg;
 }
-.pencilNote span {
+.pencilNote span:not([data-l]) {
   display: inline-block;
   margin-right: 8px;
   rotate: -12deg;
@@ -363,11 +363,11 @@
   background: #f1eadf;
 }
 .mapping strong,
-.mapping strong span,
+.mapping strong span:not([data-l]),
 .mapping strong b {
   display: block;
 }
-.mapping strong span {
+.mapping strong span:not([data-l]) {
   color: var(--red);
   font: 18px/1.3 var(--hand);
 }
@@ -403,14 +403,14 @@
   border-top: 2px solid #9aaa91;
 }
 .stateFlow strong,
-.stateFlow span {
+.stateFlow span:not([data-l]) {
   display: block;
 }
 .stateFlow strong {
   font: 21px/1.35 var(--hand);
   color: var(--red);
 }
-.stateFlow span {
+.stateFlow span:not([data-l]) {
   margin-top: 7px;
   font-size: 13px;
   line-height: 1.45;

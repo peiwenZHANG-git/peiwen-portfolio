@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import type { Project } from "@/lib/projectsData";
+import { L } from "@/components/lang";
 import styles from "./projects.module.css";
 
 export type Selection = { project: Project; source: HTMLButtonElement };
@@ -54,14 +55,14 @@ export default function ProjectPreview({ selection, onClose }: {
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="project-title"
       onCancel={(event) => { event.preventDefault(); void close(); }}>
       <article ref={paper} className={styles.preview}>
-        <button type="button" className={styles.close} onClick={() => void close()} autoFocus>Close ×</button>
-        <p className={styles.previewLabel}>From the attic · {project.subtitle}</p>
+        <button type="button" className={styles.close} onClick={() => void close()} autoFocus><L en="Close ×" zh="关闭 ×" /></button>
+        <p className={styles.previewLabel}><L en={`From the attic · ${project.subtitle}`} zh={`这是我做过的项目 · ${project.subtitleZh}`} /></p>
         <div className={styles.previewImage}>
           <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 719px) 85vw, 780px" />
         </div>
-        <h2 id="project-title">{project.title}</h2>
-        <p>{project.description}</p>
-        <Link className={styles.caseStudy} href={project.href}>View case study →</Link>
+        <h2 id="project-title"><L en={project.title} zh={project.titleZh} /></h2>
+        <p><L en={project.description} zh={project.descriptionZh} /></p>
+        <Link className={styles.caseStudy} href={project.href}><L en="View case study →" zh="看完整项目 →" /></Link>
       </article>
     </dialog>
   );

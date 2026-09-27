@@ -98,11 +98,32 @@
   white-space: nowrap;
 }
 
-/* Only the "EN" inside the label — NOT .langText itself, which is also a span and
-   would drag 中 into the accent colour with it. */
-.langText span {
+/* 中 / EN are two buttons (components/lang-toggle.tsx); the active one is underlined
+   in the accent colour. */
+.langBtn {
+  padding: 0 1px;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.langBtn:hover {
+  color: var(--pw-ink);
+}
+
+.langOn,
+.langOn:hover {
   color: var(--pw-accent);
-  border-bottom: 1.5px solid var(--pw-accent);
+  border-bottom-color: var(--pw-accent);
+}
+
+.langBtn:focus-visible {
+  outline: 2px solid var(--pw-accent);
+  outline-offset: 2px;
+  border-radius: 3px;
 }
 
 /* hover: a pencil line draws itself under the label */

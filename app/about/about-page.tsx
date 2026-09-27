@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
+import { L, useLang } from "@/components/lang";
 import { usePageTransition } from "@/components/page-transition";
 import { playEffect } from "@/components/music-store";
 import { aboutAsset, type AboutAssetKey } from "./about-assets";
@@ -112,14 +113,14 @@ function CopyEmail() {
       <button type="button" className={bookStyles.copyBtn} onClick={copy} title={`Copy ${EMAIL}`} aria-label={`Copy email address: ${EMAIL}`}>
         <EmailIcon />
         <span className={bookStyles.wrap}>
-          Email
+          <L en="Email" zh="邮箱" />
           <span className={bookStyles.wave} />
         </span>
       </button>
       <span className={`${bookStyles.copyNote} ${note ? bookStyles.copyNoteOn : ""}`} role="status" aria-live="polite">
         {note === "copied" && (
           <>
-            <b>copied &#10003;</b> {EMAIL}
+            <b><L en="copied ✓" zh="已复制 ✓" /></b> {EMAIL}
           </>
         )}
         {note === "manual" && <>{EMAIL}</>}
@@ -134,6 +135,75 @@ function EmailIcon() {
       <rect x="2.2" y="5.2" width="19.6" height="13.6" rx="1.6" />
       <path d="M2.8 6.4 L12 13.4 L21.2 6.4" />
     </svg>
+  );
+}
+
+/**
+ * "Download CV" (2026-09-27): Peiwen has an English and a Chinese CV, written for
+ * different audiences rather than a translation of each other, so clicking the pill
+ * asks which one to download instead of guessing from the site's current language.
+ * Same open/close/outside-click/Escape pattern as the little-Peiwen bubble.
+ */
+function CVDownload() {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLSpanElement>(null);
+  const firstRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    firstRef.current?.focus({ preventScroll: true });
+    function onDown(e: PointerEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <span className={bookStyles.cvWrap} ref={wrapRef}>
+      <button
+        type="button"
+        className={bookStyles.cvfill}
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="true"
+        aria-expanded={open}
+      >
+        &darr; <L en="Download CV" zh="下载简历" />
+      </button>
+      <span className={`${bookStyles.cvMenu} ${open ? bookStyles.cvMenuOn : ""}`} role="menu" aria-label="Choose a CV language">
+        <span className={bookStyles.cvMenuLabel}>
+          <L en="Which one?" zh="选择语言" />
+        </span>
+        <span className={bookStyles.cvMenuOptions}>
+          <a
+            ref={firstRef}
+            role="menuitem"
+            className={bookStyles.cvOption}
+            href="/cv/peiwen-zhang-cv-en.pdf"
+            download="Peiwen Zhang - CV.pdf"
+            onClick={() => setOpen(false)}
+          >
+            English
+          </a>
+          <a
+            role="menuitem"
+            className={bookStyles.cvOption}
+            href="/cv/peiwen-zhang-cv-zh.pdf"
+            download="张佩文-简历.pdf"
+            onClick={() => setOpen(false)}
+          >
+            中文
+          </a>
+        </span>
+      </span>
+    </span>
   );
 }
 
@@ -165,7 +235,7 @@ type StickerItem = BaseItem & { kind: "sticker"; assetKey: AboutAssetKey; alt: s
 type NodeItem = BaseItem & { kind: "node"; content: ReactNode };
 type SpreadItem = StickerItem | NodeItem;
 
-type Spread = { name: string; left: SpreadItem[]; right: SpreadItem[] };
+type Spread = { name: string; nameZh: string; left: SpreadItem[]; right: SpreadItem[] };
 
 /** Hover reactions for the objects on the page (mouse/trackpad only, see the
     `.live` rules in about-book.module.css). Most things hop; the light, feathery ones
@@ -205,8 +275,11 @@ function sticker(
  */
 const topIntro = {
   heading: "Turn a few pages to get to know me.",
+  headingZh: "翻几页，认识一下我。",
   tags: ["AI Products", "Prototyping", "Interactive Storytelling"],
+  tagsZh: ["AI 产品", "原型设计", "互动叙事"],
   stats: ["3 spreads", "3 languages", "MSc in progress"],
+  statsZh: ["3 个跨页", "3 门语言", "硕士在读"],
 };
 
 /** A placed content block, per layout.js's `el(html, css, rot)`. */
@@ -239,7 +312,9 @@ const introLeft: SpreadItem[] = [
     "intro-polaroid",
     <div className={bookStyles.polaroid}>
       <div className={bookStyles.photoInner} />
-      <div className={bookStyles.cap}>days @ Paris-Saclay</div>
+      <div className={bookStyles.cap}>
+        <L en="days @ Paris-Saclay" zh="在巴黎萨克雷的日子" />
+      </div>
     </div>,
     "11.1%",
     "3.5%",
@@ -252,7 +327,7 @@ const introLeft: SpreadItem[] = [
     "intro-title",
     <>
       <h2 className={bookStyles.title} style={cssVars({ "--title-fs": "12cqw" })}>
-        Hi, I&rsquo;m Peiwen.
+        <L en={<>Hi, I&rsquo;m Peiwen.</>} zh="嗨，我是佩文。" />
       </h2>
       <div className={bookStyles.uline} style={{ width: "78%" }} />
     </>,
@@ -265,7 +340,7 @@ const introLeft: SpreadItem[] = [
   node(
     "intro-sub",
     <div style={{ ...cssVars({ "--sub-fs": "5.4cqw" }), textAlign: "center" }}>
-      product manager &middot; in paris
+      <L en={<>product manager &middot; in paris</>} zh={<>产品经理 &middot; 常驻巴黎</>} />
     </div>,
     "-0.4%",
     "63.2%",
@@ -275,9 +350,16 @@ const introLeft: SpreadItem[] = [
   node(
     "intro-body",
     <p className={bookStyles.bodyText} style={cssVars({ "--body-fs": "4.8cqw" })}>
-      I&rsquo;m exploring how to become an AI Product Manager. I use research, prototyping,
-      and visual design to work with AI and make complex problems easier to understand,
-      while bringing a little more storytelling into digital experiences.
+      <L
+        en={
+          <>
+            I&rsquo;m exploring how to become an AI Product Manager. I use research, prototyping,
+            and visual design to work with AI and make complex problems easier to understand,
+            while bringing a little more storytelling into digital experiences.
+          </>
+        }
+        zh="我正在探索怎么成为一名 AI 产品经理。我用研究、原型设计和视觉设计的方法跟 AI 打交道，把复杂的问题讲清楚，也想让数字体验多一点讲故事的感觉。"
+      />
     </p>,
     "2.7%",
     "70.1%",
@@ -291,30 +373,38 @@ const introRight: SpreadItem[] = [
   node(
     "intro-quick-facts",
     <div className={`${bookStyles.note} ${bookStyles.noteButter} ${bookStyles.noteBig}`}>
-      <h3>Quick Facts</h3>
+      <h3><L en="Quick Facts" zh="小档案" /></h3>
       <div className={bookStyles.uline} style={{ width: "64%", margin: "0 auto 7%" }} />
       <div className={bookStyles.facts}>
         <div className={bookStyles.fact}>
-          <span className={bookStyles.tag2}>Now</span>
+          <span className={bookStyles.tag2}><L en="Now" zh="目前" /></span>
           <span className={bookStyles.arw}>&rarr;</span>
-          <span className={bookStyles.val}>MSc in Human-Computer Interaction</span>
+          <span className={bookStyles.val}><L en="MSc in Human-Computer Interaction" zh="人机交互硕士在读" /></span>
         </div>
         <div className={bookStyles.fact}>
-          <span className={bookStyles.tag2}>Focus</span>
+          <span className={bookStyles.tag2}><L en="Focus" zh="方向" /></span>
           <span className={bookStyles.arw}>&rarr;</span>
           <span className={bookStyles.val}>
-            AI Products &middot; Human-AI Interaction &middot; Interaction Design
+            <L
+              en={<>AI Products &middot; Human-AI Interaction &middot; Interaction Design</>}
+              zh={<>AI 产品 &middot; 人机协作 &middot; 交互设计</>}
+            />
           </span>
         </div>
         <div className={bookStyles.fact}>
-          <span className={bookStyles.tag2}>Languages</span>
+          <span className={bookStyles.tag2}><L en="Languages" zh="语言" /></span>
           <span className={bookStyles.arw}>&rarr;</span>
-          <span className={bookStyles.val}>Chinese &middot; English &middot; French (learning)</span>
+          <span className={bookStyles.val}>
+            <L
+              en={<>Chinese &middot; English &middot; French (learning)</>}
+              zh={<>中文 &middot; 英语 &middot; 法语（学习中）</>}
+            />
+          </span>
         </div>
         <div className={bookStyles.fact}>
-          <span className={bookStyles.tag2}>Location</span>
+          <span className={bookStyles.tag2}><L en="Location" zh="所在地" /></span>
           <span className={bookStyles.arw}>&rarr;</span>
-          <span className={bookStyles.val}>Paris</span>
+          <span className={bookStyles.val}><L en="Paris" zh="巴黎" /></span>
         </div>
       </div>
     </div>,
@@ -336,10 +426,10 @@ const introRight: SpreadItem[] = [
         ...cssVars({ "--chip-fs": "4.7cqw", "--chip-padx": "8cqw", "--chip-pady": "5cqw" }),
       }}
     >
-      <span className={bookStyles.chip}>Design Systems</span>
-      <span className={bookStyles.chip}>Prototyping</span>
-      <span className={bookStyles.chip}>AI Products</span>
-      <span className={bookStyles.chip}>Interactive Storytelling</span>
+      <span className={bookStyles.chip}><L en="Design Systems" zh="设计系统" /></span>
+      <span className={bookStyles.chip}><L en="Prototyping" zh="原型设计" /></span>
+      <span className={bookStyles.chip}><L en="AI Products" zh="AI 产品" /></span>
+      <span className={bookStyles.chip}><L en="Interactive Storytelling" zh="互动叙事" /></span>
     </div>,
     "2.6%",
     "64.1%",
@@ -350,14 +440,10 @@ const introRight: SpreadItem[] = [
   ),
   node(
     "intro-cv",
-    // IMPLEMENTATION.md §7.3: the CV PDF isn't attached yet. layout.js's prototype used
-    // `href="#" onclick="return false"` for this, which is a dead link for
-    // keyboard/screen-reader users; lib/about.ts's own `cv.href === null` pattern renders
-    // inert text with no href instead, so this follows that existing, more accessible
-    // convention.
-    <span className={bookStyles.cvfill} aria-disabled="true">
-      &darr; Download CV
-    </span>,
+    // 2026-09-27: the CV is attached now (Peiwen supplied an English and a Chinese
+    // version, written for different audiences rather than a translation of each
+    // other), so clicking asks which one to download — see CVDownload above.
+    <CVDownload />,
     "22.8%",
     "81.7%",
     "56%",
@@ -413,28 +499,47 @@ const journeyLeft: SpreadItem[] = [
       })}
     >
       <div className={bookStyles.tlItem}>
-        <div className={bookStyles.tlYear}>2021 ~ 2025</div>
-        <div className={bookStyles.tlSchool}>Communication University of China</div>
-        <div className={bookStyles.tlMeta}>Beijing, China &middot; BA in Digital Media Tech</div>
+        <div className={bookStyles.tlYear}><L en="2021 ~ 2025" zh="2021 – 2025" /></div>
+        <div className={bookStyles.tlSchool}><L en="Communication University of China" zh="中国传媒大学" /></div>
+        <div className={bookStyles.tlMeta}>
+          <L en={<>Beijing, China &middot; BA in Digital Media Tech</>} zh={<>中国北京 &middot; 数字媒体技术学士</>} />
+        </div>
         <div className={bookStyles.tlTag}>
-          Found my way into interaction, visual storytelling, and creative technology.
+          <L
+            en="Found my way into interaction, visual storytelling, and creative technology."
+            zh="开始接触交互设计、视觉叙事和创意技术。"
+          />
         </div>
       </div>
       <div className={bookStyles.tlItem}>
         <div className={bookStyles.tlYear}>2023</div>
-        <div className={bookStyles.tlSchool}>Osaka University</div>
-        <div className={bookStyles.tlMeta}>Osaka, Japan &middot; Exchange</div>
+        <div className={bookStyles.tlSchool}><L en="Osaka University" zh="大阪大学" /></div>
+        <div className={bookStyles.tlMeta}>
+          <L en={<>Osaka, Japan &middot; Exchange</>} zh={<>日本大阪 &middot; 交换生</>} />
+        </div>
         <div className={bookStyles.tlTag}>
-          Explored HCI through research, experiments, and a different culture.
+          <L
+            en="Explored HCI through research, experiments, and a different culture."
+            zh="通过研究和实验探索人机交互，也体验了不同的文化。"
+          />
         </div>
       </div>
       <div className={bookStyles.tlItem}>
-        <div className={bookStyles.tlYear}>2025 ~ now</div>
-        <div className={bookStyles.tlSchool}>Universit&eacute; Paris-Saclay</div>
-        <div className={bookStyles.tlMeta}>Paris, France &middot; MSc HCI</div>
+        <div className={bookStyles.tlYear}><L en="2025 ~ now" zh="2025 – 至今" /></div>
+        <div className={bookStyles.tlSchool}><L en="Université Paris-Saclay" zh="巴黎萨克雷大学" /></div>
+        <div className={bookStyles.tlMeta}>
+          <L en={<>Paris, France &middot; MSc HCI</>} zh={<>法国巴黎 &middot; 人机交互硕士</>} />
+        </div>
         <div className={bookStyles.tlTag}>
-          Now exploring Human&ndash;AI interaction and how AI products can make complexity
-          feel clearer.
+          <L
+            en={
+              <>
+                Now exploring Human&ndash;AI interaction and how AI products can make complexity
+                feel clearer.
+              </>
+            }
+            zh="正在探索人机协作，以及 AI 产品如何让复杂的事情变得更清楚。"
+          />
         </div>
       </div>
     </div>,
@@ -482,9 +587,16 @@ const beyondLeft: SpreadItem[] = [
   node(
     "beyond-body",
     <p className={bookStyles.bodyText} style={cssVars({ "--body-fs": "4.4cqw" })}>
-      Outside of design, I love swimming, taking photos, going somewhere new, cooking, and
-      exploring what life feels like from a different place. I&rsquo;m always curious about
-      what else life could become.
+      <L
+        en={
+          <>
+            Outside of design, I love swimming, taking photos, going somewhere new, cooking, and
+            exploring what life feels like from a different place. I&rsquo;m always curious about
+            what else life could become.
+          </>
+        }
+        zh="设计之外，我喜欢游泳、拍照、去没去过的地方、做饭，感受不一样的生活是什么样子。生活还能变成什么样子，我一直很好奇。"
+      />
     </p>,
     "6.1%",
     "21.9%",
@@ -523,10 +635,17 @@ const beyondRight: SpreadItem[] = [
   node(
     "beyond-note-exploring",
     <div className={`${bookStyles.note} ${bookStyles.noteBlue}`}>
-      <h3>Currently exploring</h3>
+      <h3><L en="Currently exploring" zh="最近在关心" /></h3>
       <p className={bookStyles.bodyText}>
-        How AI can become more than a tool - and how thoughtful interaction can make complex
-        technology feel clearer, warmer, and easier to trust.
+        <L
+          en={
+            <>
+              How AI can become more than a tool - and how thoughtful interaction can make complex
+              technology feel clearer, warmer, and easier to trust.
+            </>
+          }
+          zh="AI 要怎样才能不只是一个工具——用心设计的交互，怎么让复杂的技术显得更清楚、更温暖、更值得信任。"
+        />
       </p>
     </div>,
     "16.6%",
@@ -537,7 +656,7 @@ const beyondRight: SpreadItem[] = [
   node(
     "beyond-write-title",
     <h2 className={bookStyles.title} style={cssVars({ "--title-fs": "7cqw" })}>
-      Write me a note&hellip;
+      <L en={<>Write me a note&hellip;</>} zh="给我留句话…" />
     </h2>,
     "4.9%",
     "37.2%",
@@ -548,9 +667,9 @@ const beyondRight: SpreadItem[] = [
 ];
 
 const SPREADS: Spread[] = [
-  { name: "① Intro", left: introLeft, right: introRight },
-  { name: "② My Journey", left: journeyLeft, right: journeyRight },
-  { name: "③ Beyond", left: beyondLeft, right: beyondRight },
+  { name: "① Intro", nameZh: "① 自我介绍", left: introLeft, right: introRight },
+  { name: "② My Journey", nameZh: "② 我的旅程", left: journeyLeft, right: journeyRight },
+  { name: "③ Beyond", nameZh: "③ 设计之外", left: beyondLeft, right: beyondRight },
 ];
 
 /* ------------------------------------------------------------------ swap animation */
@@ -692,7 +811,14 @@ function Page({
     nothing is actually sent: "Send" with empty text just focuses the field; with text it
     clears the draft, shows "Sent ✓" and closes after ~1.4s. Close, Escape or a click on
     the backdrop close it too, and focus returns to the postcard. */
+const POSTCARD_PLACEHOLDER = {
+  en: "A thought, a question, or just a little hello…",
+  zh: "写点什么吧，一个想法、一个问题，或者就打个招呼…",
+};
+
 function PostcardNote() {
+  const lang = useLang();
+  const placeholder = POSTCARD_PLACEHOLDER[lang];
   const [value, setValue] = useState("");
   const [sent, setSent] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -772,7 +898,7 @@ function PostcardNote() {
           aria-haspopup="dialog"
           onClick={() => setSheetOpen(true)}
         >
-          {value || "A thought, a question, or just a little hello…"}
+          {value || placeholder}
         </button>
       </div>
       {sheetOpen &&
@@ -796,7 +922,7 @@ function PostcardNote() {
                 <textarea
                   ref={sheetTextareaRef}
                   aria-label="Your note"
-                  placeholder="A thought, a question, or just a little hello…"
+                  placeholder={placeholder}
                   value={value}
                   onChange={(event) => setValue(event.target.value)}
                 />
@@ -804,13 +930,13 @@ function PostcardNote() {
             </div>
             <div className={bookStyles.sheetBar}>
               <button type="button" onClick={closeSheet}>
-                Close
+                <L en="Close" zh="关闭" />
               </button>
               <span className={bookStyles.sheetSent} style={{ opacity: sent ? 1 : 0 }} aria-live="polite">
-                Sent &#10003;
+                <L en="Sent ✓" zh="已发送 ✓" />
               </span>
               <button type="button" onClick={handleSend}>
-                Send
+                <L en="Send" zh="发送" />
               </button>
             </div>
           </div>,
@@ -997,17 +1123,21 @@ export default function AboutPage() {
           departing, not while it's arriving) and independent of the notebook's own
           `.revealBook` reveal below. */}
       <div className={`${styles.intro} ${stageClassName}`} inert={blocked || undefined}>
-        <h1 className={`${styles.introHeading} ${styles.revealHeading}`}>{topIntro.heading}</h1>
+        <h1 className={`${styles.introHeading} ${styles.revealHeading}`}>
+          <L en={topIntro.heading} zh={topIntro.headingZh} />
+        </h1>
         <ul className={`${styles.tags} ${styles.revealTags}`}>
-          {topIntro.tags.map(tag => (
+          {topIntro.tags.map((tag, i) => (
             <li key={tag} className={styles.tag}>
-              {tag}
+              <L en={tag} zh={topIntro.tagsZh[i]} />
             </li>
           ))}
         </ul>
         <ul className={`${styles.stats} ${styles.revealStats}`}>
-          {topIntro.stats.map(stat => (
-            <li key={stat}>{stat}</li>
+          {topIntro.stats.map((stat, i) => (
+            <li key={stat}>
+              <L en={stat} zh={topIntro.statsZh[i]} />
+            </li>
           ))}
         </ul>
       </div>
@@ -1047,7 +1177,9 @@ export default function AboutPage() {
             >
               &lsaquo;
             </button>
-            <div className={bookStyles.label}>{SPREADS[spreadIndex].name}</div>
+            <div className={bookStyles.label}>
+              <L en={SPREADS[spreadIndex].name} zh={SPREADS[spreadIndex].nameZh} />
+            </div>
             <div className={bookStyles.dots} role="group" aria-label="Choose spread">
               {SPREADS.map((spread, i) => (
                 <button
@@ -1084,10 +1216,14 @@ export default function AboutPage() {
           <path d="M40 4c22-4 40 8 44 28" />
           <path d="M78 26l6 7 6-8" />
         </svg>
-        <p className={bookStyles.rotateTitle}>Turn your phone sideways</p>
-        <p className={bookStyles.rotateText}>This notebook reads best in landscape.</p>
+        <p className={bookStyles.rotateTitle}>
+          <L en="Turn your phone sideways" zh="把手机横过来" />
+        </p>
+        <p className={bookStyles.rotateText}>
+          <L en="This notebook reads best in landscape." zh="这本子横着看最舒服。" />
+        </p>
         <button type="button" className={bookStyles.rotateBtn} onClick={() => setViewAnyway(true)}>
-          View anyway
+          <L en="View anyway" zh="还是要看看" />
         </button>
       </div>
       )}

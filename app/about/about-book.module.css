@@ -449,14 +449,28 @@
   background-size: 100% 100%;
 }
 
-/* filled CV pill — currently a static label; see about-page.tsx for why it has no href */
+/* "Download CV" pill — a button that opens the language choice below (CVDownload in
+   about-page.tsx), not a plain link, so it needs the usual native-button resets. */
+.cvWrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .cvfill {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  width: 100%;
+  height: 100%;
   padding: 3.6% 0;
+  border: 0;
+  background-color: transparent;
+  appearance: none;
+  cursor: pointer;
   font-family: var(--hand);
   font-size: var(--cv-fs, 5.2cqw);
   color: var(--rose-deep);
@@ -473,6 +487,71 @@
   content: "";
   background: rgb(214 166 166 / 34%);
   border-radius: 999px;
+}
+
+.cvfill:focus-visible {
+  outline: 2px solid var(--dust-blue);
+  outline-offset: 3px;
+}
+
+/* the "which language?" popover, same paper-note language as .copyNote */
+.cvMenu {
+  position: absolute;
+  bottom: calc(100% + 0.6em);
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.5em 0.7em 0.6em;
+  border-radius: 0.6em;
+  background: #fbf6ea;
+  box-shadow: 0 2px 8px rgb(94 71 58 / 18%), inset 0 0 0 1px rgb(140 123 105 / 30%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.4em) rotate(-1deg);
+  transition: opacity 220ms ease, transform 260ms ease;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.cvMenuOn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0) rotate(-1deg);
+}
+
+.cvMenuLabel {
+  font-size: max(11px, 0.62em);
+  color: #8c7b69;
+}
+
+.cvMenuOptions {
+  display: flex;
+  gap: 0.4em;
+}
+
+.cvOption {
+  padding: 0.3em 0.85em;
+  border-radius: 0.5em;
+  font-family: var(--hand);
+  font-size: max(13px, 0.78em);
+  color: #5e4a3c;
+  text-decoration: none;
+  background: rgb(214 166 166 / 18%);
+  white-space: nowrap;
+}
+
+.cvOption:hover,
+.cvOption:focus-visible {
+  background: rgb(214 166 166 / 34%);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cvMenu {
+    transition: none;
+  }
 }
 
 .contact {

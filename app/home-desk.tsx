@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
 import { FairyGuide } from "@/components/fairy-guide";
+import { L } from "@/components/lang";
 import styles from "./home-desk.module.css";
 import { handFont, bodyFont } from "./home-fonts";
 
@@ -63,12 +64,10 @@ const ENTRANCES: Entrance[] = [
     label: "A clipped index card, “Projects” — go to Projects",
     className: styles.hsProjects,
   },
-  {
-    key: "playground",
-    href: "/#playground",
-    label: "A small folded note, “Still exploring” — go to Playground",
-    className: styles.hsPlayground,
-  },
+  // Playground removed 2026-09-27 (Peiwen's decision): it had no destination — /#playground
+  // was never a real anchor and /playground 404s. The folded "Still exploring…" note stays
+  // in the painting but is no longer a hotspot or labeled; bring it back once there's a
+  // page for it.
 ];
 
 /* Snow: fixed, hand-tuned-feeling pseudo-random layout (seeded so server and client
@@ -364,10 +363,8 @@ export default function HomeDesk() {
                 <span className={styles.rule} />
                 <span className={styles.sub}>What I built.</span>
               </p>
-              <p className={`${styles.sheet} ${styles.sheetPlayground}`}>
-                <span>Still</span>
-                <span>exploring&hellip;</span>
-              </p>
+              {/* "Still exploring…" removed with the Playground entrance (2026-09-27):
+                  an unlabeled note reads better than one that goes nowhere. */}
             </div>
           </div>
           {/* light ink on the red leather cover: its own blend group, see .labelsLight */}
@@ -395,17 +392,21 @@ export default function HomeDesk() {
               designing AI products and small interactive worlds.
             </p>
             <p className={`${styles.invite} ${touched ? styles.inviteDone : ""}`} aria-hidden="true">
-              click anything on the desk to explore &darr;
+              <L en={<>click anything on the desk to explore &darr;</>} zh={<>点点桌上的东西，探索一下 &darr;</>} />
             </p>
           </div>
 
           <p className={`${styles.hint} ${styles.hintWindow}`} aria-hidden="true">
-            click the window &rarr;
-            <small>the city outside is waiting</small>
+            <L en={<>click the window &rarr;</>} zh={<>点一下窗户 &rarr;</>} />
+            <small>
+              <L en="the city outside is waiting" zh="窗外的城市在等你" />
+            </small>
           </p>
           <p className={`${styles.hint} ${styles.hintLamp}`} aria-hidden="true">
-            click the lamp &rarr;
-            <small>light up the room</small>
+            <L en={<>click the lamp &rarr;</>} zh={<>点一下台灯 &rarr;</>} />
+            <small>
+              <L en="light up the room" zh="把房间点亮" />
+            </small>
           </p>
 
           <button

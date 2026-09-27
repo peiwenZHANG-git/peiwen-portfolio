@@ -51,3 +51,6 @@ next-env.d.ts
 
 # raw Pixabay downloads; the site uses the processed files in public/assets/audio (scripts/prepare-audio.sh)
 /design-assets/audio/incoming/
+
+# the full 25 MB source font; the site uses the subset from scripts/prepare-zh-font.py
+/design-assets/fonts/*.ttf
