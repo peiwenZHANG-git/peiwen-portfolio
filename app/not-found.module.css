@@ -1,0 +1,62 @@
+/* 404 page. Same paper tone as About/the rotate-guard card, so a wrong turn still
+   feels like part of this site rather than a generic Next.js error screen. */
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: #f4ede1;
+  color: #292d45;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 40px 24px 64px;
+  text-align: center;
+}
+
+.compass {
+  margin-bottom: 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: clamp(28px, 5vw, 40px);
+  color: #8c6a52;
+}
+
+.text {
+  margin: 6px 0 28px;
+  max-width: 38ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #6b6255;
+}
+
+.home {
+  padding: 7px 20px;
+  font-family: var(--home-hand), "Patrick Hand", cursive;
+  font-size: 18px;
+  color: #8c6a52;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgb(255 255 255 / 55%);
+  border: 1.3px solid #af886c;
+  border-radius: 16px;
+}
+
+.home:hover,
+.home:focus-visible {
+  background: rgb(255 255 255 / 80%);
+}
+
+.home:focus-visible {
+  outline: 2px solid #93a8ac;
+  outline-offset: 2px;
+}

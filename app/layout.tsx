@@ -20,6 +20,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Needed so the favicon/apple-icon/opengraph-image file-convention routes below
+  // (app/icon.tsx, app/apple-icon.tsx, app/opengraph-image.tsx) resolve to absolute
+  // URLs when the site is shared — without it Next warns and some link-preview
+  // scrapers won't fetch a relative image URL at all.
+  metadataBase: new URL("https://peiwen-little-world.vercel.app"),
   title: "Peiwen Zhang — HCI × AI Agents",
   description: "Peiwen Zhang's portfolio in HCI, AI agents, and UX.",
 };
