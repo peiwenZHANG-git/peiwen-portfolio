@@ -494,16 +494,35 @@
 }
 
 /* ------------------------------------------------------------- invitation
- * The room is lit, but nothing yet says the desk is clickable. A last handwritten line
- * under the title, then each entrance glows once in turn (left to right), twice over.
- * Both stop as soon as the visitor points at or tabs into the desk. */
+ * The room is lit, but nothing yet says the desk is clickable. A last handwritten line,
+ * then each entrance glows once in turn (left to right), twice over. Both stop as soon
+ * as the visitor points at or tabs into the desk.
+ *
+ * 2026-09-28: this used to sit stacked under the title, up by the window — visually
+ * correct as "part of the same paragraph" but far from the objects it's actually
+ * pointing at, which is why people weren't reading it as an instruction to click the
+ * desk. Moved to float on its own, just above the entrance row (hsExperience starts at
+ * top: 59.5%), sized up a little, and given the same dark halo as `.hint` below so it
+ * stays readable wherever it lands (wood, lamp glow, the window's lower edge) rather
+ * than only the night sky it used to sit against. */
 .invite {
-  margin: 1.1em 0 0;
+  position: absolute;
+  /* on the bare strip of desk under the window, between the postcards and the little
+     vase (Peiwen's pick, 2026-09-28): right of the postcards, above the notebook */
+  left: 60.5%;
+  top: 60%;
+  transform: translateX(-50%);
+  margin: 0;
   font-family: var(--home-hand), "Patrick Hand", cursive;
-  font-size: calc(var(--W) * 0.0112);
+  font-size: calc(var(--W) * 0.0148);
   letter-spacing: 0.03em;
+  text-align: center;
   white-space: nowrap;
   color: var(--pw-title);
+  text-shadow:
+    0 0 7px rgba(18, 22, 40, 0.5),
+    0 0 15px rgba(18, 22, 40, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.4);
   opacity: 0;
   pointer-events: none;
   transition: opacity 600ms ease;
@@ -534,14 +553,16 @@
 }
 
 @keyframes inviteIn {
+  /* keeps the translateX(-50%) centring from .invite — an animation's transform
+     replaces the element's own rather than adding to it */
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translate(-50%, 4px);
   }
 
   to {
     opacity: 0.9;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
   }
 }
 

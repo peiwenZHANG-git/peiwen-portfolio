@@ -391,10 +391,13 @@ export default function HomeDesk() {
               <br />
               designing AI products and small interactive worlds.
             </p>
-            <p className={`${styles.invite} ${touched ? styles.inviteDone : ""}`} aria-hidden="true">
-              <L en={<>click anything on the desk to explore &darr;</>} zh={<>点点桌上的东西，探索一下 &darr;</>} />
-            </p>
           </div>
+
+          {/* its own element on the stage (not inside .heading), so its % position is
+              measured against the whole desk and it can sit right above the entrances */}
+          <p className={`${styles.invite} ${touched ? styles.inviteDone : ""}`} aria-hidden="true">
+            <L en={<>click anything on the desk to explore &darr;</>} zh={<>点点桌上的东西，探索一下 &darr;</>} />
+          </p>
 
           <p className={`${styles.hint} ${styles.hintWindow}`} aria-hidden="true">
             <L en={<>click the window &rarr;</>} zh={<>点一下窗户 &rarr;</>} />
