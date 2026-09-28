@@ -807,20 +807,38 @@ function Page({
     writing half (left of the dashed divider) is covered in the card's own paper colour
     and shows the placeholder, or the draft so far. Clicking it opens the same postcard
     enlarged in a dialog, where the note is actually written (18px text, so iOS doesn't
-    zoom on focus). Same on desktop and phones (user decision, 2026-09-20). Client-only —
-    nothing is actually sent: "Send" with empty text just focuses the field; with text it
-    clears the draft, shows "Sent ✓" and closes after ~1.4s. Close, Escape or a click on
-    the backdrop close it too, and focus returns to the postcard. */
+    zoom on focus). Same on desktop and phones (user decision, 2026-09-20).
+    "Send" with empty text just focuses the field. With text, it POSTs the note to
+    Web3Forms (see NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY in .env.example), which relays it to
+    Peiwen's own inbox — no backend of ours involved. While that request is in flight the
+    button reads "Sending…" and is disabled; on success the draft clears, "Sent ✓" shows
+    and the sheet closes after ~1.4s; on failure the draft is kept (nothing is lost) and an
+    inline error line appears so the person can just try again. Close, Escape or a click on
+    the backdrop close the sheet, and focus returns to the postcard. */
 const POSTCARD_PLACEHOLDER = {
   en: "A thought, a question, or just a little hello…",
   zh: "写点什么吧，一个想法、一个问题，或者就打个招呼…",
 };
 
+const POSTCARD_ERROR = {
+  en: "Couldn't send that — mind trying again?",
+  zh: "没发送成功，要不要再试一次？",
+};
+
+const POSTCARD_SENDING = {
+  en: "Sending…",
+  zh: "发送中…",
+};
+
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+
+type SendState = "idle" | "sending" | "sent" | "error";
+
 function PostcardNote() {
   const lang = useLang();
   const placeholder = POSTCARD_PLACEHOLDER[lang];
   const [value, setValue] = useState("");
-  const [sent, setSent] = useState(false);
+  const [sendState, setSendState] = useState<SendState>("idle");
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const sheetRef = useRef<HTMLDivElement | null>(null);
@@ -839,18 +857,49 @@ function PostcardNote() {
     tapRef.current?.focus();
   }
 
-  function handleSend() {
-    if (!value.trim()) {
+  async function handleSend() {
+    const note = value.trim();
+    if (!note) {
       sheetTextareaRef.current?.focus();
       return;
     }
-    setValue("");
-    setSent(true);
-    if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
-    hideTimer.current = window.setTimeout(() => {
-      setSent(false);
-      closeSheet();
-    }, 1400);
+    if (sendState === "sending") return;
+
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+    if (!accessKey) {
+      // Not configured yet (local dev without .env.local, or the key hasn't been added
+      // to the deployment's env vars) — fail loudly instead of pretending it sent.
+      console.error("NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY is not set; the postcard can't send.");
+      setSendState("error");
+      return;
+    }
+
+    setSendState("sending");
+    try {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: "A postcard from Peiwen's Little World",
+          from_name: "Peiwen's Little World — postcard",
+          message: note,
+        }),
+      });
+      const result = (await response.json().catch(() => null)) as { success?: boolean } | null;
+      if (!response.ok || !result?.success) throw new Error("web3forms rejected the postcard");
+
+      setValue("");
+      setSendState("sent");
+      if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
+      hideTimer.current = window.setTimeout(() => {
+        setSendState("idle");
+        closeSheet();
+      }, 1400);
+    } catch (error) {
+      console.error("Postcard send failed:", error);
+      setSendState("error");
+    }
   }
 
   useEffect(() => {
@@ -924,7 +973,10 @@ function PostcardNote() {
                   aria-label="Your note"
                   placeholder={placeholder}
                   value={value}
-                  onChange={(event) => setValue(event.target.value)}
+                  onChange={(event) => {
+                    setValue(event.target.value);
+                    if (sendState === "error") setSendState("idle");
+                  }}
                 />
               </div>
             </div>
@@ -932,11 +984,23 @@ function PostcardNote() {
               <button type="button" onClick={closeSheet}>
                 <L en="Close" zh="关闭" />
               </button>
-              <span className={bookStyles.sheetSent} style={{ opacity: sent ? 1 : 0 }} aria-live="polite">
-                <L en="Sent ✓" zh="已发送 ✓" />
+              <span
+                className={`${bookStyles.sheetSent} ${sendState === "error" ? bookStyles.sheetSentError : ""}`}
+                style={{ opacity: sendState === "sent" || sendState === "error" ? 1 : 0 }}
+                aria-live="polite"
+              >
+                {sendState === "error" ? (
+                  <L en={POSTCARD_ERROR.en} zh={POSTCARD_ERROR.zh} />
+                ) : (
+                  <L en="Sent ✓" zh="已发送 ✓" />
+                )}
               </span>
-              <button type="button" onClick={handleSend}>
-                <L en="Send" zh="发送" />
+              <button type="button" onClick={handleSend} disabled={sendState === "sending"}>
+                {sendState === "sending" ? (
+                  <L en={POSTCARD_SENDING.en} zh={POSTCARD_SENDING.zh} />
+                ) : (
+                  <L en="Send" zh="发送" />
+                )}
               </button>
             </div>
           </div>,

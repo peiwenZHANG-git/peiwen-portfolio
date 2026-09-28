@@ -998,6 +998,15 @@
   transition: opacity 0.3s ease;
 }
 
+.sheetSentError {
+  color: #e8b4a6;
+}
+
+.sheetBar button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
 /* Landscape phones: scale the notebook up to the page width and crop it to the area the
    content actually uses (x 3.5%–85.5%, y 5%–95% of the illustration, measured across all
    three spreads). Percentage margins resolve against the container's width, so the
