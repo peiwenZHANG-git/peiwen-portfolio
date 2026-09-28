@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
 import { L, useLang } from "@/components/lang";
 import { usePageTransition } from "@/components/page-transition";
+import { useRotateBlocked } from "@/components/rotate-guard";
 import { playEffect } from "@/components/music-store";
 import { aboutAsset, type AboutAssetKey } from "./about-assets";
 import { bodyFont, handFont } from "./fonts";
@@ -23,9 +24,13 @@ import bookStyles from "./about-book.module.css";
  * Phones (2026-09-20, design-assets/about/MOBILE.md): the same two-page spread, never a
  * re-flowed single column. In landscape (height ≤ 500px) the notebook is scaled up to
  * fill the width and cropped to its content area, so text stays readable and the page
- * scrolls vertically; prev/next and the dots are pinned to the viewport. Portrait
- * phones get a "turn your phone sideways" card with a "View anyway" escape. The
- * postcard opens a larger writing dialog everywhere (see PostcardNote).
+ * scrolls vertically; prev/next and the dots are pinned to the viewport. Portrait phones
+ * see a "turn your phone sideways" card with a "View anyway" escape — since 2026-09-28
+ * this is a site-wide gate shared by every route (see components/rotate-guard.tsx),
+ * not an About-only thing; `useRotateBlocked()` below just reads the same boolean so
+ * this page can still mark its own header/intro/notebook `inert` individually while
+ * the card covers the screen. The postcard opens a larger writing dialog everywhere
+ * (see PostcardNote).
  * All of that is CSS media queries in about-book.module.css plus the small bits of
  * state below; desktop rendering is unchanged.
  *
@@ -1029,20 +1034,6 @@ function getReducedMotionServer() {
 
 /** Must match the landscape-phone media query in about-book.module.css. */
 const PHONE_LANDSCAPE_QUERY = "(orientation: landscape) and (max-height: 500px)";
-/** Must match the portrait-phone media query in about-book.module.css. */
-const PHONE_PORTRAIT_QUERY = "(orientation: portrait) and (max-width: 600px)";
-
-function subscribePortrait(onChange: () => void) {
-  const mq = window.matchMedia(PHONE_PORTRAIT_QUERY);
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-function getPortrait() {
-  return window.matchMedia(PHONE_PORTRAIT_QUERY).matches;
-}
-function getPortraitServer() {
-  return false;
-}
 
 export default function AboutPage() {
   const { stageClassName, onStageTransitionEnd } = usePageTransition();
@@ -1056,11 +1047,11 @@ export default function AboutPage() {
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, getReducedMotionServer);
   const busyRef = useRef(false);
   const shellRef = useRef<HTMLDivElement | null>(null);
-  const [viewAnyway, setViewAnyway] = useState(false);
-  const phonePortrait = useSyncExternalStore(subscribePortrait, getPortrait, getPortraitServer);
-  /* The rotate card covers the page, so the notebook behind it is made inert: no tab
-     stops, nothing for a screen reader, until "View anyway" is pressed. */
-  const blocked = phonePortrait && !viewAnyway;
+  /* Site-wide rotate gate (components/rotate-guard.tsx) — true while the "turn your
+     phone sideways" card covers the screen. Used here to also mark this page's own
+     header/intro/notebook `inert` individually (belt-and-suspenders on top of the
+     global wrap in app/layout.tsx) and to suppress arrow-key spread navigation. */
+  const blocked = useRotateBlocked();
   const timers = useRef<number[]>([]);
 
   useEffect(
@@ -1269,28 +1260,6 @@ export default function AboutPage() {
           </div>
         </div>
       </main>
-
-      {/* Portrait phones. */}
-      {blocked && (
-      <div className={bookStyles.rotate}>
-        <svg viewBox="0 0 120 90" width="120" height="90" fill="none" stroke="#8c6a52" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <rect x="14" y="10" width="34" height="62" rx="6" />
-          <path d="M27 64h8" />
-          <rect x="58" y="42" width="54" height="30" rx="6" strokeDasharray="4 4" />
-          <path d="M40 4c22-4 40 8 44 28" />
-          <path d="M78 26l6 7 6-8" />
-        </svg>
-        <p className={bookStyles.rotateTitle}>
-          <L en="Turn your phone sideways" zh="把手机横过来" />
-        </p>
-        <p className={bookStyles.rotateText}>
-          <L en="This notebook reads best in landscape." zh="这本子横着看最舒服。" />
-        </p>
-        <button type="button" className={bookStyles.rotateBtn} onClick={() => setViewAnyway(true)}>
-          <L en="View anyway" zh="还是要看看" />
-        </button>
-      </div>
-      )}
     </div>
   );
 }

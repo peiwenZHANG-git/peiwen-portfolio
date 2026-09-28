@@ -5,6 +5,7 @@ import { SiteAudio } from "@/components/site-audio";
 import { WorldLink } from "@/components/world-link";
 import { PeiwenCompanion } from "@/components/peiwen-companion";
 import { PageTransitionProvider } from "@/components/page-transition";
+import { RotateGuard } from "@/components/rotate-guard";
 import { LANG_BOOT_SCRIPT } from "@/components/lang";
 import "./globals.css";
 
@@ -38,17 +39,22 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: LANG_BOOT_SCRIPT }} />
       </head>
       <body className="min-h-full flex flex-col">
-        {/* Mounted here, not per route, so the wash overlay survives client-side
-            navigation and the same instance carries every route change — see
-            components/page-transition.tsx. `children` is already server-rendered; this
-            client component just wraps it, it doesn't re-render it. */}
-        <PageTransitionProvider>
-          {children}
-          {/* snow + the desk keepsake that walks back Home, on every inner page */}
-          <WorldLink />
-          {/* little Peiwen in the bottom-right corner of every page — "ask me" */}
-          <PeiwenCompanion />
-        </PageTransitionProvider>
+        {/* Site-wide "turn your phone sideways" gate (Peiwen's decision, 2026-09-28):
+            covers every route, not just About, and makes the rest of this subtree
+            `inert` while its card is up — see components/rotate-guard.tsx. */}
+        <RotateGuard>
+          {/* Mounted here, not per route, so the wash overlay survives client-side
+              navigation and the same instance carries every route change — see
+              components/page-transition.tsx. `children` is already server-rendered; this
+              client component just wraps it, it doesn't re-render it. */}
+          <PageTransitionProvider>
+            {children}
+            {/* snow + the desk keepsake that walks back Home, on every inner page */}
+            <WorldLink />
+            {/* little Peiwen in the bottom-right corner of every page — "ask me" */}
+            <PeiwenCompanion />
+          </PageTransitionProvider>
+        </RotateGuard>
         {/* Mounted here, not per route, so the loop survives client-side navigation. */}
         <SiteAudio />
       </body>
