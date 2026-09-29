@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import type { Project } from "@/lib/projectsData";
 import { slotProps } from "./slots";
 import styles from "./projects.module.css";
@@ -37,8 +37,17 @@ export default function ProjectCard({ project, onOpen }: {
         aria-haspopup="dialog" aria-label={`Preview ${project.title} from title note`}
         onClick={(event) => onOpen(project, event.currentTarget)}>
         <ProjectClip />
-        <span className={styles.cardTitle}>{project.label}</span>
-        <span className={styles.coverSubtitle}>{project.coverSubtitle}</span>
+        {/* keep hyphenated words whole ("Arm-Swing" never breaks into "Arm- / Swing") and
+            keep each " · " with the word before it, so a wrapped line never starts with a dot */}
+        <span className={styles.cardTitle}>
+          {project.label.split(" ").map((word, i) => (
+            <Fragment key={i}>
+              {i > 0 && " "}
+              {word.includes("-") ? <span className={styles.nowrap}>{word}</span> : word}
+            </Fragment>
+          ))}
+        </span>
+        <span className={styles.coverSubtitle}>{project.coverSubtitle.replaceAll(" · ", "\u00a0· ")}</span>
       </button>
     </div>
   );
