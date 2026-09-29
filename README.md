@@ -31,3 +31,7 @@ git diff --check
 ```
 
 The external ITom portfolio repository is a technical architecture reference only: <https://github.com/ITomPoland/portfolio-itom>. Study licensed code patterns where useful; do not reuse its artwork, textures, branding, copy, rooms, project content, or visual composition.
+
+## License
+
+© Peiwen Zhang. All rights reserved. Code and artwork may not be reused without permission.
