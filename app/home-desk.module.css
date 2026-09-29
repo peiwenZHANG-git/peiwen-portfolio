@@ -399,7 +399,7 @@
  * (`.heading`) so they never need hand-tuned `top` values against each other. */
 .heading {
   position: absolute;
-  left: 60%;
+  left: 64%;
   top: 5%;
   transform: translateX(-50%);
   text-align: center;

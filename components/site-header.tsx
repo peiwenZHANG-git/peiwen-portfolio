@@ -66,7 +66,7 @@ export function SiteHeader({ current }: { current?: SiteHeaderCurrent }) {
         </svg>
         <span>
           <span className={styles.brandName}>Peiwen Zhang</span>
-          <span className={styles.brandRole}>HCI · PRODUCT · CREATIVE TECH</span>
+          <span className={styles.brandRole}>HCI × AI PRODUCT</span>
         </span>
       </Link>
       <nav className={styles.nav} aria-label="Main">

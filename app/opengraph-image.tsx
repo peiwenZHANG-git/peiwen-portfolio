@@ -47,7 +47,7 @@ export default function OpengraphImage() {
             textTransform: "uppercase",
           }}
         >
-          HCI · Product · Creative Tech
+          HCI × AI Product
         </div>
       </div>
     ),

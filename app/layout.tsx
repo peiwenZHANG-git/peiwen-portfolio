@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   // URLs when the site is shared — without it Next warns and some link-preview
   // scrapers won't fetch a relative image URL at all.
   metadataBase: new URL("https://peiwen-little-world.vercel.app"),
-  title: "Peiwen Zhang — HCI × AI Agents",
-  description: "Peiwen Zhang's portfolio in HCI, AI agents, and UX.",
+  title: "Peiwen Zhang — HCI × AI Product",
+  description: "Peiwen Zhang — Building AI products people can understand and control, with product thinking and a technical AI background. MSc HCI, Université Paris-Saclay.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -389,7 +389,7 @@ export default function HomeDesk() {
             <p className={styles.intro}>
               I&rsquo;m Peiwen &mdash; an HCI student in Paris,
               <br />
-              designing AI products and small interactive worlds.
+              building AI products people can understand &mdash; and small interactive worlds.
             </p>
           </div>
 
