@@ -59,8 +59,11 @@ const WALK_FRAMES = [1, 2, 3, 4].map(n => `/assets/experience/walk/walk-0${n}.we
 const IDLE_FRAME = WALK_FRAMES[1];
 const HOME_X = 40;
 
+// One size only (2026-09-29): the old 2x file was 1499px wide, barely bigger than the
+// 1400px one, yet high-DPI screens downloaded both (the preload below always fetches
+// the 1400px file). The 1499px files were removed.
 function sceneImage(id: string) {
-  return `image-set(url(/assets/experience/scenes/${id}-1400.webp) 1x, url(/assets/experience/scenes/${id}-1499.webp) 2x)`;
+  return `url(/assets/experience/scenes/${id}-1400.webp)`;
 }
 
 const FLAKE_SVG =
