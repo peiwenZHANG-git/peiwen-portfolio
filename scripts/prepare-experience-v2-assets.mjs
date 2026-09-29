@@ -19,8 +19,9 @@ async function ensureDirs() {
 
 // Scenes: source PNGs are 1499x1049 (already faded/matted). The pass plan asked for
 // 1400/2400w pairs; the source only supports up to its native 1499px without
-// upscaling, so we ship 1400 (downscaled) and 1499 (native, capped) instead of a
-// fabricated 2400px file. Documented as a deliberate deviation in the handoff report.
+// upscaling, so there is no real 2x file to make. Since 2026-09-29 we ship only the
+// 1400px (downscaled) file: the old 1499px "2x" was barely bigger, and high-DPI
+// screens downloaded both. Documented in ASSET_INDEX.md.
 const SCENES = [
   { key: "saclay", file: "scene-01-paris-saclay.png" },
   { key: "cuc", file: "scene-02-cuc.png" },
@@ -31,7 +32,6 @@ async function buildScenes() {
   for (const { key, file } of SCENES) {
     const src = sharp(`${SRC}/scenes/${file}`);
     await src.clone().resize({ width: 1400 }).webp({ quality: 88, alphaQuality: 90 }).toFile(`${OUT}/scenes/${key}-1400.webp`);
-    await src.clone().webp({ quality: 90, alphaQuality: 95 }).toFile(`${OUT}/scenes/${key}-1499.webp`);
   }
 }
 

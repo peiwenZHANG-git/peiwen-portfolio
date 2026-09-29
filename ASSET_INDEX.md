@@ -20,9 +20,11 @@
   400px" instruction directly.
 - **Scenes — documented deviation from PASS_02 §2**: the pass plan asked for 1400px and
   2400px derivatives. The approved source PNGs are only 1499px wide, so a 2400px file
-  would require fabricated upscaling. Shipped instead: `{scene}-1400.webp` (downscaled)
-  and `{scene}-1499.webp` (native, capped, used as the `2x` candidate in `image-set()`).
-  No source pixel was invented.
+  would require fabricated upscaling. Shipped instead: a single `{scene}-1400.webp`
+  (downscaled); no source pixel was invented. Until 2026-09-29 a `{scene}-1499.webp`
+  (native, capped) was also shipped as the `2x` candidate in `image-set()`; it was
+  removed because it was almost the same size as the 1400px file, and high-DPI screens
+  downloaded both.
 - **Drift particles — documented deviation from PASS_02 §2**: the pass plan suggested a
   64px derivative of each keepsake photo for the falling-object layers. The approved
   prototype (`experience-v2/experience-prototype-v2.html`) instead uses purpose-built,
