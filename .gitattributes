@@ -1,3 +1,8 @@
 *.pdf binary
 *.mp4 binary
 *.webp binary
+
+# Design prototypes and reference material, not site source: keep them out of GitHub's language stats.
+design-assets/** linguist-documentation
+experience-v2/** linguist-documentation
+public/assets/projects/*/resources/** linguist-documentation
