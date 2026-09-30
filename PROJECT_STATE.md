@@ -90,14 +90,37 @@
 - Already sound: visible focus on every stop, no keyboard traps (native project
   dialog, music panel, companion and postcard note all close on Esc and return
   focus), reduced motion stops or skips all motion, decorative art has empty alt.
-- Open (recorded for Peiwen's decision, not changed): contrast below 4.5:1 on muted
-  text (Experience facts/shelf, About tags/stats, several case-study metas, ZOO
-  lead); small touch targets (header 中/EN, About dots and portrait contact row);
-  focus drops to `<body>` after each Home intro step; whole-page scroll containers
-  on /experience and /about take the first Tab stop before the skip link; the desk
-  keepsake is last in Tab order; Maze and Arm-Swing demo videos have no captions;
-  a pre-existing bug where `/projects/reso` opened after `/experience` renders in
-  English in 中 mode (React re-renders `<html>` and drops `data-lang`).
+- Follow-up fixes (2026-09-30, second pass) — implemented and verified:
+  - ZOO case study colours restored: its `.root` palette lost to the shared
+    `shell.module.css` `.shell` variables (same names, equal specificity, CSS chunk
+    order decided). `.root.root` now wins regardless of order; only ZOO changes
+    visually (lead/dt/h3 back to `#58717c`, muted `#746e66`, ink `#393531`, paper
+    `#f7f1e6`). Tangram and Chess declare the same names but already won by order.
+  - 中 mode lost on case studies (not Reso-only: ~30–50% of loads of any case study
+    after /experience, /projects or /): root cause was `app/layout.tsx` (server)
+    importing `LANG_BOOT_SCRIPT` from the "use client" `components/lang.tsx`, so the
+    `<head>` boot script was a client reference; when that chunk wasn't loaded yet,
+    hydration suspended in `<head>` (React #460), resumed misaligned (#519 → #418) and
+    client-rendered the root, resetting `<html>` attributes. The constant now lives in
+    plain `components/lang-boot.ts`; 0 failures across the full any-order matrix.
+  - Home intro keeps keyboard focus: window → lamp → first desk entrance; "Skip
+    intro" → "Skip to content" (keyboard-activated steps only).
+  - /experience and /about scroll containers are no longer Tab stops (first Tab =
+    skip link); the desk keepsake is portalled into a slot right after `<header>`
+    (next Tab stop after the header), with inherited font/cursor pinned so it renders
+    and behaves as before.
+  - Invisible hit areas: header 中/EN, About dots (all widths, was phones only),
+    Email/GitHub/LinkedIn and the Download CV pill.
+  - Verified: before/after screenshots (112 per run; EN/中 × 1440×900, 844×390,
+    390×844, plus About spreads, CV menu, companion, first-visit intro): 95
+    byte-identical, the rest = ZOO (intended), 中 Reso (the bug, now fixed) or
+    pre-existing run-to-run noise; keepsake computed styles identical to before in
+    normal/hover/focus at 3 widths; 中 kept on all 144 ordered route pairs with 0
+    hydration errors; axe shows no new violations; lint, typecheck, build pass.
+- Still open (recorded for Peiwen's decision, not changed): contrast below 4.5:1 on
+  muted text (Experience facts/shelf, About tags/stats, several case-study metas);
+  About dots stay under 24px wide (7px gaps between 9px dots); Maze and Arm-Swing
+  demo videos have no captions.
 
 ## Historical goal — Experience v2 (`/experience`)
 

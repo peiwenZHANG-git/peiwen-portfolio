@@ -228,13 +228,37 @@ export default function HomeDesk() {
   const guided = startPhase === "sleep";
   const [guideDone, setGuideDone] = useState(false);
 
-  function openWindow() {
+  // Each intro control is disabled (or, for "Skip intro", replaced) once it has done its
+  // job, which would drop a keyboard or screen-reader user's focus to <body>. When a step
+  // was activated from the keyboard (a click with detail 0), focus moves on to the next
+  // thing to use once it exists: window → lamp, lamp → the first desk entrance (after
+  // the room has lit), "Skip intro" → the "Skip to content" link that takes its place.
+  // Pointer clicks leave focus alone.
+  const lampRef = useRef<HTMLButtonElement>(null);
+  const skipLinkRef = useRef<HTMLAnchorElement>(null);
+  const entrancesRef = useRef<HTMLElement>(null);
+  const focusNext = useRef<"lamp" | "desk" | "skip" | null>(null);
+  useEffect(() => {
+    const target = focusNext.current;
+    if (!target) return;
+    let el: HTMLElement | null | undefined = null;
+    if (target === "lamp" && phase === "window") el = lampRef.current;
+    else if (target === "desk" && phase === "lit") el = entrancesRef.current?.querySelector<HTMLElement>("a[href]");
+    else if (target === "skip" && phase === "lit") el = skipLinkRef.current;
+    else return;
+    focusNext.current = null;
+    el?.focus({ preventScroll: true });
+  }, [phase]);
+
+  function openWindow(event: MouseEvent<HTMLButtonElement>) {
     if (phase !== "sleep") return;
+    if (event.detail === 0) focusNext.current = "lamp";
     setProgress("window");
   }
 
-  function lightRoom() {
+  function lightRoom(event: MouseEvent<HTMLButtonElement>) {
     if (phase !== "window") return;
+    if (event.detail === 0) focusNext.current = "desk";
     setProgress("lighting");
     setPlayed(true);
     if (lightingTimer.current) window.clearTimeout(lightingTimer.current);
@@ -244,8 +268,9 @@ export default function HomeDesk() {
     }, LIGHTING_MS);
   }
 
-  function skipIntro() {
+  function skipIntro(event: MouseEvent<HTMLButtonElement>) {
     if (lightingTimer.current) window.clearTimeout(lightingTimer.current);
+    if (event.detail === 0) focusNext.current = "skip";
     setProgress("lit");
     markSeen();
   }
@@ -301,7 +326,7 @@ export default function HomeDesk() {
           Skip intro
         </button>
       ) : (
-        <a className={styles.skip} href="#home-stage">
+        <a ref={skipLinkRef} className={styles.skip} href="#home-stage">
           Skip to content
         </a>
       )}
@@ -424,12 +449,14 @@ export default function HomeDesk() {
           <button
             type="button"
             className={`${styles.hotspot} ${styles.hsLamp}`}
+            ref={lampRef}
             onClick={lightRoom}
             disabled={phase !== "window"}
             aria-label="Switch on the desk lamp"
           />
 
           <nav
+            ref={entrancesRef}
             aria-label="Desk"
             className={styles.entrances}
             inert={!lit}
