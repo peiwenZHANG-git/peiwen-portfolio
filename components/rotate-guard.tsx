@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createContext, useContext, useId, useState, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { L } from "@/components/lang";
 import { handFont } from "@/app/home-fonts";
@@ -47,6 +47,7 @@ export function RotateGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const portrait = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [viewAnyway, setViewAnyway] = useState(false);
+  const titleId = useId();
   // Resets "View anyway" on every route change. Adjusted during render (React's
   // documented pattern for "reset state when a prop changes") rather than in an
   // effect, which would call setState synchronously mid-effect and trigger
@@ -71,7 +72,7 @@ export function RotateGuard({ children }: { children: ReactNode }) {
           className={`${styles.rotate} ${handFont.variable}`}
           role="dialog"
           aria-modal="true"
-          aria-label="Turn your phone sideways"
+          aria-labelledby={titleId}
         >
           <svg
             viewBox="0 0 120 90"
@@ -90,7 +91,8 @@ export function RotateGuard({ children }: { children: ReactNode }) {
             <path d="M40 4c22-4 40 8 44 28" />
             <path d="M78 26l6 7 6-8" />
           </svg>
-          <p className={styles.rotateTitle}>
+          {/* names the dialog in whichever language is showing (the hidden one is display: none) */}
+          <p id={titleId} className={styles.rotateTitle}>
             <L en="Turn your phone sideways" zh="把手机横过来" />
           </p>
           <p className={styles.rotateText}>

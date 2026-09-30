@@ -161,7 +161,8 @@ export default function ArmSwingPage() {
                 <h3><L en="My implementation" zh="我的实现" /></h3>
                 <p><L en="I wrote the custom locomotion component, connected controller velocity and HMD direction, added the trigger clutch, nonlinear curve, cap and damping, then integrated it with the provided parkour scene and task logic."
                   zh="我写了自定义的移动组件，把手柄速度和头显方向接起来，加上扳机离合、非线性曲线、速度上限和阻尼，再把它整合进课程提供的跑酷场景和任务逻辑里。" /></p>
-                <pre aria-label="Simplified locomotion logic"><code>{`if (triggerHeld && swingPower > 0.08) {
+                {/* scrolls sideways on narrow screens: focusable so it can be scrolled by keyboard */}
+                <pre tabIndex={0} role="region" aria-label="Simplified locomotion logic"><code>{`if (triggerHeld && swingPower > 0.08) {
   speed = min(pow(swingPower, 2) * 12, 15)
   target = hmd.forward * speed
 } else {

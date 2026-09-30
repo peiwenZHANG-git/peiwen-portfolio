@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { SiteHeader } from "@/components/site-header";
 import { L, useLang } from "@/components/lang";
@@ -152,7 +152,9 @@ function EmailIcon() {
 function CVDownload() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const firstRef = useRef<HTMLAnchorElement>(null);
+  const menuId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -161,7 +163,10 @@ function CVDownload() {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key !== "Escape") return;
+      // the options go inert once closed, so bring focus back to the pill rather than lose it
+      if (wrapRef.current?.contains(document.activeElement)) buttonRef.current?.focus({ preventScroll: true });
+      setOpen(false);
     }
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
@@ -173,23 +178,32 @@ function CVDownload() {
 
   return (
     <span className={bookStyles.cvWrap} ref={wrapRef}>
+      {/* A disclosure of two download links (not an ARIA menu, which would promise
+          arrow-key navigation). While closed the options are only faded out, so `inert`
+          keeps Tab and screen readers from landing on them. */}
       <button
+        ref={buttonRef}
         type="button"
         className={bookStyles.cvfill}
         onClick={() => setOpen((v) => !v)}
-        aria-haspopup="true"
         aria-expanded={open}
+        aria-controls={menuId}
       >
         &darr; <L en="Download CV" zh="下载简历" />
       </button>
-      <span className={`${bookStyles.cvMenu} ${open ? bookStyles.cvMenuOn : ""}`} role="menu" aria-label="Choose a CV language">
-        <span className={bookStyles.cvMenuLabel}>
+      <span
+        id={menuId}
+        className={`${bookStyles.cvMenu} ${open ? bookStyles.cvMenuOn : ""}`}
+        role="group"
+        aria-labelledby={`${menuId}-label`}
+        inert={!open || undefined}
+      >
+        <span id={`${menuId}-label`} className={bookStyles.cvMenuLabel}>
           <L en="Which one?" zh="选择语言" />
         </span>
         <span className={bookStyles.cvMenuOptions}>
           <a
             ref={firstRef}
-            role="menuitem"
             className={bookStyles.cvOption}
             href="/cv/peiwen-zhang-cv-en.pdf"
             download="Peiwen Zhang - CV.pdf"
@@ -198,7 +212,6 @@ function CVDownload() {
             English
           </a>
           <a
-            role="menuitem"
             className={bookStyles.cvOption}
             href="/cv/peiwen-zhang-cv-zh.pdf"
             download="张佩文-简历.pdf"
@@ -244,7 +257,9 @@ type BaseItem = {
   zIndex?: number;
 };
 
-type StickerItem = BaseItem & { kind: "sticker"; assetKey: AboutAssetKey; alt: string; live?: Live };
+/** `heading`: the sticker is a spread's hand-lettered title, exposed to screen readers as
+    an h2 (named by its alt) so every spread has one, like Intro's "Hi, I'm Peiwen." */
+type StickerItem = BaseItem & { kind: "sticker"; assetKey: AboutAssetKey; alt: string; live?: Live; heading?: boolean };
 type NodeItem = BaseItem & { kind: "node"; content: ReactNode };
 type SpreadItem = StickerItem | NodeItem;
 
@@ -266,7 +281,7 @@ function sticker(
   top: string,
   width: string,
   rotate: number,
-  extra: Partial<Pick<BaseItem, "zoom" | "saturate" | "zIndex" | "height">> & { live?: Live } = {},
+  extra: Partial<Pick<BaseItem, "zoom" | "saturate" | "zIndex" | "height">> & { live?: Live; heading?: boolean } = {},
   alt = "",
 ): StickerItem {
   return { kind: "sticker", id, assetKey, left, top, width, rotate, alt, ...extra };
@@ -503,7 +518,7 @@ const journeyLeft: SpreadItem[] = [
     "-1%",
     "60.9%",
     0,
-    {},
+    { heading: true },
     "My Journey",
   ),
   sticker("journey-feather", "feather", "69.9%", "-3%", "19.5%", 5, { live: "sway" }),
@@ -630,7 +645,7 @@ const beyondLeft: SpreadItem[] = [
     "-1.3%",
     "78.8%",
     0,
-    {},
+    { heading: true },
     "A little beyond design",
   ),
   sticker("beyond-peiwen-swim", "peiwen-swim", "-25.6%", "48.8%", "64.3%", 0, { zIndex: 3 }),
@@ -789,6 +804,7 @@ function ItemView({
       className={className}
       style={itemStyle(item, phase, index, reducedMotion)}
       data-live={live}
+      {...(item.kind === "sticker" && item.heading ? { role: "heading", "aria-level": 2 } : {})}
     >
       {item.kind === "sticker" ? (
         // Decorative/illustrated sticker, sized by its placed container's width (%), not intrinsic pixels.
@@ -1062,6 +1078,13 @@ export default function AboutPage() {
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, getReducedMotionServer);
   const busyRef = useRef(false);
   const shellRef = useRef<HTMLDivElement | null>(null);
+  const lang = useLang();
+  /* The spread controls are `disabled` while pages turn (and prev/next at either end),
+     which drops a keyboard user's focus to <body>. The control that had keyboard focus
+     is remembered here and focus is put back once the turn settles — see goTo and the
+     effect after it. */
+  const controlsRef = useRef<HTMLDivElement | null>(null);
+  const refocusRef = useRef<HTMLButtonElement | null>(null);
   /* Site-wide rotate gate (components/rotate-guard.tsx) — true while the "turn your
      phone sideways" card covers the screen. Used here to also mark this page's own
      header/intro/notebook `inert` individually (belt-and-suspenders on top of the
@@ -1109,6 +1132,11 @@ export default function AboutPage() {
       if (target === spreadIndex) return;
 
       busyRef.current = true;
+      const focused = document.activeElement;
+      refocusRef.current =
+        focused instanceof HTMLButtonElement && controlsRef.current?.contains(focused) && focused.matches(":focus-visible")
+          ? focused
+          : null;
       // a soft page-turn sound (only if the visitor has chosen sound; see music-store)
       playEffect("page");
 
@@ -1150,6 +1178,27 @@ export default function AboutPage() {
     },
     [spreadIndex, reducedMotion],
   );
+
+  // Once a turn has settled, give keyboard focus back to the control it was on (or, if
+  // that one is now disabled — prev on the first spread, next on the last — to the
+  // other arrow, else the current dot). Skipped if focus has already moved elsewhere.
+  useEffect(() => {
+    if (phase !== "idle") return;
+    const wanted = refocusRef.current;
+    const controls = controlsRef.current;
+    if (!wanted || !controls) return;
+    refocusRef.current = null;
+    const focused = document.activeElement;
+    if (focused && focused !== document.body && focused !== wanted) return;
+    if (focused === wanted && !wanted.disabled) return;
+    const enabled = [...controls.querySelectorAll<HTMLButtonElement>("button")].filter((b) => !b.disabled);
+    const next = !wanted.disabled
+      ? wanted
+      : (enabled.find((b) => b.classList.contains(bookStyles.navBtn)) ??
+        enabled.find((b) => b.getAttribute("aria-current") === "true") ??
+        enabled[0]);
+    next?.focus({ preventScroll: true });
+  }, [phase, spreadIndex]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -1237,7 +1286,7 @@ export default function AboutPage() {
             />
           </div>
 
-          <div className={bookStyles.controls}>
+          <div ref={controlsRef} className={bookStyles.controls}>
             <button
               type="button"
               className={`${bookStyles.navBtn} ${bookStyles.navPrev}`}
@@ -1256,7 +1305,7 @@ export default function AboutPage() {
                   key={spread.name}
                   type="button"
                   className={bookStyles.dot}
-                  aria-label={spread.name}
+                  aria-label={lang === "zh" ? spread.nameZh : spread.name}
                   aria-current={i === spreadIndex ? "true" : undefined}
                   disabled={busy}
                   onClick={() => goTo(i)}

@@ -72,6 +72,33 @@
 - No page appearance, copy or interaction changed. `npm run typecheck` and
   `npm run build` pass; no browser re-check was run.
 
+## Accessibility audit — 2026-09-30
+
+- Scope: `/`, `/experience`, `/projects` + all eight case studies, `/about` (three
+  spreads), EN and 中 modes, companion, fairy guide, music panel, CV menu. Method: axe
+  (temporary, not in package.json), scripted Playwright keyboard walks, reduced-motion
+  animation census, alt/heading inventory; no real screen reader or physical device.
+- Implemented and verified (no visual change; before/after screenshots of every route
+  in both languages at 1440×900, 844×390 and 390×844 were byte-identical apart from
+  pre-existing run-to-run noise): `<html lang>` follows 中/EN (`zh-CN`/`en`) with
+  English-only chrome (header, Home, desk keepsake) marked `lang="en"`; About CV
+  menu is a disclosure (closed options `inert`, Esc returns focus); About spread
+  controls keep keyboard focus across page turns; About spreads 2–3 expose their
+  hand-lettered titles as h2; About dots use the Chinese spread names in 中 mode; the
+  rotate card is named by its visible title; Arm-Swing's code block is keyboard
+  scrollable.
+- Already sound: visible focus on every stop, no keyboard traps (native project
+  dialog, music panel, companion and postcard note all close on Esc and return
+  focus), reduced motion stops or skips all motion, decorative art has empty alt.
+- Open (recorded for Peiwen's decision, not changed): contrast below 4.5:1 on muted
+  text (Experience facts/shelf, About tags/stats, several case-study metas, ZOO
+  lead); small touch targets (header 中/EN, About dots and portrait contact row);
+  focus drops to `<body>` after each Home intro step; whole-page scroll containers
+  on /experience and /about take the first Tab stop before the skip link; the desk
+  keepsake is last in Tab order; Maze and Arm-Swing demo videos have no captions;
+  a pre-existing bug where `/projects/reso` opened after `/experience` renders in
+  English in 中 mode (React re-renders `<html>` and drops `data-lang`).
+
 ## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
