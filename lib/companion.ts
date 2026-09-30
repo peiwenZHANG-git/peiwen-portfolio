@@ -239,6 +239,16 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     answerZh: ["有的——这是我的 GitHub。"],
     actions: [{ kind: "link", href: "https://github.com/peiwenZHANG-git", label: "Open GitHub →", labelZh: "打开 GitHub →" }],
   },
+  {
+    id: "linkedin",
+    question: "Are you on LinkedIn?",
+    questionZh: "你有领英吗？",
+    hidden: true,
+    keywords: ["linkedin", "linked in", "领英"],
+    answer: ["Yes — here’s my LinkedIn."],
+    answerZh: ["有的——这是我的领英。"],
+    actions: [{ kind: "link", href: "https://www.linkedin.com/in/peiwen-zhang-hci", label: "Open LinkedIn →", labelZh: "打开领英 →" }],
+  },
 ];
 
 /** what she says when a typed question doesn't match anything she knows */
