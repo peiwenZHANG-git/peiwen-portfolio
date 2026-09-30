@@ -158,7 +158,7 @@ export function WorldLink() {
         ))}
       </div>
       {keepsake && (
-        <Link ref={tagRef} href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label}>
+        <Link ref={tagRef} href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label} lang="en">
           <span className={styles.object} aria-hidden="true">
             {keepsake.kind === "ticket" && <Ticket />}
             {keepsake.kind === "notebook" && <Notebook />}

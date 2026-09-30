@@ -286,7 +286,9 @@ export default function HomeDesk() {
   const phaseClass = phase ? styles[`phase_${phase}`] : styles.phase_boot;
 
   return (
+    // lang="en": Home is English in 中 mode too; its few translated hints carry lang="zh-CN"
     <main
+      lang="en"
       onPointerMove={moveGlow}
       onPointerLeave={hideGlow}
       // read by components/peiwen-companion.tsx: little Peiwen waits until the room is lit

@@ -15,6 +15,8 @@ function setLang(lang: Lang) {
   const root = document.documentElement;
   if (lang === "zh") root.dataset.lang = "zh";
   else delete root.dataset.lang;
+  // the page language screen readers read with; English-only chrome carries its own lang="en"
+  root.lang = lang === "zh" ? "zh-CN" : "en";
   try {
     window.localStorage.setItem(LANG_STORAGE_KEY, lang);
   } catch {

@@ -50,7 +50,8 @@ export function SiteHeader({ current }: { current?: SiteHeaderCurrent }) {
   }
 
   return (
-    <header className={styles.siteHeader}>
+    // lang="en": the header stays English in 中 mode too (see components/lang.tsx)
+    <header className={styles.siteHeader} lang="en">
       <Link
         className={styles.brand}
         href="/"
