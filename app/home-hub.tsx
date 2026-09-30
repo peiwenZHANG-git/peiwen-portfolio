@@ -20,7 +20,7 @@ export default function HomeHub() {
   const [state, setState] = useState<HubState>("IDLE");
   const [enterTarget, setEnterTarget] = useState<HubDestination | null>(null);
   const [hint, setHint] = useState(false);
-  const [announcement, setAnnouncement] = useState("");
+  const [announcement] = useState("");
   const intentTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointerStart = useRef<{ x: number; y: number; type: string } | null>(null);

@@ -61,6 +61,17 @@
   changed files), `npx tsc --noEmit`, and `npm run build` (17/17 static pages).
   Browser visual and interaction checks were not rerun for this commit-only task.
 
+## Lint warning cleanup — 2026-09-30
+
+- Verified: `npm run lint` now reports 0 errors and 0 warnings (the run before this
+  change showed 4 warnings, not the 5 recorded above). Fixes: removed the unused
+  `setAnnouncement` setter in `app/home-hub.tsx` and the unused `slope` local plus its
+  imports in `app/projects/slots.ts`; added repo-convention `eslint-disable-next-line`
+  comments for the Experience shelf keepsake `<img>` (`no-img-element`) and the
+  reference-only `design-assets/about/layout.js` excerpt (`no-unused-vars`).
+- No page appearance, copy or interaction changed. `npm run typecheck` and
+  `npm run build` pass; no browser re-check was run.
+
 ## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
@@ -944,5 +955,6 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
+2026-09-30
 2026-09-25
 2026-09-24
