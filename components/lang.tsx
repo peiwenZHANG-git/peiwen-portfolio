@@ -25,11 +25,9 @@ export function L({ en, zh }: { en: ReactNode; zh: ReactNode }) {
   );
 }
 
-export const LANG_STORAGE_KEY = "pw-lang";
-
-/** runs in <head> before paint: restore the visitor's language (and `<html lang>`, so
-    screen readers switch voice with it — see setLang in components/lang-toggle.tsx) */
-export const LANG_BOOT_SCRIPT = `try{var l=localStorage.getItem("${LANG_STORAGE_KEY}");if(l==="zh"){document.documentElement.dataset.lang="zh";document.documentElement.lang="zh-CN";}}catch(e){}`;
+// The storage key and the <head> boot script live in ./lang-boot (a plain module the
+// server layout can import as a value — see the note there).
+export { LANG_STORAGE_KEY } from "./lang-boot";
 
 /**
  * The current language, for the rare spot that needs it in JS rather than through

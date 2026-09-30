@@ -35,6 +35,33 @@
    tag with a handwritten "← back to the desk" that is always visible, and on arrival it
    gives one small wiggle so the eye finds it. Top-left, just under the site header —
    where people look for "back". */
+/* The keepsake is portalled into this slot right after the page's <header> (world-link.tsx)
+   so it comes straight after the header in Tab order. It used to be the last child of
+   <body>; the slot gives it back exactly what it inherited there — body's font, and none
+   of the pages' own --hand / --about-hand / --exp-hand — so nothing about it changes. */
+.slot {
+  display: contents;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  --hand: initial;
+  --about-hand: initial;
+  --exp-hand: initial;
+}
+
+/* …and the plain pointer it had outside the pages, instead of their pencil cursor for
+   links (`.root a` / `.shell a`, one class + one element, which this outranks). */
+.slot .keepsake {
+  cursor: pointer;
+}
+
+/* Same for focus: pages style their descendants' focus ring (/experience's
+   `.root :focus-visible` also rounds corners to 6px). Restating the tag's own ring and
+   its 14px corners here keeps focus looking exactly as it did. */
+.slot .keepsake:focus-visible {
+  border-radius: 14px;
+  outline: 2px solid #d74b3c;
+  outline-offset: 4px;
+}
+
 .keepsake {
   position: fixed;
   left: clamp(14px, 2vw, 32px);

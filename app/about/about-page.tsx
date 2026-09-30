@@ -1217,12 +1217,13 @@ export default function AboutPage() {
 
   return (
     /* body keeps its global `overflow: hidden`, so the About route scrolls inside its
-       own shell. tabIndex keeps that scroll container reachable for keyboard-only
-       users (the axe "scrollable-region-focusable" rule). */
+       own shell. The shell is deliberately not a Tab stop (it used to be, ahead of
+       "Skip to content"): it contains focusable content, which is what keyboard users
+       reach and scroll it through (and what satisfies axe's
+       "scrollable-region-focusable" rule). */
     <div
       ref={shellRef}
       className={[styles.shell, handFont.variable, bodyFont.variable].filter(Boolean).join(" ")}
-      tabIndex={blocked ? -1 : 0}
     >
       <a className={styles.skipLink} href="#about-content">
         Skip to content

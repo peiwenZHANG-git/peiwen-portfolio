@@ -534,7 +534,9 @@ export default function ExperiencePage() {
   }, []);
 
   return (
-    <div ref={rootRef} className={styles.root} tabIndex={0}>
+    // Not a Tab stop itself (it used to be, ahead of "Skip to content"): the scroller holds
+    // focusable content, so keyboard users reach and scroll it through that content.
+    <div ref={rootRef} className={styles.root}>
       {/* First-screen scene only: the other two chapters' art loads lazily, the moment
           go() assigns it as a background-image during a chapter transition. */}
       <link rel="preload" as="image" href={`/assets/experience/scenes/${chapters[0].id}-1400.webp`} />

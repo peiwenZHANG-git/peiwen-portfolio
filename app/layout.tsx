@@ -6,7 +6,8 @@ import { WorldLink } from "@/components/world-link";
 import { PeiwenCompanion } from "@/components/peiwen-companion";
 import { PageTransitionProvider } from "@/components/page-transition";
 import { RotateGuard } from "@/components/rotate-guard";
-import { LANG_BOOT_SCRIPT } from "@/components/lang";
+// from the plain module, not components/lang.tsx ("use client"): see components/lang-boot.ts
+import { LANG_BOOT_SCRIPT } from "@/components/lang-boot";
 import "./globals.css";
 
 const geistSans = Geist({

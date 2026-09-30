@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePageTransition } from "@/components/page-transition";
@@ -61,6 +62,30 @@ export function WorldLink() {
   const mounted = useSyncExternalStore(subscribeNothing, () => true, () => false);
   const tagRef = useRef<HTMLAnchorElement>(null);
 
+  const base = "/" + (pathname.split("/")[1] ?? "");
+  // only on the section pages themselves: a project case study (/projects/reso) has its
+  // own "← Back to the attic" link in that corner
+  const keepsake = base !== "/" && pathname.split("/").filter(Boolean).length === 1 ? KEEPSAKES[base] : undefined;
+
+  // Where the keepsake lives in the DOM: a slot inserted right after the page's
+  // <header>, so it is the next Tab stop after the header (it sits top-left, just under
+  // it) instead of the very last one on the page. The slot is `display: contents` and
+  // restores what the tag inherited as the last child of <body> (see .slot in the CSS),
+  // and the tag is position: fixed, so where it sits in the DOM changes nothing visually.
+  const [slot] = useState<HTMLElement | null>(() => {
+    if (typeof document === "undefined") return null;
+    const el = document.createElement("div");
+    el.className = styles.slot;
+    return el;
+  });
+  useLayoutEffect(() => {
+    if (!slot || !mounted || !keepsake) return;
+    const header = document.querySelector<HTMLElement>("header");
+    if (!header) return;
+    header.after(slot);
+    return () => slot.remove();
+  }, [slot, pathname, mounted, keepsake]);
+
   useEffect(() => {
     const tag = tagRef.current;
     if (!tag) return;
@@ -119,11 +144,7 @@ export function WorldLink() {
     };
   }, [pathname, mounted]);
 
-  const base = "/" + (pathname.split("/")[1] ?? "");
   if (base === "/" || !mounted) return null;
-  // only on the section pages themselves: a project case study (/projects/reso) has its
-  // own "← Back to the attic" link in that corner
-  const keepsake = pathname.split("/").filter(Boolean).length === 1 ? KEEPSAKES[base] : undefined;
 
   function goHome(e: MouseEvent<HTMLAnchorElement>) {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -157,7 +178,9 @@ export function WorldLink() {
           />
         ))}
       </div>
-      {keepsake && (
+      {keepsake &&
+        slot &&
+        createPortal(
         <Link ref={tagRef} href="/" className={`${styles.keepsake} ${styles[keepsake.kind]}`} onClick={goHome} aria-label={keepsake.label} lang="en">
           <span className={styles.object} aria-hidden="true">
             {keepsake.kind === "ticket" && <Ticket />}
@@ -168,8 +191,9 @@ export function WorldLink() {
             <span className={styles.arrow}>&larr;</span>
             <span className={styles.words}>back to the desk</span>
           </span>
-        </Link>
-      )}
+        </Link>,
+          slot,
+        )}
     </>
   );
 }
