@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reference layout data excerpt, not an executed module
   const spreads = [
     {
       name:'① Intro',

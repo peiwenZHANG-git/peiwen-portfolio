@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { lowerRope, lowerSlope, upperRope, upperSlope } from "./rope-math";
+import { lowerRope, upperRope } from "./rope-math";
 
 /**
  * Desktop hanging slots, in units of the 1448 x 1086 attic illustration.
@@ -44,7 +44,6 @@ export function slotProps(key: string) {
   // Resting position at scroll 0, so the server render already hangs on the rope.
   const lower = lowerKeys.has(key);
   const ropeY = lower ? lowerRope : upperRope;
-  const slope = lower ? lowerSlope : upperSlope;
   const ry = ropeY(s.x) + s.dy - (lower ? ropeOrigin.smaller : ropeOrigin.featured);
   return {
     "data-slot": key,

@@ -606,6 +606,7 @@ export default function ExperiencePage() {
                       aria-label={`Walk to ${c.place}, where I picked up a ${KEEPSAKE_LABEL[c.keepsake]}`}
                     >
                       <span className={styles.slot}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={`/assets/experience/keepsakes/${c.keepsake}-64.webp`} width={44} height={44} alt="" />
                       </span>
                       <span className={styles.place}>
