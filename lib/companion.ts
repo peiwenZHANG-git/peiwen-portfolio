@@ -89,14 +89,171 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     questionZh: "你的邮箱是什么？",
     answer: [
       COMPANION_EMAIL,
-      "I’m looking for a 6-month AI product internship. Tap below to copy my email, I’d love to hear from you.",
+      "I’m looking for a 6-month AI product internship, starting March 2027. Tap below to copy my email, I’d love to hear from you.",
     ],
     answerZh: [
       COMPANION_EMAIL,
-      "我正在找一份 6 个月的 AI 产品实习——点下面就能复制邮箱，很期待收到你的消息。",
+      "我正在找一份 6 个月的 AI 产品实习，2027 年 3 月可以开始——点下面就能复制邮箱，很期待收到你的消息。",
     ],
     actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
     keywords: ["email", "e-mail", "mail", "contact", "reach", "write to", "get in touch", "hire", "hiring", "intern", "job", "available", "opportunit", "邮箱", "联系"],
+  },
+  // Added 2026-10-01 from Peiwen's "interview" (drafted by Claude, confirmed by Peiwen).
+  // All hidden: they come up from typed questions, so the chip menu stays as it was.
+  {
+    id: "looking",
+    question: "What kind of role are you looking for?",
+    questionZh: "你在找什么样的工作？",
+    hidden: true,
+    answer: [
+      "A 6-month AI product manager internship in Paris, as the final internship of my master’s. I can start in March 2027.",
+      "If your team is building AI products, I’d love to talk!",
+    ],
+    answerZh: [
+      "我在找一份 6 个月的 AI 产品经理实习，地点在巴黎，作为硕士第二年的毕业实习，2027 年 3 月可以开始。",
+      "如果你们团队在做 AI 产品，很想聊聊！",
+    ],
+    actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
+    keywords: ["looking for", "what role", "which role", "kind of role", "internship", "position", "when can you", "start date", "available from", "march", "找什么", "求职", "实习", "入职", "几月"],
+  },
+  {
+    id: "ai-work",
+    question: "What is AI-Work?",
+    questionZh: "AI-Work 是什么？",
+    hidden: true,
+    answer: [
+      "An AI assistant on my computer that handles my mail, files and browser, with me in control at every step: read-only by default, emails saved as drafts until I confirm, files never deleted.",
+      "I use it every day with three real mailboxes.",
+    ],
+    answerZh: [
+      "是我做的一个电脑上的 AI 助手，能帮我处理邮件、文件和浏览器，但每一步都在我的掌控里：默认只读，邮件先存草稿、我确认了才发，文件从不删除。",
+      "我每天都在用它处理三个真实邮箱。",
+    ],
+    actions: [{ kind: "link", href: "https://github.com/peiwenZHANG-git/AI-Work", label: "See it on GitHub →", labelZh: "在 GitHub 上看看 →" }],
+    keywords: ["ai-work", "ai work", "aiwork", "assistant", "mcp", "agent", "agents", "助手", "智能体"],
+  },
+  {
+    id: "hardest",
+    question: "What was the hardest decision in AI-Work?",
+    questionZh: "做 AI-Work 最难的决定是什么？",
+    hidden: true,
+    answer: [
+      "Not deciding what the AI can do, but what it must not do.",
+      "I stuck to one rule: when it isn’t sure, it does nothing. I’d rather it stop and ask me than guess.",
+    ],
+    answerZh: [
+      "难的不是决定 AI 能做什么，而是决定它不能做什么。",
+      "我坚持一条规则：拿不准就不做。宁可让它停下来问我，也不让它猜。",
+    ],
+    keywords: ["hardest", "difficult", "challenge", "decision", "trade-off", "tradeoff", "最难", "困难", "挑战", "决定"],
+  },
+  {
+    id: "ai-tools",
+    question: "How do you work with AI coding tools?",
+    questionZh: "你怎么和 AI 编程工具合作？",
+    hidden: true,
+    answer: [
+      "Codex and Claude Code write most of the code. I define the problem, set the limits and write the acceptance criteria, then check every change against them.",
+      "This website was made the same way: I designed the look and the interactions, and AI helped me build them.",
+    ],
+    answerZh: [
+      "代码主要由 Codex 和 Claude Code 写，我负责定义问题、划定边界、写验收标准，然后对照标准检查每一处改动。",
+      "这个网站也是这样做出来的：画面和交互由我设计，AI 帮我实现。",
+    ],
+    keywords: ["coding", "claude code", "claude", "codex", "vibe", "ai tools", "ai coding", "cursor", "copilot", "make this", "build this", "built this", "this website", "made this", "编程", "写代码", "怎么做的", "ai工具", "ai 工具", "工具"],
+  },
+  {
+    id: "process",
+    question: "What’s your product process?",
+    questionZh: "你做产品的方法是什么？",
+    hidden: true,
+    answer: [
+      "First I find where real users get stuck, then turn that into clear requirements, test a prototype early, and check with data whether the change worked.",
+      "That’s roughly how I worked in all three internships, at Yundao, Huashun and Tantan.",
+    ],
+    answerZh: [
+      "先弄清楚真实用户卡在哪里，再拆成具体需求，用原型尽快试，最后用数据看改得对不对。",
+      "在云道、华顺、探探三段实习里，我基本都是按这个顺序做的。",
+    ],
+    keywords: ["process", "approach", "method", "how do you work", "workflow", "product thinking", "方法", "流程", "怎么做产品"],
+  },
+  {
+    id: "tantan",
+    question: "What did you learn at Tantan?",
+    questionZh: "在探探学到了什么？",
+    hidden: true,
+    answer: [
+      "That the same feature can mean something completely different in another country.",
+      "Users in Indonesia, Taiwan and Singapore differ a lot in language, religion and dating habits, so we made decisions with A/B tests instead of guesses.",
+    ],
+    answerZh: [
+      "学到了同一个功能，在不同国家可能完全是两回事。",
+      "印尼、台湾、新加坡的用户在语言、宗教和交友习惯上差别很大，所以我们靠 A/B 测试来做决定，而不是靠猜。",
+    ],
+    keywords: ["tantan", "探探", "dating", "learn at", "learned at", "localization", "indonesia", "taiwan", "singapore", "学到"],
+  },
+  {
+    id: "good-ai",
+    question: "What makes a good AI product?",
+    questionZh: "你心中好的 AI 产品是什么样的？",
+    hidden: true,
+    answer: [
+      "One where people can see what it’s doing and stop it at any time.",
+      "The more capable AI gets, the more it matters that people can use it with confidence. That’s why I want to be an AI product manager.",
+    ],
+    answerZh: [
+      "让人看得懂它在做什么，也能随时叫停它。",
+      "AI 越能干，「人能不能放心用」就越重要。这也是我想做 AI 产品经理的原因。",
+    ],
+    keywords: ["good ai", "ai product", "good product", "great product", "trust", "believe", "philosophy", "好的 ai", "好的ai", "ai 产品", "ai产品", "信任"],
+  },
+  {
+    id: "reso",
+    question: "What is Reso?",
+    questionZh: "Reso 是什么？",
+    hidden: true,
+    answer: [
+      "Captions for online meetings that show emotion: the speaker’s tone becomes the colour of the subtitles.",
+      "In an 18-person study, people read others’ emotions correctly 63% of the time with it, up from 51%.",
+    ],
+    answerZh: [
+      "一个给线上会议做的「带情绪的字幕」：把说话人的语气和情绪变成字幕颜色。",
+      "我们做了 18 人的实验，用了它之后，大家读懂对方情绪的准确率从 51% 提高到了 63%。",
+    ],
+    actions: [{ kind: "link", href: "/projects/reso", label: "Open Reso →", labelZh: "打开 Reso →" }],
+    keywords: ["reso", "caption", "captions", "subtitle", "subtitles", "emotion", "字幕", "情绪"],
+  },
+  {
+    id: "french",
+    question: "Do you speak French?",
+    questionZh: "你会说法语吗？",
+    hidden: true,
+    answer: ["I’m learning! I’m at about A2, enough for a little everyday life ☺ At work I use English and Chinese."],
+    answerZh: ["在学！现在大概是 A2，日常生活够用一点点 ☺ 工作上我用英语和中文。"],
+    keywords: ["french", "français", "francais", "parlez", "speak", "language", "languages", "法语", "语言"],
+  },
+  {
+    id: "why-france",
+    question: "Why did you come to France?",
+    questionZh: "为什么来法国读书？",
+    hidden: true,
+    answer: [
+      "I’ve always been interested in French culture, and I love human-computer interaction. Studying HCI at Paris-Saclay brought the two together.",
+    ],
+    answerZh: ["因为我对法国文化一直很感兴趣，又很喜欢人机交互，在巴黎萨克雷读 HCI 正好把两件事放在了一起。"],
+    keywords: ["why france", "why paris", "come to france", "study in france", "studying in france", "france", "saclay", "come to paris", "why did you come", "法国", "来巴黎", "为什么来"],
+  },
+  {
+    id: "hobbies",
+    question: "What do you do outside work?",
+    questionZh: "工作以外你喜欢做什么？",
+    hidden: true,
+    answer: [
+      "Swimming, taking photos, cooking and going somewhere new.",
+      "And in Paris, my favourite thing is a bowl of pho or a big steak.",
+    ],
+    answerZh: ["游泳、拍照、做饭，还有去没去过的地方。", "在巴黎最喜欢的，是吃一碗 pho，或者来一大块牛排。"],
+    keywords: ["hobby", "hobbies", "free time", "outside work", "outside of work", "weekend", "fun", "food", "eat", "pho", "steak", "swim", "photo", "cook", "爱好", "好吃", "周末", "吃"],
   },
   {
     id: "lately",
@@ -105,12 +262,12 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     answer: [
       "I’m doing my MSc in Human-Computer Interaction at Université Paris-Saclay, learning how people work with AI agents and immersive interfaces.",
       "This year I also spent five months as a product intern at Tantan, running A/B tests and localization research for users in Indonesia, Taiwan and Singapore.",
-      "Now I’m looking for a 6-month AI product internship.",
+      "Now I’m looking for a 6-month AI product internship, starting March 2027.",
     ],
     answerZh: [
       "我在巴黎萨克雷大学读人机交互硕士，研究人与 AI 智能体、沉浸式界面之间的交互方式。",
       "今年我还在探探做了五个月的产品实习生，为印尼、台湾、新加坡的用户做 A/B 测试和本地化研究。",
-      "现在我在找一份 6 个月的 AI 产品实习。",
+      "现在我在找一份 6 个月的 AI 产品实习，2027 年 3 月可以开始。",
     ],
     keywords: ["lately", "recent", "now", "currently", "these days", "doing", "study", "studying", "master", "msc", "tantan", "最近", "现在"],
   },
