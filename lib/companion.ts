@@ -49,7 +49,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "Where should I start?",
     questionZh: "我该从哪里开始看？",
     answer: [
-      "If it’s your first time here, play with the things on my desk — each one opens a different corner of my world.",
+      "If it’s your first time here, play with the things on my desk. Each one opens a different corner of my world.",
       "If you only have five minutes, take a walk through my Experience.",
       "And if you’re curious about my projects, start with Reso.",
     ],
@@ -70,7 +70,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "Where’s your CV?",
     questionZh: "你的简历在哪？",
     answer: [
-      "Right here — there’s an English one and a Chinese one, written for different readers.",
+      "Right here: there’s an English one and a Chinese one, written for different readers.",
       "Pick the one you’d like:",
     ],
     answerZh: [
@@ -89,7 +89,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     questionZh: "你的邮箱是什么？",
     answer: [
       COMPANION_EMAIL,
-      "I’m looking for a 6-month AI product internship — tap below to copy my email, I’d love to hear from you.",
+      "I’m looking for a 6-month AI product internship. Tap below to copy my email, I’d love to hear from you.",
     ],
     answerZh: [
       COMPANION_EMAIL,
@@ -119,7 +119,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "What are you like?",
     questionZh: "你是个什么样的人？",
     answer: [
-      "Curious about almost everything — and I feel things strongly, connect ideas everywhere, and always have something to say. I want to really take part in life, not just watch it.",
+      "Curious about almost everything. And I feel things strongly, connect ideas everywhere, and always have something to say. I want to really take part in life, not just watch it.",
       "I have my own opinions and I love exploring. Honestly, my biggest strength and my biggest trouble come from the same place: I’m a little too interested in people, the world, and myself.",
     ],
     answerZh: [
@@ -133,7 +133,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "Your favorite project?",
     questionZh: "你最喜欢的项目？",
     answer: [
-      "Arm-Swing VR — because I made it completely on my own, from the first idea to the working prototype.",
+      "Arm-Swing VR, because I made it completely on my own, from the first idea to the working prototype.",
     ],
     answerZh: [
       "Arm-Swing VR——因为它是我从最初的想法到可运行原型完全独立做出来的。",
@@ -146,7 +146,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "Why HCI?",
     questionZh: "为什么选人机交互？",
     answer: [
-      "In product work in Beijing I kept noticing that the hard part usually wasn’t the technology — it was whether people could understand it and trust it.",
+      "In product work in Beijing I kept noticing that the hard part usually wasn’t the technology. It was whether people could understand it and trust it.",
       "HCI is where I get to study that properly, especially now that we’re all learning to work with AI.",
     ],
     answerZh: [
@@ -177,7 +177,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     keywords: ["project", "projects", "made", "built", "build", "work", "portfolio", "reso", "tangram", "maze", "music", "flight", "chess", "zoo", "作品", "项目"],
     answer: [
       "Eight things so far: Reso, Arm-Swing VR, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
-      "They’re all hanging in the attic — come and have a look.",
+      "They’re all hanging in the attic. Come and have a look.",
     ],
     answerZh: [
       "目前一共八个项目：Reso、Arm-Swing VR、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
@@ -225,7 +225,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     keywords: ["skill", "skills", "tool", "tools", "good at", "can you", "sql", "tableau", "axure", "coding", "program", "research", "a/b", "ab test", "技能", "会什么"],
     answer: [
       "Product: user research and experiment design, A/B testing, requirements and PRDs, prototyping in Axure and Figma.",
-      "Data and AI: SQL, Python and Tableau, and designing AI agents and their tools (MCP) — plus VR prototyping in Unity (C#).",
+      "Data and AI: SQL, Python and Tableau, and designing AI agents and their tools (MCP), plus VR prototyping in Unity (C#).",
       "My projects show these best.",
     ],
     answerZh: [
@@ -250,7 +250,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     questionZh: "你有 GitHub 吗？",
     hidden: true,
     keywords: ["github", "git", "code", "repository", "repo", "source"],
-    answer: ["Yes — here’s my GitHub."],
+    answer: ["Yes, here’s my GitHub."],
     answerZh: ["有的——这是我的 GitHub。"],
     actions: [{ kind: "link", href: "https://github.com/peiwenZHANG-git", label: "Open GitHub →", labelZh: "打开 GitHub →" }],
   },
@@ -260,7 +260,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     questionZh: "你有领英吗？",
     hidden: true,
     keywords: ["linkedin", "linked in", "领英"],
-    answer: ["Yes — here’s my LinkedIn."],
+    answer: ["Yes, here’s my LinkedIn."],
     answerZh: ["有的——这是我的领英。"],
     actions: [{ kind: "link", href: "https://www.linkedin.com/in/peiwen-zhang-hci", label: "Open LinkedIn →", labelZh: "打开领英 →" }],
   },
@@ -270,7 +270,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
 export const COMPANION_FREEFORM = {
   answer: [
     "Hmm, I only know about me and this little world!",
-    "Try one of these — or write to the real me.",
+    "Try one of these, or write to the real me.",
   ],
   answerZh: [
     "嗯……我只了解我自己和这个小世界哦！",
@@ -333,7 +333,7 @@ export function companionPageLine(pathname: string, touch: boolean): CompanionPa
         };
   }
   if (pathname === "/about")
-    return { en: "Turn the pages with the arrows at the bottom — three spreads, all about me.", zh: "用底部的箭头翻页——一共三页，都是关于我的。" };
+    return { en: "Turn the pages with the arrows on either side: three spreads, all about me.", zh: "用两侧的箭头翻页——一共三页，都是关于我的。" };
   return null;
 }
 

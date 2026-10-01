@@ -208,7 +208,7 @@ export default function ArmSwingPage() {
 
           <section id="results">
             <p className={styles.eyebrow}><L en="07 / Results" zh="07 / 结果" /></p>
-            <h2><L en="Completed, engaging—and still formative." zh="跑得完，也好玩——但仍只是初步结果。" /></h2>
+            <h2><L en="Completed, engaging, and still formative." zh="跑得完，也好玩——但仍只是初步结果。" /></h2>
             <div className={styles.metrics}>
               <div><strong>134.1s</strong><span><L en="average completion time" zh="平均完成用时" /></span></div>
               <div><strong>94.2%</strong><span><L en="pooled coin collection" zh="总体金币收集率" /></span></div>
@@ -216,7 +216,7 @@ export default function ArmSwingPage() {
               <div><strong>7.7/10</strong><span><L en="reported presence" zh="自评临场感" /></span></div>
               <div><strong>8.7/10</strong><span><L en="reported enjoyment" zh="自评乐趣" /></span></div>
             </div>
-            <p><L en="All three runs finished the course. The fastest run collected the fewest coins, suggesting a precision question worth studying further—but three observations cannot validate a general speed–accuracy trade-off."
+            <p><L en="All three runs finished the course. The fastest run collected the fewest coins, suggesting a precision question worth studying further, but three observations cannot validate a general speed–accuracy trade-off."
               zh="三次测试都跑完了赛道。最快的那次收集的金币最少，这提示了一个值得继续研究的精度问题——但三次观察并不足以证明普遍存在的速度–准确度权衡。" /></p>
             <Figure name="participant-results" width={1400} height={280} alt="Participant-level table showing three segment times, total completion time and coins collected for Peiwen and two classmates"><L en="Participant-level evidence. Peiwen’s 132.1-second run collected 68/69 coins; the two classmates completed in 149.2 and 121.0 seconds." zh="每位参与者的数据。佩文用 132.1 秒跑完，收集了 68/69 枚金币；两位同学分别用了 149.2 秒和 121.0 秒。" /></Figure>
             <Figure name="subjective-results" width={1362} height={477} alt="Participant-level ratings for sickness, workload, presence and enjoyment, including averages of 3.0, 4.0, 7.7 and 8.7"><L en="Single-item ratings described the three experiences; they were not a validated questionnaire." zh="这些单项评分描述的是三次体验，并不是经过验证的量表。" /></Figure>

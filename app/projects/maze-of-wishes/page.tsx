@@ -297,7 +297,7 @@ export default function MazeOfWishesPage() {
                   alt="Maze of Wishes tutorial screen teaching the player to tilt the phone in four directions"
                 >
                   <L
-                    en={<><strong>After:</strong> the final tutorial asks the player to move a cake cursor by tilting the phone—teaching the controller through action.</>}
+                    en={<><strong>After:</strong> the final tutorial asks the player to move a cake cursor by tilting the phone, teaching the controller through action.</>}
                     zh={<><strong>之后：</strong>最终的教程让玩家倾斜手机去移动一个蛋糕光标——在动手中学会这个“手柄”。</>}
                   />
                 </Figure>
@@ -478,7 +478,7 @@ export default function MazeOfWishesPage() {
                 </p>
                 <p className={styles.small}>
                   <L
-                    en="I implemented these parameters, but the archive does not document a formal rationale for their exact values. The page therefore treats them as prototype tuning—not optimized human-factors values."
+                    en="I implemented these parameters, but the archive does not document a formal rationale for their exact values. The page therefore treats them as prototype tuning, not optimized human-factors values."
                     zh="这些参数是我实现的，但存档里没有记录具体数值的正式依据。所以这里把它们当作原型阶段的调参，而不是经过优化的人因数值。"
                   />
                 </p>
@@ -494,7 +494,7 @@ export default function MazeOfWishesPage() {
               </p>
               <h2>
                 <L
-                  en="The prototype had to explain what to do—and close the loop."
+                  en="The prototype had to explain what to do, and close the loop."
                   zh="原型得告诉玩家该做什么——还要让整个流程闭环。"
                 />
               </h2>

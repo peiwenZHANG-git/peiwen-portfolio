@@ -1053,6 +1053,19 @@
     margin: -3.742% 0 -3.742% -4.268%;
   }
 
+  /* The prev/next arrows and the dots below are `position: fixed`, meant to stay on
+     screen while the spread scrolls. But page-transition's resting `.stage` class on this
+     <main> keeps an (identity) transform, a blur(0) filter and will-change, which makes
+     <main> the containing block for fixed children: they ended up ~500px down the page
+     instead of on screen. `main.stageWrap` outranks the resting `.stage` (one class)
+     but not `.stage.departing` / `.departed` (two classes), so leaving the page still
+     fades and drifts as before. */
+  main.stageWrap {
+    transform: none;
+    filter: none;
+    will-change: auto;
+  }
+
   .controls {
     margin: 0;
   }
@@ -1089,6 +1102,75 @@
     background: rgb(247 241 231 / 85%);
     border-radius: 10px;
     transform: translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------ desktop: fit the viewport
+ * 2026-10-01: on shorter desktop windows (1440×780, 1512×860, 1280×720) the notebook
+ * kept its 1000px width and pushed the prev/next row ~100px below the fold. Desktop
+ * now gives the stage exactly the height left under the header + intro, and:
+ *  - the notebook is as wide as before (max 1000px) unless the height says otherwise:
+ *    --bw is the smaller of 1000px, the width left after room for the two arrows, and
+ *    the height left above the dots row turned into a width (aspect 1390/853);
+ *  - the arrows sit outside the notebook's left and right edges, vertically centred
+ *    on it (absolute, so the DOM / Tab order stays prev → dots → next);
+ *  - the label + dots row stays under the notebook, and always fits.
+ * Same buttons, same sizes and colours; only where they sit changed. Phones in
+ * landscape (max-height: 500px, above) keep their own fixed layout. */
+@media (min-width: 1024px) and (min-height: 501px) {
+  .stageWrap {
+    flex: 1 1 0;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .bookStage {
+    /* the dots row: its gap above (same clamp as before) and a fixed row height */
+    --ctl-gap: clamp(16px, 2.6vw, 24px);
+    --ctl-row: 24px;
+    /* one arrow (40px) plus its 24px gap to the notebook */
+    --side: 64px;
+    --bw: min(
+      1000px,
+      100cqw - 2 * var(--side) - 3.2cqw,
+      (100cqh - var(--ctl-gap) - var(--ctl-row)) * 1390 / 853
+    );
+
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    container-type: size;
+  }
+
+  .book {
+    flex: none;
+    width: var(--bw);
+    max-width: none;
+  }
+
+  .controls {
+    position: static;
+    flex: none;
+    height: var(--ctl-row);
+    margin-top: var(--ctl-gap);
+  }
+
+  .navBtn {
+    position: absolute;
+    /* the notebook's vertical centre: the column (notebook + dots row) is centred */
+    top: calc((100cqh - var(--ctl-gap) - var(--ctl-row)) / 2);
+    transform: translateY(-50%);
+  }
+
+  /* .book is nudged right by `left: 1.6%` (of this stage's width), hence the 1.6cqw */
+  .navPrev {
+    left: calc(50% + 1.6cqw - var(--bw) / 2 - var(--side));
+  }
+
+  .navNext {
+    left: calc(50% + 1.6cqw + var(--bw) / 2 + var(--side) - 40px);
   }
 }
 

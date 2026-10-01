@@ -122,6 +122,28 @@
   About dots stay under 24px wide (7px gaps between 9px dots); Maze and Arm-Swing
   demo videos have no captions.
 
+## English em dashes removed; About arrows on short screens — 2026-10-01
+
+- Copy: every visitor-facing English em dash (page text, companion answers in
+  `lib/companion.ts`, aria-labels, page titles/metadata, 404, case studies) was
+  rewritten with a comma, colon, full stop or parentheses; the site title is now
+  "Peiwen Zhang · HCI × AI Product". Chinese 「——」 and en-dash ranges are kept. A
+  crawl of every route (EN, all Experience chapters, About spreads, project previews,
+  companion answers, 404) finds no remaining English em dash. The About companion hint
+  now says the arrows are "on either side" (中: 两侧), matching the new layout.
+- About layout (desktop ≥1024px wide and >500px tall): the stage takes the height left
+  under header + intro; the notebook is `min(1000px, width minus arrow room, height
+  minus the dots row)`; prev/next sit outside the notebook's left/right edges,
+  vertically centred; label + dots stay below. Verified at 1280×720, 1440×780,
+  1440×900, 1512×860 and 1920×1080: no scroll needed, both arrows visible and
+  clickable, keyboard order prev → dots → next, focus kept after turns, arrow keys and
+  reduced motion unchanged.
+- Phones in landscape: the fixed arrows/dots were not actually pinned (page-transition's
+  resting `.stage` transform/filter made `<main>` their containing block, so they sat
+  ~500px down the page). `main.stageWrap` now drops those at rest only; verified at
+  844×390 that arrows are mid-screen and dots at the bottom without scrolling.
+- lint, typecheck and build pass.
+
 ## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit
@@ -1005,6 +1027,7 @@ derivatives remain deferred; they are not part of the next task by default.
 
 ## Last updated
 
+2026-10-01
 2026-09-30
 2026-09-25
 2026-09-24
