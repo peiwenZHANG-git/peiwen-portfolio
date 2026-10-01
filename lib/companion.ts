@@ -148,6 +148,233 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     keywords: ["hardest", "difficult", "challenge", "decision", "trade-off", "tradeoff", "最难", "困难", "挑战", "决定"],
   },
   {
+    id: "why-pm",
+    question: "Why product management, not design or research?",
+    questionZh: "为什么想做 AI 产品经理？",
+    hidden: true,
+    answer: [
+      "I’ve done research and I’ve done design, but what I enjoy most is deciding what a product should do, and what it shouldn’t.",
+      "With AI that decision matters even more, and it’s where I feel most useful.",
+    ],
+    answerZh: [
+      "研究和设计我都做过，但我最喜欢的，是决定一个产品该做什么、不该做什么。",
+      "在 AI 产品里，这个判断更加重要，也是我觉得自己最能发挥作用的地方。",
+    ],
+    keywords: ["why product", "why pm", "why ai pm", "product manager", "product management", "not design", "designer", "researcher", "为什么做产品", "为什么想做产品", "产品经理"],
+  },
+  {
+    id: "strengths",
+    question: "What are your strengths and weaknesses?",
+    questionZh: "你的优点和缺点是什么？",
+    hidden: true,
+    answer: [
+      "My strength: I can take a fuzzy problem, break it into clear pieces, and write acceptance criteria that can actually be checked.",
+      "Something I’m still working on: my French is only A2, so I’m learning a little more every day.",
+    ],
+    answerZh: [
+      "优点：能把一个模糊的问题拆清楚，再写出真正能检查的验收标准。",
+      "还在努力的地方：我的法语还在 A2，每天都在多学一点。",
+    ],
+    keywords: ["strength", "strengths", "weakness", "weaknesses", "good at", "improve", "working on", "优点", "缺点", "长处", "短板"],
+  },
+  {
+    id: "ai-products",
+    question: "Which AI products do you use?",
+    questionZh: "你平时用哪些 AI 产品？",
+    hidden: true,
+    answer: [
+      "ChatGPT and Claude, every day: for thinking things through, writing, and building (Claude Code helped me build this website).",
+      "Using them so much is also how I learn what makes an AI feel trustworthy, and what doesn’t.",
+    ],
+    answerZh: [
+      "ChatGPT 和 Claude，每天都用：想问题、写东西、做东西（这个网站就是 Claude Code 帮我一起做的）。",
+      "用得多了，也让我更清楚什么样的 AI 让人信任，什么样的不会。",
+    ],
+    keywords: ["chatgpt", "gpt", "gemini", "which ai", "what ai", "ai products do you", "ai do you use", "favorite ai", "favourite ai", "用哪些", "常用", "哪个ai", "哪个 ai"],
+  },
+  {
+    id: "engineers",
+    question: "How do you work with engineers?",
+    questionZh: "你和工程师意见不一样时怎么办？",
+    hidden: true,
+    answer: [
+      "First we agree on the problem and on how we’ll know it’s solved. After that, a disagreement is usually settled by data or a quick test, not by who argues best.",
+    ],
+    answerZh: [
+      "先对齐要解决的问题，以及怎样算解决了。之后有分歧，通常用数据或一个小测试来定，而不是看谁更会争。",
+    ],
+    keywords: ["engineer", "engineers", "developer", "developers", "disagree", "disagreement", "conflict", "work with", "工程师", "开发", "分歧", "意见不一样", "冲突"],
+  },
+  {
+    id: "huashun",
+    question: "What did you do at HuashunXin’an?",
+    questionZh: "你在华顺信安做了什么？",
+    hidden: true,
+    answer: [
+      "I was a product manager intern on FORadar, a tool companies use to keep track of their network assets.",
+      "I went from customer interviews to breaking down requirements, prototypes in Axure and PRDs, and followed the work until it shipped. I also helped improve FOEYE 5.0.",
+    ],
+    answerZh: [
+      "我在 FORadar 做产品经理实习生，这是一个帮企业管理网络资产的产品。",
+      "我从客户访谈开始，拆需求、用 Axure 画原型、写 PRD，一直跟到版本上线。也参与了 FOEYE 5.0 的优化。",
+    ],
+    keywords: ["huashun", "huashunxin", "foradar", "foeye", "security", "cybersecurity", "华顺", "信安", "网络安全"],
+  },
+  {
+    id: "yundao",
+    question: "What did you do at Yundao Zhizao?",
+    questionZh: "你在云道智造做了什么？",
+    hidden: true,
+    answer: [
+      "I was a product intern on Futu 5.0, a simulation software release with 1 new module and 14 new features.",
+      "After the electronics cooling module launched, sales grew 32.6%. The changes I pushed for after one-on-one customer interviews went with a 47.5% drop in complaints.",
+    ],
+    answerZh: [
+      "我是伏图 5.0 的产品实习生，这个版本有 1 个新模块、14 个新功能。",
+      "电子散热模块上线后销售额增长 32.6%。我在客户一对一访谈后推动的改进，对应投诉率下降了 47.5%。",
+    ],
+    keywords: ["yundao", "zhizao", "futu", "simulation", "cooling", "complaint", "complaints", "云道", "智造", "伏图", "仿真", "投诉"],
+  },
+  {
+    id: "ab-test",
+    question: "Tell me about an A/B test you ran.",
+    questionZh: "讲一个 A/B 测试的例子？",
+    hidden: true,
+    answer: [
+      "At Tantan I helped design and follow the A/B test for a zodiac-matching feature: what to compare, which numbers to watch, and when we could trust the result.",
+      "I built SQL and Tableau reports on impressions and clicks to keep an eye on it.",
+    ],
+    answerZh: [
+      "在探探，我参与设计并跟进了星座匹配功能的 A/B 测试：比较什么、看哪些数据、什么时候结果才可信。",
+      "我用 SQL 和 Tableau 做了曝光和点击的报表来跟进它。",
+    ],
+    keywords: ["a/b test", "ab test", "a/b", "experiment", "experiments", "zodiac", "astrology", "metrics", "星座", "实验", "ab测试", "a/b测试"],
+  },
+  {
+    id: "visa",
+    question: "Do you need a visa? Can you work remote?",
+    questionZh: "实习需要签证吗？可以远程吗？",
+    hidden: true,
+    answer: [
+      "I’m a student in France, so the internship only needs an internship agreement (convention de stage) with my university. No extra visa sponsorship.",
+      "On-site, hybrid or remote all work for me.",
+    ],
+    answerZh: [
+      "我是在法国读书的学生，实习只需要和学校签实习协议（convention de stage），不需要公司另外办签证。",
+      "到岗、混合、远程都可以。",
+    ],
+    keywords: ["visa", "permit", "sponsor", "sponsorship", "work permit", "remote", "remotely", "work remote", "from home", "hybrid", "on-site", "onsite", "convention", "签证", "居留", "远程", "坐班"],
+  },
+  {
+    id: "future",
+    question: "What’s your plan after the internship?",
+    questionZh: "实习之后有什么打算？",
+    hidden: true,
+    answer: [
+      "I’d like to start my career in Europe, building AI products. So after the internship, I’ll be looking for a job here first.",
+    ],
+    answerZh: [
+      "我想先在欧洲开始我的职业生涯，做 AI 产品。所以实习之后，我会先试着在欧洲找工作。",
+    ],
+    keywords: ["after the internship", "after graduation", "future", "long term", "long-term", "plan", "plans", "5 years", "five years", "stay in", "europe", "以后", "未来", "打算", "规划", "毕业后", "留在"],
+  },
+  {
+    id: "mbti",
+    question: "What’s your MBTI?",
+    questionZh: "你的 MBTI 是什么？",
+    hidden: true,
+    answer: [
+      "ENFJ! Maybe that’s why I care so much about how people feel when they use something.",
+    ],
+    answerZh: [
+      "ENFJ！大概这也是我那么在意人们用东西时感受的原因。",
+    ],
+    keywords: ["mbti", "enfj", "16 personalities", "personality type", "人格"],
+  },
+  {
+    id: "paris-place",
+    question: "Your favourite place in Paris?",
+    questionZh: "在巴黎最喜欢的地方？",
+    hidden: true,
+    answer: [
+      "My little studio! It’s small, but it’s where I cook, rest, and make things, like this website.",
+    ],
+    answerZh: [
+      "我的小 studio！虽然不大，但我在这里做饭、休息、做东西，这个网站也是在这里做出来的。",
+    ],
+    keywords: ["favourite place", "favorite place", "place in paris", "where do you like", "最喜欢的地方", "巴黎最喜欢"],
+  },
+  {
+    id: "movie",
+    question: "Your favourite movie?",
+    questionZh: "你最喜欢的电影？",
+    hidden: true,
+    answer: [
+      "Titanic! A classic I never get tired of.",
+    ],
+    answerZh: [
+      "《泰坦尼克号》！一部怎么看都不腻的经典。",
+    ],
+    keywords: ["favourite movie", "favorite movie", "favourite film", "favorite film", "movie", "movies", "film", "films", "titanic", "电影", "泰坦尼克"],
+  },
+  {
+    id: "picture-book",
+    question: "Why does this website look like a picture book?",
+    questionZh: "为什么网站做成绘本的样子？",
+    hidden: true,
+    answer: [
+      "I wanted people to get to know me the way you leaf through a little book, not the way you read a spreadsheet.",
+    ],
+    answerZh: [
+      "我想让人像翻一本小书一样认识我，而不是看一张表格。",
+    ],
+    keywords: ["picture book", "picture-book", "illustration", "illustrated", "hand-drawn", "hand drawn", "drawing", "style", "website", "绘本", "手绘", "插画", "风格"],
+  },
+  {
+    id: "who-made",
+    question: "Are you real? Who made you?",
+    questionZh: "你是真人还是 AI？",
+    hidden: true,
+    answer: [
+      "I’m a little drawn version of Peiwen. She wrote everything I say herself.",
+      "Want to talk to the real her? Send her an email!",
+    ],
+    answerZh: [
+      "我是佩文画出来的小分身，我说的每句话都是她亲自写的。",
+      "想和真正的她聊聊？给她发封邮件吧！",
+    ],
+    actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
+    keywords: ["are you real", "are you ai", "are you an ai", "are you a bot", "bot", "robot", "chatbot", "who made you", "who are you", "real person", "真人", "机器人", "谁做的", "你是谁"],
+  },
+  {
+    id: "what-ask",
+    question: "What can I ask you?",
+    questionZh: "我可以问你什么？",
+    hidden: true,
+    answer: [
+      "Anything about me! My projects, my experience, the internship I’m looking for, AI-Work, or what I like to do in Paris.",
+    ],
+    answerZh: [
+      "关于我的都可以！我的项目、经历、在找的实习、AI-Work，或者我在巴黎喜欢做什么。",
+    ],
+    actions: [{ kind: "ask", id: "projects", label: "What have you made?", labelZh: "你都做过什么？" }, { kind: "ask", id: "looking", label: "What role are you looking for?", labelZh: "你在找什么样的工作？" }],
+    keywords: ["what can i ask", "what can you", "what do you know", "what should i ask", "help", "能问什么", "可以问什么", "你知道什么"],
+  },
+  {
+    id: "private",
+    question: "(age, salary, relationship)",
+    questionZh: "（年龄、薪资、感情）",
+    hidden: true,
+    answer: [
+      "That one’s better for a real conversation ☺ Send me an email!",
+    ],
+    answerZh: [
+      "这个当面聊更合适 ☺ 给我发封邮件吧！",
+    ],
+    actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
+    keywords: ["how old", "age", "birthday", "salary", "pay", "boyfriend", "girlfriend", "married", "single", "relationship", "年龄", "几岁", "多大", "生日", "工资", "薪资", "薪水", "男朋友", "女朋友", "对象", "结婚", "单身"],
+  },
+  {
     id: "ai-tools",
     question: "How do you work with AI coding tools?",
     questionZh: "你怎么和 AI 编程工具合作？",
