@@ -414,9 +414,9 @@ export default function HomeDesk() {
               <span className={styles.subtitle}>A small world of curiosity.</span>
             </h1>
             <p className={styles.intro}>
-              I&rsquo;m Peiwen, an HCI student in Paris,
+              I&rsquo;m Peiwen, an HCI student in Paris.
               <br />
-              building AI products people can understand, and small interactive worlds.
+              I build AI products people can understand, and sometimes small worlds like this one.
             </p>
           </div>
 

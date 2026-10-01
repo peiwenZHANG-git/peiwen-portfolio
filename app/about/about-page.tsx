@@ -381,12 +381,12 @@ const introLeft: SpreadItem[] = [
       <L
         en={
           <>
-            I&rsquo;m working toward AI product roles. With a technical background in computing and
-            machine learning, I use research and prototyping to turn complex AI capabilities into
-            products people can understand and use, with a little more storytelling along the way.
+            I&rsquo;m working toward AI product roles. I studied computing and machine learning, and
+            I like using research and quick prototypes to turn complicated AI features into products
+            people can actually use.
           </>
         }
-        zh="我在朝 AI 产品方向努力。我有计算机和机器学习的技术背景，用研究和原型，把复杂的 AI 能力变成人能看懂、也会用的产品，顺便多一点讲故事的感觉。"
+        zh="我在朝 AI 产品方向努力。我学过计算机和机器学习，喜欢用研究和快速原型，把复杂的 AI 功能变成人们真正用得上的产品。"
       />
     </p>,
     "2.7%",
@@ -625,12 +625,11 @@ const beyondLeft: SpreadItem[] = [
       <L
         en={
           <>
-            Outside of design, I love swimming, taking photos, going somewhere new, cooking, and
-            exploring what life feels like from a different place. I&rsquo;m always curious about
-            what else life could become.
+            Outside of design, I love swimming, taking photos, cooking and going somewhere new. I
+            like seeing how people live in other places.
           </>
         }
-        zh="设计之外，我喜欢游泳、拍照、去没去过的地方、做饭，感受不一样的生活是什么样子。生活还能变成什么样子，我一直很好奇。"
+        zh="设计之外，我喜欢游泳、拍照、做饭，也喜欢去没去过的地方，看看别处的人怎么生活。"
       />
     </p>,
     "6.1%",
@@ -675,11 +674,10 @@ const beyondRight: SpreadItem[] = [
         <L
           en={
             <>
-              How AI can become more than a tool - and how thoughtful interaction can make complex
-              technology feel clearer, warmer, and easier to trust.
+              How to make AI tools that people understand and feel safe using.
             </>
           }
-          zh="AI 要怎样才能不只是一个工具——用心设计的交互，怎么让复杂的技术显得更清楚、更温暖、更值得信任。"
+          zh="怎么让 AI 工具变得好懂，让人用得放心。"
         />
       </p>
     </div>,
@@ -918,7 +916,7 @@ function PostcardNote() {
         body: JSON.stringify({
           access_key: accessKey,
           subject: "A postcard from Peiwen's Little World",
-          from_name: "Peiwen's Little World — postcard",
+          from_name: "Peiwen's Little World · postcard",
           message: note,
         }),
       });
