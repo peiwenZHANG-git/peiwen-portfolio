@@ -857,7 +857,7 @@ const POSTCARD_PLACEHOLDER = {
 };
 
 const POSTCARD_ERROR = {
-  en: "Couldn't send that — mind trying again?",
+  en: "Couldn't send that. Mind trying again?",
   zh: "没发送成功，要不要再试一次？",
 };
 

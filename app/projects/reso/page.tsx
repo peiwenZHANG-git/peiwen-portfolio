@@ -9,7 +9,7 @@ import { L } from "@/components/lang";
 import styles from "./reso.module.css";
 
 export const metadata: Metadata = {
-  title: "Reso — Making tone visible · Peiwen Zhang",
+  title: "Reso: Making tone visible · Peiwen Zhang",
   description: "A captioning design case study: two prototype directions, an 18-person hearing-proxy evaluation, and a lesson in visual legibility.",
 };
 
@@ -124,7 +124,7 @@ export default function ResoPage() {
             <p><L en="The early team study used Wizard-of-Oz testing to try the concept before a complete system existed. Emotion colour felt intuitive, while the abstract sound blocks were difficult to understand. This was formative feedback from three people, not evidence of effectiveness at scale."
               zh="在完整系统还没做出来时，团队先用“绿野仙踪”（Wizard-of-Oz）的方式试了这个概念：情绪颜色让人觉得很直观，抽象的声音方块却很难看懂。这只是三个人的形成性反馈，不能证明大规模下的效果。" /></p>
             <h3><L en="Scope decision · Take the screen-based direction forward" zh="范围决定 · 继续推进屏幕方向" /></h3>
-            <p><L en="DP2 developed the caption-overlay direction into a working system. The AR direction remained an exploration. The key question carried forward was whether the extra visual information would help people interpret emotion—or compete for their attention."
+            <p><L en="DP2 developed the caption-overlay direction into a working system. The AR direction remained an exploration. The key question carried forward was whether the extra visual information would help people interpret emotion, or compete for their attention."
               zh="DP2 把字幕浮层这个方向做成了可运行的系统，AR 方向则停留在探索阶段。带到下一阶段的关键问题是：多出来的视觉信息，到底是在帮人读懂情绪，还是在和字幕抢注意力？" /></p>
           </section>
 

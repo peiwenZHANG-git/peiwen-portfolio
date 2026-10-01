@@ -49,19 +49,19 @@ const ENTRANCES: Entrance[] = [
   {
     key: "experience",
     href: "/experience",
-    label: "Postcards, a ginkgo leaf and a travel ticket — go to Experience",
+    label: "Postcards, a ginkgo leaf and a travel ticket. Go to Experience",
     className: styles.hsExperience,
   },
   {
     key: "about",
     href: "/about",
-    label: "A spiral notebook tied with a ribbon, “About me” — go to About",
+    label: "A spiral notebook tied with a ribbon, “About me”. Go to About",
     className: styles.hsAbout,
   },
   {
     key: "projects",
     href: "/projects",
-    label: "A clipped index card, “Projects” — go to Projects",
+    label: "A clipped index card, “Projects”. Go to Projects",
     className: styles.hsProjects,
   },
   // Playground removed 2026-09-27 (Peiwen's decision): it had no destination — /#playground
@@ -414,9 +414,9 @@ export default function HomeDesk() {
               <span className={styles.subtitle}>A small world of curiosity.</span>
             </h1>
             <p className={styles.intro}>
-              I&rsquo;m Peiwen &mdash; an HCI student in Paris,
+              I&rsquo;m Peiwen, an HCI student in Paris,
               <br />
-              building AI products people can understand &mdash; and small interactive worlds.
+              building AI products people can understand, and small interactive worlds.
             </p>
           </div>
 

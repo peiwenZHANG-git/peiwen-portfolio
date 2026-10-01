@@ -45,7 +45,7 @@ export default function NotFound() {
         </h1>
         <p className={styles.text}>
           <L
-            en="There's nothing here — the link may be old, or it never led anywhere at all."
+            en="There's nothing here. The link may be old, or it never led anywhere at all."
             zh="这里什么都没有——链接可能过期了，或者本来就没通向哪里。"
           />
         </p>

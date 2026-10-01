@@ -83,7 +83,7 @@ export default function PeiwenAboutHover({ controlled = false }: { controlled?: 
         <Image className={styles.patch} src="/peiwen-phase1/origin-clean-plate.png" width={120} height={230} unoptimized priority alt="" />
         <Image className={styles.head} src="/peiwen-phase1/peiwen-original.png" width={120} height={230} unoptimized priority alt="" />
       </div>
-      <button data-about-hit className={styles.hit} aria-label="About me — Meet Peiwen." aria-expanded="false" aria-controls="peiwen-about-note" />
+      <button data-about-hit className={styles.hit} aria-label="About me. Meet Peiwen." aria-expanded="false" aria-controls="peiwen-about-note" />
       <div id="peiwen-about-note" className={styles.note}>
         <span>About me</span>
         <span>Meet Peiwen.</span>
