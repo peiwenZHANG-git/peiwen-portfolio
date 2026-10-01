@@ -677,7 +677,7 @@ const beyondRight: SpreadItem[] = [
               How to make AI tools that people understand and feel safe using.
             </>
           }
-          zh="怎么让 AI 工具变得好懂，让人用得放心。"
+          zh="怎么让 AI 工具好懂，用着放心。"
         />
       </p>
     </div>,
