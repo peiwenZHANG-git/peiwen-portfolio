@@ -111,6 +111,11 @@ export function PeiwenCompanion() {
   const bubbleRef = useRef<HTMLDivElement>(null);
   const timers = useRef<number[]>([]);
   const bubbleId = useId();
+  // Answers move focus into the bubble (to "other questions" etc.) so keyboard users
+  // land in the right place. For mouse/touch users that same focus used to light up
+  // the red focus ring, which looked like a bug; data-pointer hides the ring until
+  // the next key press (see .bubble[data-pointer] in the CSS).
+  const pointerRef = useRef(false);
 
   function later(fn: () => void, ms: number) {
     timers.current.push(window.setTimeout(fn, ms));
@@ -174,10 +179,24 @@ export function PeiwenCompanion() {
   function focusBubble() {
     // after React paints the new view
     window.requestAnimationFrame(() => {
-      const first = bubbleRef.current?.querySelector<HTMLElement>("[data-autofocus]");
+      const bubble = bubbleRef.current;
+      if (!bubble) return;
+      if (pointerRef.current) bubble.dataset.pointer = "";
+      else delete bubble.dataset.pointer;
+      const first = bubble.querySelector<HTMLElement>("[data-autofocus]");
       first?.focus({ preventScroll: true });
     });
   }
+
+  // any key press means the visitor is (now) on the keyboard: show focus rings again
+  useEffect(() => {
+    function onKeyDown() {
+      pointerRef.current = false;
+      if (bubbleRef.current) delete bubbleRef.current.dataset.pointer;
+    }
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
+  }, []);
 
   function toggle() {
     setHint(null);
@@ -254,6 +273,9 @@ export function PeiwenCompanion() {
     <div
       ref={rootRef}
       className={`${styles.root} ${open ? styles.isOpen : ""} ${handFont.variable} ${bodyFont.variable}`}
+      onPointerDown={() => {
+        pointerRef.current = true;
+      }}
     >
       {open && (
         <div
@@ -320,6 +342,10 @@ export function PeiwenCompanion() {
                             <button key="copy" type="button" className={styles.action} onClick={copyEmail}>
                               {copied === "ok" ? <L en="copied ✓" zh="已复制 ✓" /> : <L en={act.label} zh={act.labelZh} />}
                             </button>
+                          ) : act.kind === "download" ? (
+                            <a key={act.href} href={act.href} download={act.filename} className={styles.action}>
+                              <L en={act.label} zh={act.labelZh} />
+                            </a>
                           ) : act.kind === "ask" ? (
                             <button
                               key={`ask-${act.id}`}

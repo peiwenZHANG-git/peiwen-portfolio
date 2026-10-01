@@ -73,8 +73,8 @@ export const chapters: readonly ExperienceChapter[] = [
       {
         icon: "cloud",
         heading: "Tantan",
-        role: "Product intern · Apr – Sep 2026 · users in Indonesia, Taiwan, Singapore",
-        headingZh: "探探", roleZh: "产品实习生 · 2026年4月–9月 · 面向印尼、台湾、新加坡用户",
+        role: "Product intern · Apr – Aug 2026 · users in Indonesia, Taiwan, Singapore",
+        headingZh: "探探", roleZh: "产品实习生 · 2026年4月–8月 · 面向印尼、台湾、新加坡用户",
         bulletsZh: [
           "对标 Tinder 和 Bumble，写语言、宗教、文化方面的本地化报告，为海外策略提供依据。",
           '以星座、兴趣、MBTI 为维度设计并跑了 <b>A/B 测试</b>，将结果转化为匹配逻辑的调整。',
@@ -113,8 +113,8 @@ export const chapters: readonly ExperienceChapter[] = [
       {
         icon: "work",
         heading: "Beijing Huashun Xin'an Technology",
-        role: "Product manager · Jun – Sep 2025",
-        headingZh: "北京华顺信安科技", roleZh: "产品经理 · 2025年6月–9月",
+        role: "Product manager intern · Jun – Sep 2025",
+        headingZh: "北京华顺信安科技", roleZh: "产品经理实习生 · 2025年6月–9月",
         bulletsZh: [
           "把客户访谈、问卷和焦点小组的结果，转化成网络资产管理产品 FORadar 的明确需求。",
           "在 <b>Axure</b> 中设计资产总览、搜索和管理流程，并撰写给研发的 PRD。",
@@ -132,12 +132,12 @@ export const chapters: readonly ExperienceChapter[] = [
         role: "Product intern · Mar – Jun 2024",
         headingZh: "云道智造", roleZh: "产品实习生 · 2024年3月–6月",
         bulletsZh: [
-          '规划 Fotu 5.0 并上线 <b>1 个新模块和 14 个新功能</b>；电子元件热成像模块的销量增长了 <b class="num">32.6%</b>。',
+          '规划 Futu 5.0 并上线 <b>1 个新模块和 14 个新功能</b>；电子元件热成像模块的销量增长了 <b class="num">32.6%</b>。',
           '用 SQL 和 Tableau 追踪使用情况：活跃用户增长 <b class="num">41%</b>，人均使用时长达到 <b class="num">4.7 小时</b>。',
           "通过一对一客户访谈找到关键痛点；改进后投诉量下降了 <b class=\"num\">47.5%</b>。",
         ],
         bullets: [
-          'Planned Fotu 5.0 and shipped <b>1 new module and 14 features</b>; the electronics thermal module grew sales by <b class="num">32.6%</b>.',
+          'Planned Futu 5.0 and shipped <b>1 new module and 14 features</b>; the electronics thermal module grew sales by <b class="num">32.6%</b>.',
           'Tracked usage with SQL and Tableau: active users rose <b class="num">41%</b> and average use time reached <b class="num">4.7 h</b>.',
           'Found key pain points through 1:1 customer interviews; the fixes cut complaints by <b class="num">47.5%</b>.',
         ],

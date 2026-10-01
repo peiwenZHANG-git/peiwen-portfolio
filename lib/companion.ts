@@ -21,6 +21,8 @@ export const COMPANION_EMAIL = "peiwen.zhang@universite-paris-saclay.fr";
 export type CompanionAction =
   | { kind: "copy-email"; label: string; labelZh: string }
   | { kind: "link"; href: string; label: string; labelZh: string }
+  /** a file to download (the CVs in public/cv) */
+  | { kind: "download"; href: string; filename: string; label: string; labelZh: string }
   /** jump to another answer (used by the "try one of these" fallback) */
   | { kind: "ask"; id: string; label: string; labelZh: string };
 
@@ -68,22 +70,31 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     question: "Where’s your CV?",
     questionZh: "你的简历在哪？",
     answer: [
-      "It’s still being tucked into this little world!",
-      "Send me a note and I’ll email you the latest version right away.",
+      "Right here — there’s an English one and a Chinese one, written for different readers.",
+      "Pick the one you’d like:",
     ],
     answerZh: [
-      "还没来得及放进这个小世界里！",
-      "给我留个言，我马上把最新版发到你邮箱。",
+      "在这里！有英文版和中文版，是分别写给不同读者的。",
+      "选一份吧：",
     ],
-    actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
+    actions: [
+      { kind: "download", href: "/cv/peiwen-zhang-cv-en.pdf", filename: "Peiwen Zhang - CV.pdf", label: "English CV ↓", labelZh: "英文简历 ↓" },
+      { kind: "download", href: "/cv/peiwen-zhang-cv-zh.pdf", filename: "张佩文-简历.pdf", label: "Chinese CV ↓", labelZh: "中文简历 ↓" },
+    ],
     keywords: ["cv", "resume", "résumé", "download", "简历"],
   },
   {
     id: "email",
     question: "What’s your email?",
     questionZh: "你的邮箱是什么？",
-    answer: [COMPANION_EMAIL, "Tap below to copy it — I’d love to hear from you."],
-    answerZh: [COMPANION_EMAIL, "点下面就能复制——很期待收到你的消息。"],
+    answer: [
+      COMPANION_EMAIL,
+      "I’m looking for a 6-month AI product internship — tap below to copy my email, I’d love to hear from you.",
+    ],
+    answerZh: [
+      COMPANION_EMAIL,
+      "我正在找一份 6 个月的 AI 产品实习——点下面就能复制邮箱，很期待收到你的消息。",
+    ],
     actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
     keywords: ["email", "e-mail", "mail", "contact", "reach", "write to", "get in touch", "hire", "hiring", "intern", "job", "available", "opportunit", "邮箱", "联系"],
   },
@@ -93,11 +104,13 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     questionZh: "你最近在忙什么？",
     answer: [
       "I’m doing my MSc in Human-Computer Interaction at Université Paris-Saclay, learning how people work with AI agents and immersive interfaces.",
-      "This year I also spent six months as a product intern at Tantan, running A/B tests and localization research for users in Indonesia, Taiwan and Singapore.",
+      "This year I also spent five months as a product intern at Tantan, running A/B tests and localization research for users in Indonesia, Taiwan and Singapore.",
+      "Now I’m looking for a 6-month AI product internship.",
     ],
     answerZh: [
       "我在巴黎萨克雷大学读人机交互硕士，研究人与 AI 智能体、沉浸式界面之间的交互方式。",
-      "今年我还在探探做了六个月的产品实习生，为印尼、台湾、新加坡的用户做 A/B 测试和本地化研究。",
+      "今年我还在探探做了五个月的产品实习生，为印尼、台湾、新加坡的用户做 A/B 测试和本地化研究。",
+      "现在我在找一份 6 个月的 AI 产品实习。",
     ],
     keywords: ["lately", "recent", "now", "currently", "these days", "doing", "study", "studying", "master", "msc", "tantan", "最近", "现在"],
   },
@@ -167,7 +180,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
       "They’re all hanging in the attic — come and have a look.",
     ],
     answerZh: [
-      "目前一共八个项目：Reso、Arm-Swing VR、七巧板、Music VR、心愿迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
+      "目前一共八个项目：Reso、Arm-Swing VR、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
       "它们都挂在阁楼里——来看看吧。",
     ],
     actions: [{ kind: "link", href: "/projects", label: "Go to Projects →", labelZh: "去项目页 →" }],
@@ -211,11 +224,13 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     hidden: true,
     keywords: ["skill", "skills", "tool", "tools", "good at", "can you", "sql", "tableau", "axure", "coding", "program", "research", "a/b", "ab test", "技能", "会什么"],
     answer: [
-      "User research and experiment design, A/B testing, requirements and PRDs in Axure, data with SQL and Tableau, and prototyping — including VR in Unity (C#).",
+      "Product: user research and experiment design, A/B testing, requirements and PRDs, prototyping in Axure and Figma.",
+      "Data and AI: SQL, Python and Tableau, and designing AI agents and their tools (MCP) — plus VR prototyping in Unity (C#).",
       "My projects show these best.",
     ],
     answerZh: [
-      "用户研究和实验设计、A/B 测试、用 Axure 写需求文档和画原型、用 SQL 和 Tableau 处理数据，也做原型设计——包括用 Unity（C#）做 VR。",
+      "产品方面：用户研究和实验设计、A/B 测试、需求分析和 PRD、用 Axure 和 Figma 做原型。",
+      "数据和 AI 方面：SQL、Python、Tableau，设计 AI 智能体和它的工具（MCP）——也会用 Unity（C#）做 VR 原型。",
       "这些在我的项目里体现得最清楚。",
     ],
     actions: [{ kind: "link", href: "/projects", label: "See my projects →", labelZh: "看看我的项目 →" }],

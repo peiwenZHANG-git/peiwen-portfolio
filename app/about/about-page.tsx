@@ -454,7 +454,7 @@ const introRight: SpreadItem[] = [
         ...cssVars({ "--chip-fs": "4.7cqw", "--chip-padx": "8cqw", "--chip-pady": "5cqw" }),
       }}
     >
-      <span className={bookStyles.chip}><L en="Design Systems" zh="设计系统" /></span>
+      <span className={bookStyles.chip}><L en="User Research" zh="用户研究" /></span>
       <span className={bookStyles.chip}><L en="Prototyping" zh="原型设计" /></span>
       <span className={bookStyles.chip}><L en="AI Products" zh="AI 产品" /></span>
       <span className={bookStyles.chip}><L en="Interactive Storytelling" zh="互动叙事" /></span>
@@ -537,7 +537,7 @@ const journeyLeft: SpreadItem[] = [
         <div className={bookStyles.tlYear}><L en="2021 ~ 2025" zh="2021 – 2025" /></div>
         <div className={bookStyles.tlSchool}><L en="Communication University of China" zh="中国传媒大学" /></div>
         <div className={bookStyles.tlMeta}>
-          <L en={<>Beijing, China &middot; BA in Digital Media Tech</>} zh={<>中国北京 &middot; 数字媒体技术学士</>} />
+          <L en={<>Beijing, China &middot; BEng in Digital Media Tech</>} zh={<>中国北京 &middot; 数字媒体技术工学学士</>} />
         </div>
         <div className={bookStyles.tlTag}>
           <L

@@ -285,6 +285,11 @@
   outline-offset: 2px;
 }
 
+/* focus moved in for a mouse/touch visitor: no ring (it comes back on any key press) */
+.bubble[data-pointer] :focus-visible {
+  outline: none;
+}
+
 .answer {
   animation: answerIn 260ms ease-out both;
 }
