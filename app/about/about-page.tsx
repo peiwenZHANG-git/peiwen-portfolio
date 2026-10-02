@@ -368,7 +368,7 @@ const introLeft: SpreadItem[] = [
   node(
     "intro-sub",
     <div style={{ ...cssVars({ "--sub-fs": "5.4cqw" }), textAlign: "center" }}>
-      <L en={<>ai product &middot; hci &middot; in paris</>} zh={<>AI 产品 &middot; 人机交互 &middot; 常驻巴黎</>} />
+      <L en={<>AI product &middot; HCI &middot; in Paris</>} zh={<>AI 产品 &middot; 人机交互 &middot; 常驻巴黎</>} />
     </div>,
     "-0.4%",
     "63.2%",
@@ -1293,7 +1293,9 @@ export default function AboutPage() {
               disabled={spreadIndex === 0 || busy}
               onClick={() => goTo(spreadIndex - 1)}
             >
-              &lsaquo;
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 5l-7 7 7 7" />
+              </svg>
             </button>
             <div className={bookStyles.label}>
               <L en={SPREADS[spreadIndex].name} zh={SPREADS[spreadIndex].nameZh} />
@@ -1315,10 +1317,13 @@ export default function AboutPage() {
               type="button"
               className={`${bookStyles.navBtn} ${bookStyles.navNext}`}
               aria-label="Next spread"
+              data-hint={spreadIndex === 0 ? "" : undefined}
               disabled={spreadIndex === SPREADS.length - 1 || busy}
               onClick={() => goTo(spreadIndex + 1)}
             >
-              &rsaquo;
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>

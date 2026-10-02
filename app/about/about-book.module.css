@@ -835,24 +835,57 @@
   margin-top: clamp(16px, 2.6vw, 24px);
 }
 
+/* 2026-10-02: visitors didn't notice the arrows (40px, thin, pale on paper), so they're
+   bigger, filled with the Quick Facts butter yellow, with a darker outline, a soft
+   shadow and a drawn chevron. On the first spread the
+   "next" arrow nudges sideways three times to say "there's more" (see navNudge). */
 .navBtn {
+  --nav: 56px;
+
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  font-size: 17px;
-  line-height: 1;
-  color: var(--rose-deep);
+  width: var(--nav);
+  height: var(--nav);
+  padding: 0;
+  color: #5e4a3c;
   cursor: pointer;
-  background: var(--paper);
-  border: 1.5px solid var(--rose-brown);
+  background: var(--butter);
+  border: 2px solid var(--rose-deep);
   border-radius: 50%;
+  box-shadow: 0 3px 10px rgb(94 71 58 / 22%);
+}
+
+.navBtn svg {
+  width: 46%;
+  height: 46%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .navNext[data-hint]:not(:disabled) {
+    animation: navNudge 1400ms ease-in-out 1200ms 3;
+  }
+}
+
+@keyframes navNudge {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 6px 0;
+  }
 }
 
 .navBtn:hover:not(:disabled) {
-  background: var(--butter);
+  background: #f3e3a8;
 }
 
 .navBtn:focus-visible {
@@ -1075,13 +1108,11 @@
   }
 
   .navBtn {
+    --nav: 46px;
+
     position: fixed;
     top: calc(50% + 19px);
     z-index: 15;
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-    background: rgb(247 241 231 / 92%);
     transform: translateY(-50%);
   }
 
@@ -1128,8 +1159,8 @@
     /* the dots row: its gap above (same clamp as before) and a fixed row height */
     --ctl-gap: clamp(16px, 2.6vw, 24px);
     --ctl-row: 24px;
-    /* one arrow (40px) plus its 24px gap to the notebook */
-    --side: 64px;
+    /* one arrow (56px) plus its 24px gap to the notebook */
+    --side: 80px;
     --bw: min(
       1000px,
       100cqw - 2 * var(--side) - 3.2cqw,
@@ -1170,7 +1201,7 @@
   }
 
   .navNext {
-    left: calc(50% + 1.6cqw + var(--bw) / 2 + var(--side) - 40px);
+    left: calc(50% + 1.6cqw + var(--bw) / 2 + var(--side) - 56px);
   }
 }
 
