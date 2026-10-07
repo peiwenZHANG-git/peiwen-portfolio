@@ -311,6 +311,10 @@ export function PeiwenCompanion() {
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
   const linesZh = view.kind === "answer" ? (answer?.answerZh ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answerZh : [];
   const sample = COMPANION_ANSWERS.find((a) => a.id === sampleQuestionFor(pathname));
+  // a shorter wording for the hint, where the full question is long
+  const sampleLabel =
+    sample?.id === "looking" ? { en: "What role are you looking for?", zh: "你在找什么工作？" } : sample ? { en: sample.question, zh: sample.questionZh } : null;
+  const hintShowing = !!hint && hint.path === pathname && !open;
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
 
@@ -454,7 +458,7 @@ export function PeiwenCompanion() {
           </p>
           {sample && (
             <button type="button" className={styles.hintAsk} onClick={() => askFromHint(sample.id)}>
-              <L en={sample.question} zh={sample.questionZh} /> &rarr;
+              <L en={sampleLabel?.en ?? sample.question} zh={sampleLabel?.zh ?? sample.questionZh} /> &rarr;
             </button>
           )}
         </div>
@@ -482,7 +486,8 @@ export function PeiwenCompanion() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className={styles.sprite} src="/assets/companion/fairy-hover.webp" alt="" width={199} height={300} draggable={false} />
         </span>
-        {tagged && !open && (
+        {/* one cue at a time: while she's saying her line, the tag waits */}
+        {tagged && !open && !hintShowing && (
           <span className={styles.tag} aria-hidden="true">
             <L en="Ask me ✎" zh="问我吧 ✎" />
           </span>
