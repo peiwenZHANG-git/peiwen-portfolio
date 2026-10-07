@@ -142,6 +142,8 @@
   font-family: var(--hand);
   font-size: 16px;
   line-height: 1.3;
+  /* taps go through to the page, except on the question chip */
+  pointer-events: none;
   animation: hintPop 420ms ease-out both;
 }
 
@@ -149,25 +151,30 @@
   margin: 0;
 }
 
-/* one real question inside the hint, tappable (2026-10-07) */
+/* one real question inside the hint, tappable (2026-10-07). Written into the note
+   like a second handwritten line with a dashed pencil underline, not a pill button:
+   the pill made the note feel like a chat widget. */
 .hintAsk {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 3px 10px 4px;
+  display: block;
+  margin-top: 1px;
+  padding: 0;
   border: 0;
-  border-radius: 999px;
-  background: #f1e2c6;
-  box-shadow: inset 0 0 0 1px rgb(140 123 105 / 55%);
-  color: var(--ink);
+  background: none;
+  color: #a0583f;
   font-family: var(--hand);
-  font-size: 15px;
-  line-height: 1.2;
+  font-size: 16px;
+  line-height: 1.3;
   text-align: left;
+  text-decoration: underline dashed rgb(160 88 63 / 55%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .hintAsk:hover {
-  background: #ead48f;
+  color: #7d3f2c;
+  text-decoration-color: currentColor;
 }
 
 .hintAsk:focus-visible {
