@@ -142,8 +142,68 @@
   font-family: var(--hand);
   font-size: 16px;
   line-height: 1.3;
-  pointer-events: none;
   animation: hintPop 420ms ease-out both;
+}
+
+.hintText {
+  margin: 0;
+}
+
+/* one real question inside the hint, tappable (2026-10-07) */
+.hintAsk {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 10px 4px;
+  border: 0;
+  border-radius: 999px;
+  background: #f1e2c6;
+  box-shadow: inset 0 0 0 1px rgb(140 123 105 / 55%);
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hintAsk:hover {
+  background: #ead48f;
+}
+
+.hintAsk:focus-visible {
+  outline: 2px solid #d74b3c;
+  outline-offset: 2px;
+}
+
+/* "Ask me ✎": a little butter-yellow paper tag pinned beside her until she's first
+   opened this visit (2026-10-07: visitors didn't realise she can be asked anything) */
+.tag {
+  position: absolute;
+  right: calc(100% - 4px);
+  bottom: calc(var(--h) * 0.12);
+  padding: 3px 9px 4px;
+  border-radius: 3px;
+  background: #ead48f;
+  box-shadow: 0 2px 5px rgb(94 71 58 / 20%);
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: 16px;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: rotate(-5deg);
+}
+
+/* a tiny tape strip holding it on */
+.tag::before {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 22px;
+  height: 9px;
+  content: "";
+  background: rgb(255 255 255 / 55%);
+  box-shadow: 0 0 0 1px rgb(140 123 105 / 15%);
+  transform: translateX(-50%) rotate(4deg);
 }
 
 @keyframes hintPop {
@@ -456,6 +516,11 @@
   .chip,
   .action {
     font-size: 15px;
+  }
+
+  .tag {
+    padding: 2px 7px 3px;
+    font-size: 14px;
   }
 }
 

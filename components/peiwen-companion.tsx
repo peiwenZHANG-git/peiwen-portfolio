@@ -45,6 +45,27 @@ type View =
 
 const HINT_KEY = "peiwen-companion-hint";
 const LINE_KEY = "peiwen-companion-line:";
+// set the first time she's opened in a visit: from then on the "Ask me" tag is put away
+const OPENED_KEY = "peiwen-companion-opened";
+
+function subscribeNever() {
+  return () => {};
+}
+function readNeverOpened() {
+  try {
+    return !window.sessionStorage.getItem(OPENED_KEY);
+  } catch {
+    return true;
+  }
+}
+
+/** 2026-10-07: visitors didn't realise she answers questions. Her page lines now carry
+    one real question they can tap straight away, picked to suit the page. */
+function sampleQuestionFor(pathname: string): string {
+  if (pathname.startsWith("/projects")) return "projects";
+  if (pathname === "/experience") return "experience";
+  return "looking";
+}
 const THINK_MS = 550;
 
 function subscribeBody(cb: () => void) {
@@ -104,6 +125,10 @@ export function PeiwenCompanion() {
   // what she says to herself on arriving at a page (its own guide line, or a first
   // "psst… ask me!"); tied to the page it was said on
   const [hint, setHint] = useState<{ path: string; line: CompanionPageLine } | null>(null);
+  // the little "Ask me ✎" paper tag beside her, until she's first opened this visit
+  const [openedNow, setOpenedNow] = useState(false);
+  const neverOpened = useSyncExternalStore(subscribeNever, readNeverOpened, () => false);
+  const tagged = neverOpened && !openedNow;
   const lang = useLang();
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -124,6 +149,15 @@ export function PeiwenCompanion() {
     const list = timers.current;
     return () => list.forEach((t) => window.clearTimeout(t));
   }, []);
+
+  function markOpened() {
+    setOpenedNow(true);
+    try {
+      window.sessionStorage.setItem(OPENED_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }
 
   // On arriving at a page she says one short line to herself: how this page works
   // (lib/companion.ts, companionPageLine), once per page per visit. Pages without a
@@ -148,8 +182,9 @@ export function PeiwenCompanion() {
       }
       setHint({ path: pathname, line: shown });
     }, 1400);
-    // page guide lines stay 20s (Peiwen's call): long enough to read and try it out
-    const b = window.setTimeout(() => setHint(null), 1400 + (line ? 20000 : 6000));
+    // page guide lines stay 20s (Peiwen's call): long enough to read and try it out;
+    // the "psst" (now with a question to tap) 12s
+    const b = window.setTimeout(() => setHint(null), 1400 + (line ? 20000 : 12000));
     return () => {
       window.clearTimeout(a);
       window.clearTimeout(b);
@@ -204,10 +239,19 @@ export function PeiwenCompanion() {
       close(false);
       return;
     }
+    markOpened();
     setView({ kind: "menu" });
     setThinking(false);
     setOpenOn(pathname);
     focusBubble();
+  }
+
+  /** the question chip in her page hint: open her straight onto that answer */
+  function askFromHint(id: string) {
+    setHint(null);
+    markOpened();
+    setOpenOn(pathname);
+    show({ kind: "answer", id });
   }
 
   function close(returnFocus: boolean) {
@@ -266,6 +310,7 @@ export function PeiwenCompanion() {
   const askedFallback = view.kind === "answer" ? answer : null;
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
   const linesZh = view.kind === "answer" ? (answer?.answerZh ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answerZh : [];
+  const sample = COMPANION_ANSWERS.find((a) => a.id === sampleQuestionFor(pathname));
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
 
@@ -403,9 +448,16 @@ export function PeiwenCompanion() {
       )}
 
       {hint && hint.path === pathname && !open && (
-        <p className={styles.hint} aria-hidden="true">
-          <L en={hint.line.en} zh={hint.line.zh} />
-        </p>
+        <div className={styles.hint}>
+          <p className={styles.hintText} aria-hidden="true">
+            <L en={hint.line.en} zh={hint.line.zh} />
+          </p>
+          {sample && (
+            <button type="button" className={styles.hintAsk} onClick={() => askFromHint(sample.id)}>
+              <L en={sample.question} zh={sample.questionZh} /> &rarr;
+            </button>
+          )}
+        </div>
       )}
 
       <button
@@ -430,6 +482,11 @@ export function PeiwenCompanion() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className={styles.sprite} src="/assets/companion/fairy-hover.webp" alt="" width={199} height={300} draggable={false} />
         </span>
+        {tagged && !open && (
+          <span className={styles.tag} aria-hidden="true">
+            <L en="Ask me ✎" zh="问我吧 ✎" />
+          </span>
+        )}
       </button>
     </div>
   );
