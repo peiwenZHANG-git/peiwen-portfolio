@@ -311,9 +311,15 @@ export function PeiwenCompanion() {
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
   const linesZh = view.kind === "answer" ? (answer?.answerZh ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answerZh : [];
   const sample = COMPANION_ANSWERS.find((a) => a.id === sampleQuestionFor(pathname));
-  // a shorter wording for the hint, where the full question is long
+  // 2026-10-07: the question sits inside her own sentence ("psst… ask me what job I'm
+  // looking for!"), in her voice, rather than as a separate link under the line
   const sampleLabel =
-    sample?.id === "looking" ? { en: "What role are you looking for?", zh: "你在找什么工作？" } : sample ? { en: sample.question, zh: sample.questionZh } : null;
+    sample?.id === "projects"
+      ? { en: "what I’ve made", zh: "都做过什么" }
+      : sample?.id === "experience"
+        ? { en: "where I’ve worked", zh: "在哪里工作过" }
+        : { en: "what job I’m looking for", zh: "在找什么工作" };
+  const isPsst = hint?.line === COMPANION_PSST;
   const hintShowing = !!hint && hint.path === pathname && !open;
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
@@ -453,13 +459,25 @@ export function PeiwenCompanion() {
 
       {hint && hint.path === pathname && !open && (
         <div className={styles.hint}>
-          <p className={styles.hintText} aria-hidden="true">
-            <L en={hint.line.en} zh={hint.line.zh} />
-          </p>
-          {sample && (
-            <button type="button" className={styles.hintAsk} onClick={() => askFromHint(sample.id)}>
-              <L en={sampleLabel?.en ?? sample.question} zh={sampleLabel?.zh ?? sample.questionZh} /> &rarr;
-            </button>
+          {!isPsst && (
+            <p className={styles.hintText}>
+              <L en={hint.line.en} zh={hint.line.zh} />
+            </p>
+          )}
+          {sample ? (
+            <p className={styles.hintText}>
+              {lang === "zh" ? (isPsst ? "嘘…可以问我" : "也可以问我") : isPsst ? "psst… ask me " : "Or ask me "}
+              <button type="button" className={styles.hintAsk} onClick={() => askFromHint(sample.id)}>
+                {lang === "zh" ? sampleLabel.zh : sampleLabel.en}
+              </button>
+              {lang === "zh" ? (isPsst ? "哦！" : "！") : "!"}
+            </p>
+          ) : (
+            isPsst && (
+              <p className={styles.hintText}>
+                <L en={hint.line.en} zh={hint.line.zh} />
+              </p>
+            )
           )}
         </div>
       )}
