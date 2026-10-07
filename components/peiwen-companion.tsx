@@ -11,7 +11,6 @@ import {
   COMPANION_FREEFORM,
   COMPANION_GREETING,
   COMPANION_GREETING_ZH,
-  COMPANION_PSST,
   companionPageLine,
   matchCompanionAnswer,
   type CompanionAction,
@@ -43,7 +42,6 @@ type View =
   | { kind: "answer"; id: string; typed?: string }
   | { kind: "free"; question: string };
 
-const HINT_KEY = "peiwen-companion-hint";
 const LINE_KEY = "peiwen-companion-line:";
 // set the first time she's opened in a visit: from then on the "Ask me" tag is put away
 const OPENED_KEY = "peiwen-companion-opened";
@@ -57,14 +55,6 @@ function readNeverOpened() {
   } catch {
     return true;
   }
-}
-
-/** 2026-10-07: visitors didn't realise she answers questions. Her page lines now carry
-    one real question they can tap straight away, picked to suit the page. */
-function sampleQuestionFor(pathname: string): string {
-  if (pathname.startsWith("/projects")) return "projects";
-  if (pathname === "/experience") return "experience";
-  return "looking";
 }
 const THINK_MS = 550;
 
@@ -161,30 +151,30 @@ export function PeiwenCompanion() {
 
   // On arriving at a page she says one short line to herself: how this page works
   // (lib/companion.ts, companionPageLine), once per page per visit. Pages without a
-  // line get a single "psst… ask me!" per visit instead. The "seen" mark is written
-  // when the line actually shows, so React's double-run of effects in dev can't eat it.
+  // line say nothing: since 2026-10-07 the "Ask me ✎" tag does the inviting (it
+  // replaced the old "psst… ask me!"). The "seen" mark is written when the line
+  // actually shows, so React's double-run of effects in dev can't eat it.
   useEffect(() => {
     if (!ready) return;
     const touch = window.matchMedia("(hover: none)").matches;
     const line = companionPageLine(pathname, touch);
-    const key = line ? LINE_KEY + pathname : HINT_KEY;
+    if (!line) return;
+    const key = LINE_KEY + pathname;
     try {
       if (window.sessionStorage.getItem(key)) return;
     } catch {
       return;
     }
-    const shown = line ?? COMPANION_PSST;
     const a = window.setTimeout(() => {
       try {
         window.sessionStorage.setItem(key, "1");
       } catch {
         /* ignore */
       }
-      setHint({ path: pathname, line: shown });
+      setHint({ path: pathname, line });
     }, 1400);
-    // page guide lines stay 20s (Peiwen's call): long enough to read and try it out;
-    // the "psst" (now with a question to tap) 12s
-    const b = window.setTimeout(() => setHint(null), 1400 + (line ? 20000 : 12000));
+    // page guide lines stay 20s (Peiwen's call): long enough to read and try it out
+    const b = window.setTimeout(() => setHint(null), 1400 + 20000);
     return () => {
       window.clearTimeout(a);
       window.clearTimeout(b);
@@ -246,14 +236,6 @@ export function PeiwenCompanion() {
     focusBubble();
   }
 
-  /** the question chip in her page hint: open her straight onto that answer */
-  function askFromHint(id: string) {
-    setHint(null);
-    markOpened();
-    setOpenOn(pathname);
-    show({ kind: "answer", id });
-  }
-
   function close(returnFocus: boolean) {
     setOpenOn(null);
     setThinking(false);
@@ -310,17 +292,6 @@ export function PeiwenCompanion() {
   const askedFallback = view.kind === "answer" ? answer : null;
   const lines = view.kind === "answer" ? (answer?.answer ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answer : [];
   const linesZh = view.kind === "answer" ? (answer?.answerZh ?? []) : view.kind === "free" ? COMPANION_FREEFORM.answerZh : [];
-  const sample = COMPANION_ANSWERS.find((a) => a.id === sampleQuestionFor(pathname));
-  // 2026-10-07: the question sits inside her own sentence ("psst… ask me what job I'm
-  // looking for!"), in her voice, rather than as a separate link under the line
-  const sampleLabel =
-    sample?.id === "projects"
-      ? { en: "what I’ve made", zh: "都做过什么" }
-      : sample?.id === "experience"
-        ? { en: "where I’ve worked", zh: "在哪里工作过" }
-        : { en: "what job I’m looking for", zh: "在找什么工作" };
-  const isPsst = hint?.line === COMPANION_PSST;
-  const hintShowing = !!hint && hint.path === pathname && !open;
   const actions: CompanionAction[] =
     view.kind === "answer" ? (answer?.actions ?? []) : view.kind === "free" ? COMPANION_FREEFORM.actions : [];
 
@@ -458,28 +429,9 @@ export function PeiwenCompanion() {
       )}
 
       {hint && hint.path === pathname && !open && (
-        <div className={styles.hint}>
-          {!isPsst && (
-            <p className={styles.hintText}>
-              <L en={hint.line.en} zh={hint.line.zh} />
-            </p>
-          )}
-          {sample ? (
-            <p className={styles.hintText}>
-              {lang === "zh" ? (isPsst ? "嘘…可以问我" : "也可以问我") : isPsst ? "psst… ask me " : "Or ask me "}
-              <button type="button" className={styles.hintAsk} onClick={() => askFromHint(sample.id)}>
-                {lang === "zh" ? sampleLabel.zh : sampleLabel.en}
-              </button>
-              {lang === "zh" ? (isPsst ? "哦！" : "！") : "!"}
-            </p>
-          ) : (
-            isPsst && (
-              <p className={styles.hintText}>
-                <L en={hint.line.en} zh={hint.line.zh} />
-              </p>
-            )
-          )}
-        </div>
+        <p className={styles.hint} aria-hidden="true">
+          <L en={hint.line.en} zh={hint.line.zh} />
+        </p>
       )}
 
       <button
@@ -504,8 +456,7 @@ export function PeiwenCompanion() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className={styles.sprite} src="/assets/companion/fairy-hover.webp" alt="" width={199} height={300} draggable={false} />
         </span>
-        {/* one cue at a time: while she's saying her line, the tag waits */}
-        {tagged && !open && !hintShowing && (
+        {tagged && !open && (
           <span className={styles.tag} aria-hidden="true">
             <L en="Ask me ✎" zh="问我吧 ✎" />
           </span>
