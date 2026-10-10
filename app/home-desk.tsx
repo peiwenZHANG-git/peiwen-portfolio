@@ -36,12 +36,17 @@ import { handFont, bodyFont } from "./home-fonts";
  * where she becomes the "Ask me" little Peiwen. Her notes replace the text hints.
  * The full intro only plays once (localStorage `peiwen-home-intro-seen`); `?intro=1`
  * replays it. Reduced motion goes straight to the lit room.
+ *
+ * 2026-10-10 (feedback from a PM): the opening must never block. Clicking anywhere in
+ * the dark room (or the lamp, even before the window) lights it at once, and the desk
+ * entrances work from the first frame: clicking "About me" in the dark lights the room
+ * and walks straight in. The lighting itself is shorter (3.4s → 2.2s).
  */
 
 type Phase = "sleep" | "window" | "lighting" | "lit";
 
 const SEEN_KEY = "peiwen-home-intro-seen";
-const LIGHTING_MS = 3400; // bulb warms up ~0.6s, then the light spreads across the desk
+const LIGHTING_MS = 2200; // bulb warms up ~0.3s, then the light spreads across the desk
 
 type Entrance = { key: string; href: string; label: string; className: string };
 
@@ -256,8 +261,8 @@ export default function HomeDesk() {
     setProgress("window");
   }
 
-  function lightRoom(event: MouseEvent<HTMLButtonElement>) {
-    if (phase !== "window") return;
+  function lightRoom(event: MouseEvent<HTMLElement>) {
+    if (phase !== "sleep" && phase !== "window") return;
     if (event.detail === 0) focusNext.current = "desk";
     setProgress("lighting");
     setPlayed(true);
@@ -266,6 +271,13 @@ export default function HomeDesk() {
       setProgress("lit");
       markSeen();
     }, LIGHTING_MS);
+  }
+
+  /** a click anywhere in the dark room that isn't the window, the lamp or an entrance */
+  function wakeRoom(event: MouseEvent<HTMLDivElement>) {
+    if (phase !== "sleep" && phase !== "window") return;
+    if ((event.target as HTMLElement).closest("button, a")) return;
+    lightRoom(event);
   }
 
   function skipIntro(event: MouseEvent<HTMLButtonElement>) {
@@ -279,6 +291,12 @@ export default function HomeDesk() {
     if (event.defaultPrevented || event.button !== 0) return;
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
+    // clicked during the opening: the room lights instantly and she walks straight in
+    if (phase !== "lit") {
+      if (lightingTimer.current) window.clearTimeout(lightingTimer.current);
+      setProgress("lit");
+      markSeen();
+    }
     const goesElsewhere = (entrance.href.split("#")[0] || "/") !== "/";
     const stage = stageRef.current;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -340,6 +358,7 @@ export default function HomeDesk() {
         ref={stageRef}
         className={`${styles.stage} ${stageClassName}`}
         onTransitionEnd={onStageTransitionEnd}
+        onClick={wakeRoom}
         tabIndex={-1}
       >
         <div ref={cameraRef} className={`${styles.camera} ${dive ? styles.diving : ""}`} style={dive ?? undefined}>
@@ -451,7 +470,7 @@ export default function HomeDesk() {
             className={`${styles.hotspot} ${styles.hsLamp}`}
             ref={lampRef}
             onClick={lightRoom}
-            disabled={phase !== "window"}
+            disabled={phase !== "sleep" && phase !== "window"}
             aria-label="Switch on the desk lamp"
           />
 
@@ -459,7 +478,6 @@ export default function HomeDesk() {
             ref={entrancesRef}
             aria-label="Desk"
             className={styles.entrances}
-            inert={!lit}
             onPointerOver={() => setTouched(true)}
             onFocus={() => setTouched(true)}
           >

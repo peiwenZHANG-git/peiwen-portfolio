@@ -81,7 +81,8 @@ type NavigateOptions = {
 
 type Phase = "idle" | "departing" | "departed";
 
-const DEPART_MS = 420;
+// 2026-10-10: 420 → 260ms (PM feedback: switching pages should feel quicker)
+const DEPART_MS = 260;
 /** Total "warm paper breathing gap" window after departure finishes and before this
     file resets to idle (420–500ms from the click). */
 const GAP_MS = 80;
@@ -148,6 +149,9 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     (href: string, opts: NavigateOptions = {}) => {
       const targetPath = href.split("#")[0] || "/";
       const isSameRoute = targetPath === pathname || targetPath === "";
+
+      // start fetching the next page now, while this one fades, not after
+      if (!isSameRoute) router.prefetch(targetPath);
 
       if (isSameRoute || reducedMotion) {
         router.push(href, opts.scroll === undefined ? undefined : { scroll: opts.scroll });

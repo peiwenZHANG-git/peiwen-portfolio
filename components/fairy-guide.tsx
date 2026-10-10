@@ -178,7 +178,7 @@ export function FairyGuide({ phase, stageRef, onDone }: Props) {
       const target = stagePoint(WINDOW_SPOT.x, WINDOW_SPOT.y);
       if (!spot.current) place(-80, target.y - 40);
       later(() => {
-        flyTo(target.x, target.y, 1, 2600, () => {
+        flyTo(target.x, target.y, 1, 1800, () => {
           setPose("hover");
           later(() => setSayFor("sleep"), 250);
         });
@@ -187,11 +187,11 @@ export function FairyGuide({ phase, stageRef, onDone }: Props) {
       later(() => {
         setPose("fly");
         const p = lampSpot();
-        flyTo(p.x, p.y, 1, 2000, () => {
+        flyTo(p.x, p.y, 1, 1400, () => {
           setPose("tap");
           later(() => setSayFor("window"), 200);
         });
-      }, 900);
+      }, 400);
     } else if (phase === "lit") {
       later(() => {
         setPose("fly");

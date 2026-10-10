@@ -121,7 +121,7 @@
 }
 
 .camera.diving {
-  transition: transform 860ms cubic-bezier(0.5, 0, 0.15, 1);
+  transition: transform 620ms cubic-bezier(0.5, 0, 0.15, 1);
   will-change: transform;
 }
 
@@ -170,7 +170,7 @@
     transparent 60%,
     #000 100%
   );
-  animation: lampReveal 2700ms cubic-bezier(0.45, 0, 0.2, 1) 550ms both;
+  animation: lampReveal 1800ms cubic-bezier(0.45, 0, 0.2, 1) 300ms both;
 }
 
 .phase_lit .dark {
@@ -224,6 +224,11 @@
 .phase_window .windowLayer,
 .phase_lighting .windowLayer {
   filter: brightness(1) saturate(1);
+}
+
+/* lit straight from the dark (a click anywhere): the glass catches up with the lamp */
+.phase_lighting .windowLayer {
+  transition-duration: 1500ms;
 }
 
 .phase_lit .windowLayer {
@@ -338,11 +343,11 @@
 }
 
 .phase_lighting .lampSpark {
-  animation: lampSpark 3400ms linear both;
+  animation: lampSpark 2200ms linear both;
 }
 
 .phase_lighting .lampWarmth {
-  animation: lampWarmth 3400ms cubic-bezier(0.4, 0, 0.2, 1) 350ms both;
+  animation: lampWarmth 2200ms cubic-bezier(0.4, 0, 0.2, 1) 200ms both;
 }
 
 /* an old bulb warming up: a couple of soft flickers, then it holds and the room
@@ -650,13 +655,13 @@
 
 .phase_window .hintLamp {
   animation:
-    hintInStrong 700ms ease 2900ms both,
-    hintNudge 1800ms ease-in-out 3600ms infinite;
+    hintInStrong 700ms ease 1500ms both,
+    hintNudge 1800ms ease-in-out 2200ms infinite;
 }
 
 /* the bulb glows softly on and off while it waits to be switched on */
 .phase_window .lampSpark {
-  animation: lampWaiting 2400ms ease-in-out 3100ms infinite;
+  animation: lampWaiting 2400ms ease-in-out 1700ms infinite;
 }
 
 @keyframes lampWaiting {
@@ -750,10 +755,6 @@
 .entrance {
   pointer-events: auto;
   transition: backdrop-filter 300ms ease;
-}
-
-.viewport:not(.phase_lit) .entrance {
-  pointer-events: none;
 }
 
 .entrance:focus-visible {

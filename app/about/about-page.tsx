@@ -709,8 +709,10 @@ const SPREADS: Spread[] = [
 
 type Phase = "idle" | "leaving" | "pending" | "entering";
 
-const LEAVE_MS = 200;
-const STAGGER_MS = 220;
+// 2026-10-10: 200/220 → 150/70ms. With 220ms per item a spread took ~2s to settle and
+// the arrows stayed busy that whole time (PM feedback: page turns felt slow).
+const LEAVE_MS = 150;
+const STAGGER_MS = 70;
 /** Matches the entrance transition's own length (opacity 0.3s, transform 0.55s) plus a
     small buffer, so `busy` clears once the last staggered item has actually settled. */
 const ENTER_SETTLE_MS = 560;

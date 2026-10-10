@@ -47,9 +47,9 @@
    here, not on the base `.stage` rule — see the comment above. */
 .stage.departing {
   transition:
-    transform 420ms cubic-bezier(0.37, 0, 0.2, 1),
-    opacity 420ms cubic-bezier(0.37, 0, 0.2, 1),
-    filter 420ms cubic-bezier(0.37, 0, 0.2, 1);
+    transform 260ms cubic-bezier(0.37, 0, 0.2, 1),
+    opacity 260ms cubic-bezier(0.37, 0, 0.2, 1),
+    filter 260ms cubic-bezier(0.37, 0, 0.2, 1);
   transform: translateY(-3px);
   opacity: 0;
   filter: blur(0.5px);
@@ -70,8 +70,8 @@
    the paper takes over at the end. No transform here (it would fight the zoom). */
 .stage.departing.dive {
   transition:
-    opacity 820ms cubic-bezier(0.6, 0, 0.85, 0.35),
-    filter 820ms cubic-bezier(0.6, 0, 0.85, 0.35);
+    opacity 580ms cubic-bezier(0.6, 0, 0.85, 0.35),
+    filter 580ms cubic-bezier(0.6, 0, 0.85, 0.35);
   transform: none;
   opacity: 0;
   filter: blur(2px);
@@ -97,7 +97,7 @@
   pointer-events: none;
   background: #f7f3e9;
   opacity: 0;
-  animation: paperLightPulse 500ms cubic-bezier(0.37, 0, 0.2, 1) both;
+  animation: paperLightPulse 340ms cubic-bezier(0.37, 0, 0.2, 1) both;
 }
 
 /* A short, localized "breath" centred on the 420–500ms gap (the route switch itself
