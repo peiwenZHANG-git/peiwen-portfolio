@@ -107,7 +107,20 @@
   .rules { padding: 4px 18px; rotate: none; }
   .rules li { grid-template-columns: 34px minmax(0, 1fr); gap: 10px; }
   .numbers { grid-template-columns: 1fr; gap: 0; }
+  .diagram { padding: 18px 14px 14px; }
+  .chain { flex-direction: column; gap: 4px; }
+  .arrow { rotate: 90deg; }
 }
+.diagram { margin: 34px 0; padding: 26px 26px 18px; background: #fbf8f1; border: 1px solid var(--pw-rule); }
+.chain { display: flex; align-items: stretch; gap: 10px; }
+.node { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 14px 14px 12px; background: var(--pw-paper); border: 1.5px solid #9b9286; border-radius: 4px; text-align: center; }
+.nodeKey { border-color: #59664e; background: #eef1e6; }
+.nodeTitle { font: 400 22px/1.25 var(--hand); }
+.nodeSub { font: 400 13px/1.45 var(--body); color: var(--pw-secondary); }
+.arrow { flex: none; align-self: center; font: 26px/1 var(--hand); color: #796f63; }
+.root .human { max-width: none; margin: 16px 0 0; font: 21px/1.4 var(--hand); color: #685840; text-align: center; }
+.human span:not([data-l]) { display: inline-block; margin-right: 4px; }
+.diagram figcaption { margin-top: 14px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
 @media (max-width: 1000px) {
   .hero { gap: 30px; }
   .layout, .materials { grid-template-columns: 155px minmax(0, 1fr); gap: 32px; }

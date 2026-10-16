@@ -77,6 +77,17 @@ export default function AiWorkPage() {
               zh="一个能直接操作我的邮件、文件、应用和浏览器的 AI 智能体，确实很有用，但也很难让人信任。" /></p>
             <p className={styles.note}><L en={<><strong>The problem is not capability. It is control.</strong> The question is not what the agent can do, but whether the person stays in charge of it.</>}
               zh={<><strong>问题不在能力，而在控制感。</strong>关键不是它能做什么，而是人能不能一直掌控它。</>} /></p>
+            <figure className={styles.diagram} aria-label="Where AI-Work sits: between the AI and my mail, files, apps and browser, with me confirming or stopping">
+              <div className={styles.chain}>
+                <div className={styles.node}><span className={styles.nodeTitle}><L en="The AI" zh="AI" /></span><span className={styles.nodeSub}><L en="asks to do something" zh="提出要做的事" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}>AI-Work</span><span className={styles.nodeSub}><L en="42 MCP tools + the product rules" zh="42 个 MCP 工具 + 产品规则" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={styles.node}><span className={styles.nodeTitle}><L en="My computer" zh="我的电脑" /></span><span className={styles.nodeSub}><L en="mail · files · apps · browser" zh="邮件 · 文件 · 应用 · 浏览器" /></span></div>
+              </div>
+              <p className={styles.human}><span aria-hidden="true">↑</span> <L en="Me, at the computer: I confirm, or I stop it." zh="我在电脑前：确认，或者叫停。" /></p>
+              <figcaption><L en="Where AI-Work sits. Every action passes through its rules before it reaches my computer." zh="AI-Work 所处的位置：每个操作都要先过它的规则，才能碰到我的电脑。" /></figcaption>
+            </figure>
           </section>
 
           <section id="rules">
@@ -90,19 +101,35 @@ export default function AiWorkPage() {
               <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="Files are never overwritten or deleted." zh="文件不会被覆盖，也不会被删除。" /></p></div></li>
               <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses." zh="无法判断一个操作是否安全时，它拒绝执行。" /></p></div></li>
             </ol>
+            <figure className={styles.diagram} aria-label="Sending an email: the AI writes a draft, the draft is saved, and it is sent only if I confirm">
+              <div className={styles.chain}>
+                <div className={styles.node}><span className={styles.nodeTitle}><L en="1 · AI writes" zh="1 · AI 写" /></span><span className={styles.nodeSub}><L en="a draft from my instruction" zh="按我的指令写出草稿" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={styles.node}><span className={styles.nodeTitle}><L en="2 · Saved as a draft" zh="2 · 存为草稿" /></span><span className={styles.nodeSub}><L en="nothing has been sent" zh="什么都还没发出去" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}><L en="3 · I confirm" zh="3 · 我确认" /></span><span className={styles.nodeSub}><L en="only then is it sent" zh="这时才会发送" /></span></div>
+              </div>
+              <p className={styles.human}><span aria-hidden="true">↳</span> <L en="No confirmation, no email." zh="我不确认，邮件就不会发。" /></p>
+              <figcaption><L en="Rule 02 in practice: writing and sending are two separate steps." zh="规则 02 的实际流程：写和发是分开的两步。" /></figcaption>
+            </figure>
           </section>
 
           <section id="built">
             <p className={styles.eyebrow}><L en="03 / How it was built" zh="03 / 怎么做出来的" /></p>
             <h2><L en="I wrote the rules. AI tools wrote the code." zh="规则我来写，代码交给 AI。" /></h2>
-            <ol className={styles.flow} aria-label="How AI-Work was built">
-              <li><span>01</span><L en="Requirements and acceptance criteria" zh="需求和验收标准" /></li>
-              <li><span>02</span><L en="Remote-access threat model" zh="远程访问威胁模型" /></li>
-              <li><span>03</span><L en="Codex and Claude Code implement" zh="Codex 和 Claude Code 实现" /></li>
-              <li><span>04</span><L en="I review every change against the criteria" zh="我按验收标准逐项审查每一处改动" /></li>
-            </ol>
             <p><L en="I wrote the requirements, the acceptance criteria and the remote-access threat model. Codex and Claude Code worked as my development team, and I reviewed every change they made against the acceptance criteria."
               zh="需求、验收标准和远程访问威胁模型由我来写。Codex 和 Claude Code 是我的开发团队，它们做的每一处改动，我都按验收标准逐项审查。" /></p>
+            <figure className={styles.diagram} aria-label="The review loop: I write the criteria, the AI tools implement, I review each change; a change that does not meet the criteria goes back">
+              <div className={styles.chain}>
+                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}><L en="I write the criteria" zh="我写验收标准" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={styles.node}><span className={styles.nodeTitle}><L en="Codex · Claude Code" zh="Codex · Claude Code" /></span><span className={styles.nodeSub}><L en="implement" zh="实现" /></span></div>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}><L en="I review each change" zh="我审查每一处改动" /></span><span className={styles.nodeSub}><L en="against the criteria" zh="对照验收标准" /></span></div>
+              </div>
+              <p className={styles.human}><span aria-hidden="true">↺</span> <L en="Doesn’t meet the criteria? It goes back to the AI tools." zh="不符合标准？退回给 AI 工具重做。" /></p>
+              <figcaption><L en="How each change was accepted." zh="每一处改动是怎么被接受的。" /></figcaption>
+            </figure>
             <p className={styles.contribution}><L en={<><strong>My role:</strong> product definition, requirements, acceptance criteria, the threat model, and review. The code was written by AI coding tools.</>}
               zh={<><strong>我的角色：</strong>定义产品、写需求和验收标准、写威胁模型，以及审查。代码由 AI 编程工具编写。</>} /></p>
           </section>
