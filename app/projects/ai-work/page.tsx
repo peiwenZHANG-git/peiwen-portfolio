@@ -93,13 +93,14 @@ export default function AiWorkPage() {
           <section id="rules">
             <p className={styles.eyebrow}><L en="02 / Product rules" zh="02 / 产品规则" /></p>
             <h2><L en="Safety, written as product rules." zh="把安全要求写成产品规则。" /></h2>
-            <p><L en="I turned the safety requirements into four rules the product must follow."
-              zh="我把安全要求写成了产品必须遵守的四条规则。" /></p>
+            <p><L en="I turned the safety requirements into five rules the product must follow."
+              zh="我把安全要求写成了产品必须遵守的五条规则。" /></p>
             <ol className={styles.rules} aria-label="AI-Work product rules">
               <li><span>01</span><div><strong><L en="Read-only by default" zh="默认只读" /></strong><p><L en="By default, it can only read." zh="默认情况下，它只能读取。" /></p></div></li>
               <li><span>02</span><div><strong><L en="Draft first, then confirm" zh="先存草稿，再确认" /></strong><p><L en="An email is saved as a draft and sent only after I explicitly confirm it." zh="邮件先存为草稿，经过我明确的二次确认后才发送。" /></p></div></li>
               <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="Files are never overwritten or deleted." zh="文件不会被覆盖，也不会被删除。" /></p></div></li>
               <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses." zh="无法判断一个操作是否安全时，它拒绝执行。" /></p></div></li>
+              <li><span>05</span><div><strong><L en="The phone can ask, never decide" zh="手机只能提请求，不能做决定" /></strong><p><L en="A paired device can send a request, but only I, at the computer, can confirm it." zh="配对过的设备可以发来请求，但只有我在电脑前才能确认。" /></p></div></li>
             </ol>
             <figure className={styles.shot}>
               <a href="/assets/projects/ai-work/mail-search.webp" aria-label="Open full-size image: AI-Work cross-mailbox search">
@@ -141,6 +142,9 @@ export default function AiWorkPage() {
             </figure>
             <p className={styles.contribution}><L en={<><strong>My role:</strong> product definition, requirements, acceptance criteria, the threat model, and review. The code was written by AI coding tools.</>}
               zh={<><strong>我的角色：</strong>定义产品、写需求和验收标准、写威胁模型，以及审查。代码由 AI 编程工具编写。</>} /></p>
+            <h3><L en="The threat model behind rule 05" zh="规则 05 背后的威胁模型" /></h3>
+            <p><L en="Before any remote access was built, I wrote down who could misuse it: a malicious device on the same Wi-Fi, a paired device that can no longer be trusted, and other programs on the same computer. The conclusion became the rule: a remote device can request, but it can never confirm. Confirmation only exists on the computer itself."
+              zh="在做任何远程访问之前，我先写下了谁可能滥用它：同一个 Wi-Fi 里的恶意设备、已经配对但不再可信的设备，以及同一台电脑上的其他程序。结论就是规则 05：远程设备可以提请求，但永远不能确认，确认只存在于这台电脑本身。" /></p>
           </section>
 
           <section id="validation">
@@ -162,6 +166,13 @@ export default function AiWorkPage() {
             </div>
             <p className={styles.small}><L en="These checks verify that the features work and that the rules hold. They are not a user-experience evaluation."
               zh="这些检查验证的是功能能用、规则守得住，不是用户体验评估。" /></p>
+            <h3><L en="One scenario failed first" zh="有一个场景一开始没通过" /></h3>
+            <p><L en="Scenario 7 was “draft an email to my mentor”. Its first real attempts failed. In one of them the draft was actually created, but AI-Work could not verify it, so it reported an error instead of success. It did not retry on its own, and nothing was sent."
+              zh="场景 7 是“给导师起草一封邮件”。最开始的几次真实尝试都失败了。其中一次，草稿其实已经建好了，但 AI-Work 没法核实它，于是报告“出错”，而不是“成功”。它没有自己重试，也什么都没发出去。" /></p>
+            <p><L en="The causes were traced to how the request was built and how the new draft was checked. After the fixes, a read-only check confirmed exactly one matching draft, still unsent. Only then was the scenario accepted."
+              zh="原因最后查清楚了：一处出在请求的写法上，一处出在核对新草稿的方式上。修好之后，一次只读检查确认只有一封匹配的草稿，而且仍未发送。这时这个场景才算通过。" /></p>
+            <p className={styles.note}><L en={<><strong>What it taught me:</strong> when a system can’t verify what happened, saying “error” is the right answer, even if the action actually worked.</>}
+              zh={<><strong>它让我明白：</strong>当系统无法核实发生了什么时，报告“出错”才是对的，哪怕那个操作其实成功了。</>} /></p>
             <figure className={styles.shot}>
               <a href="/assets/projects/ai-work/system-status.webp" aria-label="Open full-size image: AI-Work status page">
                 <Image src="/assets/projects/ai-work/system-status.webp" width={1600} height={607}
@@ -188,6 +199,9 @@ export default function AiWorkPage() {
               <li><L en="This is a personal project. I did no user research or usability testing, so I make no claim that it works for other people." zh="这是个人项目，没有做用户研究或可用性测试，所以不声称它对其他用户有效。" /></li>
               <li><L en="The 9 acceptance scenarios and 694 tests verify function and safety. They are not a user-experience evaluation." zh="9 个验收场景和 694 项测试验证的是功能和安全，不是用户体验评估。" /></li>
               <li><L en="Daily use means my own 3 mailboxes." zh="日常使用指的是我自己的 3 个邮箱。" /></li>
+              <li><L en="Remote access only works on the computer itself for now. Access over the local network was designed but not built." zh="远程访问目前只能在这台电脑本机使用。通过局域网访问已经设计过，但还没有实现。" /></li>
+              <li><L en="A known timing issue in the remote-access code is recorded as a remaining risk and has not been fixed yet." zh="远程访问代码里有一个已知的时序问题，记录为残余风险，目前还没修。" /></li>
+              <li><L en="My school (Outlook) mailbox can’t save drafts automatically yet, because that needs approval from the university’s administrators." zh="我的学校邮箱（Outlook）暂时不能自动存草稿，因为这需要学校管理员批准。" /></li>
             </ul>
           </section>
           <footer className={styles.footer}><p><L en="AI-Work · Personal project · 2026" zh="AI-Work · 个人项目 · 2026" /></p><Link href="/projects"><L en="← Back to projects" zh="← 回到项目" /></Link><a href="#ai-work-content"><L en="Back to top ↑" zh="回到顶部 ↑" /></a></footer>
