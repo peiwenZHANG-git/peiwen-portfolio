@@ -11,8 +11,8 @@ export type Slot = { x: number; w: number; h: number; cx: number; dy: number; ro
 export const slots: Record<string, Slot> = {
   "decor:sprig": { x: 87, w: 66, h: 110, cx: 0.55, dy: -12, rot: 0 },
   // 2026-10-16: AI-Work takes the first spot; every featured slot after it moved +328.
-  "ai-work:ill": { x: 225, w: 161, h: 214, cx: 0.3, dy: 6, rot: -3 },
-  "ai-work:note": { x: 400, w: 139, h: 186, cx: 0.38, dy: 14, rot: 4 },
+  "ai-work:ill": { x: 213, w: 161, h: 214, cx: 0.3, dy: 6, rot: -3 },
+  "ai-work:note": { x: 380, w: 139, h: 186, cx: 0.38, dy: 14, rot: 4 },
   "reso:ill": { x: 553, w: 161, h: 214, cx: 0.3, dy: 4, rot: 10 },
   "reso:note": { x: 728, w: 139, h: 186, cx: 0.38, dy: 16, rot: 7 },
   "arm-swing:ill": { x: 881, w: 159, h: 200, cx: 0.28, dy: 19, rot: 4.5 },
