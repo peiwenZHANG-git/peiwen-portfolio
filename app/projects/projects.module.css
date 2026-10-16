@@ -20,6 +20,9 @@
 .titleNote { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .clip { position: absolute; z-index: 2; }
 .cover { position: absolute; }
+/* a card whose watercolor cover isn't drawn yet (AI-Work, 2026-10-16) */
+.coverPending { position: absolute; inset: 0; display: grid; place-items: center; padding: 12%; font: 400 15px/1.3 var(--hand); color: var(--ink-soft); text-align: center; opacity: .8; }
+.previewPending { position: absolute; inset: 0; display: grid; place-items: center; border: 1.5px dashed #b4a996; background: #efe9dc; font: 400 22px/1.4 var(--hand); color: var(--ink-soft); }
 .cover img { object-fit: contain; pointer-events: none; filter: brightness(.9) saturate(.86) contrast(.92) sepia(.1) blur(.6px); }
 .cardTitle { display: block; color: #54483c; opacity: 1; font-family: var(--hand); font-weight: 400; line-height: 1.15; text-wrap: pretty; }
 .coverSubtitle { display: block; font-family: var(--hand); font-weight: 400; line-height: 1.35; color: #4a4036; opacity: .92; text-wrap: balance; }
@@ -58,6 +61,7 @@
 .cover { inset: 8px; }
 .cardTitle { font-size: 19px; }
 .coverSubtitle { margin-top: 9px; font-size: 11px; }
+.pair[data-project="ai-work"] { --ar: .87; --wm: 36; --nh: 134px; --note-tilt: -1.2deg; --clip-a: -2deg; --clip-b: 2deg; --image-drop: 13px; --note-drop: 21px; }
 .pair[data-project="reso"] { --ar: .87; --wm: 36; --nh: 134px; --note-tilt: 1.2deg; --clip-a: 2deg; --clip-b: -2deg; --image-drop: 9px; --note-drop: 19px; }
 .pair[data-project="arm-swing"] { --ar: .86; --wm: 38; --nh: 146px; --note-tilt: -1.6deg; --clip-a: -1deg; --clip-b: 2deg; --image-drop: 27px; --note-drop: 33px; }
 .pair[data-project="tangram"] { --ar: .89; --wm: 34; --nh: 122px; --note-tilt: .8deg; --clip-a: 3deg; --clip-b: -1deg; --image-drop: 35px; --note-drop: 35px; }
@@ -97,7 +101,7 @@
 .smallerLine { z-index: 2; }
 .viewport { position: absolute; left: 0; width: 100%; pointer-events: auto; }
 /* Keep in sync with the rope origins in project-clothesline.tsx (165 and 520). */
-.clothesline[data-rope="featured"] { --tw: 2170; }
+.clothesline[data-rope="featured"] { --tw: 2498; } /* 2170 + 328 for AI-Work (2026-10-16) */
 .clothesline[data-rope="featured"] .viewport { top: calc(165 * var(--u)); height: calc(385 * var(--u)); -webkit-mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }
 .smallerLine { --tw: 2100; }
 .smallerLine .viewport { top: calc(520 * var(--u)); height: calc(280 * var(--u)); -webkit-mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }

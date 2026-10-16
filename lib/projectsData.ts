@@ -7,6 +7,7 @@ export type Project = {
   subtitleZh: string;
   descriptionZh: string;
   description: string;
+  /** preview-sheet image; empty = "Screenshot pending" placeholder */
   image: string;
   rotation: number;
   href: string;
@@ -18,6 +19,14 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  // Added 2026-10-16: first on the top rope (Peiwen's call). No watercolor cover or
+  // screenshot yet, so the card and the preview sheet show "pending" placeholders.
+  {
+    id: "ai-work", label: "AI-Work", coverSubtitle: "Keep the human in control", title: "AI-Work", subtitle: "AI agents · human-in-the-loop", rope: "featured", rotation: 1.2,
+    titleZh: "AI-Work", subtitleZh: "AI 智能体 · 人在回路中", descriptionZh: "一个运行在 Windows 本地的助手（42 个 MCP 工具），能操作我自己的邮件、文件、应用和浏览器，设计目标是让我始终掌控它。",
+    description: "A local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, designed so that I stay in control.",
+    href: "/projects/ai-work", image: "", imageAlt: "AI-Work screenshot pending",
+  },
   {
     id: "reso", cover: "/assets/projects/overview-covers/reso-cover.webp", label: "Reso", coverSubtitle: "Making tone visible", title: "Reso", subtitle: "caption design · evaluation", rope: "featured", rotation: -1.8,
     titleZh: "Reso", subtitleZh: "字幕设计 · 评估", descriptionZh: "通过原型、一次以听人作为代理用户的评估，以及基于证据的迭代，探索带情绪的字幕。",
