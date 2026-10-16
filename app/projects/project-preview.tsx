@@ -58,11 +58,16 @@ export default function ProjectPreview({ selection, onClose }: {
         <button type="button" className={styles.close} onClick={() => void close()} autoFocus><L en="Close ×" zh="关闭 ×" /></button>
         <p className={styles.previewLabel}><L en={`From the attic · ${project.subtitle}`} zh={`这是我做过的项目 · ${project.subtitleZh}`} /></p>
         <div className={styles.previewImage}>
-          <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 719px) 85vw, 780px" />
+          {project.image
+            ? <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 719px) 85vw, 780px" />
+            : <span className={styles.previewPending} role="img" aria-label={project.imageAlt}><L en="Screenshot pending" zh="截图待补" /></span>}
         </div>
         <h2 id="project-title"><L en={project.title} zh={project.titleZh} /></h2>
         <p><L en={project.description} zh={project.descriptionZh} /></p>
-        <Link className={styles.caseStudy} href={project.href}><L en="View case study →" zh="看完整项目 →" /></Link>
+        <div className={styles.previewLinks}>
+          <Link className={styles.caseStudy} href={project.href}><L en="View case study →" zh="看完整项目 →" /></Link>
+          {project.external && <a className={styles.caseStudy} href={project.external.href} target="_blank" rel="noopener noreferrer"><L en={project.external.label} zh={project.external.labelZh} /></a>}
+        </div>
       </article>
     </dialog>
   );

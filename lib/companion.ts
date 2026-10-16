@@ -129,7 +129,7 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
       "是我做的一个电脑上的 AI 助手，能帮我处理邮件、文件和浏览器，但每一步都在我的掌控里：默认只读，邮件先存草稿、我确认了才发，文件从不删除。",
       "我每天都在用它处理三个真实邮箱。",
     ],
-    actions: [{ kind: "link", href: "https://github.com/peiwenZHANG-git/AI-Work", label: "See it on GitHub →", labelZh: "在 GitHub 上看看 →" }],
+    actions: [{ kind: "link", href: "/projects/ai-work", label: "Read the case study →", labelZh: "看完整项目 →" }, { kind: "link", href: "https://github.com/peiwenZHANG-git/AI-Work", label: "See it on GitHub →", labelZh: "在 GitHub 上看看 →" }],
     keywords: ["ai-work", "ai work", "aiwork", "assistant", "mcp", "agent", "agents", "助手", "智能体"],
   },
   {
@@ -560,11 +560,11 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     hidden: true,
     keywords: ["project", "projects", "made", "built", "build", "work", "portfolio", "reso", "tangram", "maze", "music", "flight", "chess", "zoo", "作品", "项目"],
     answer: [
-      "Eight things so far: Reso, Arm-Swing VR, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
+      "Nine things so far: AI-Work, Reso, Arm-Swing VR, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
       "They’re all hanging in the attic. Come and have a look.",
     ],
     answerZh: [
-      "目前一共八个项目：Reso、Arm-Swing VR、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
+      "目前一共九个项目：AI-Work、Reso、Arm-Swing VR、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
       "它们都挂在阁楼里——来看看吧。",
     ],
     actions: [{ kind: "link", href: "/projects", label: "Go to Projects →", labelZh: "去项目页 →" }],

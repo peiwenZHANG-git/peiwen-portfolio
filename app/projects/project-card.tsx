@@ -29,6 +29,7 @@ export default function ProjectCard({ project, onOpen }: {
         aria-haspopup="dialog" aria-label={`Preview ${project.title} from illustration${project.cover ? "" : " (cover pending)"}`}
         onClick={(event) => onOpen(project, event.currentTarget)}>
         <ProjectClip />
+        {!project.cover && <span className={styles.coverPending} aria-hidden="true">cover coming soon</span>}
         {project.cover && <span className={styles.cover} aria-hidden="true">
           <Image src={project.cover} alt="" fill sizes={project.rope === "featured" ? "(max-width: 719px) 58vw, 180px" : "(max-width: 719px) 46vw, 120px"} draggable={false} />
         </span>}
