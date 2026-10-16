@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { bodyFont, handFont } from "../../about/fonts";
 import shell from "../shell.module.css";
@@ -13,20 +13,11 @@ export const metadata: Metadata = {
 };
 
 /* Added 2026-10-16. Same structure and styles as the Reso case study (reso.module.css
-   was copied, plus .pending and .rules). Only facts Peiwen supplied are used: no
-   invented metrics, quotes, screenshots or features. Images are clearly marked
-   placeholders until she provides real screenshots. */
+   was copied, plus .heroShot and .rules). Only facts Peiwen supplied are used: no
+   invented metrics, quotes or features. The one screenshot is Peiwen's own capture of
+   the AI-Work mail page (her address blurred). */
 
 const GITHUB = "https://github.com/peiwenZHANG-git/AI-Work";
-
-function Pending({ children }: { children: ReactNode }) {
-  return <figure className={styles.pendingFigure}>
-    <div className={styles.pending} role="img" aria-label="Screenshot pending">
-      <span><L en="Screenshot pending" zh="截图待补" /></span>
-    </div>
-    <figcaption>{children}</figcaption>
-  </figure>;
-}
 
 export default function AiWorkPage() {
   return <div className={`${shell.shell} ${handFont.variable} ${bodyFont.variable} ${styles.root}`} tabIndex={-1}>
@@ -43,7 +34,15 @@ export default function AiWorkPage() {
           <p className={styles.annotation}><L en="More capable is not the same as more trustworthy." zh="更强，不等于更可信。" /></p>
           <a className={styles.jump} href="#rules"><L en="Read the product rules ↓" zh="直接看产品规则 ↓" /></a>
         </div>
-        <Pending><L en="A screenshot or short demo of AI-Work will go here." zh="这里之后会放 AI-Work 的截图或简短演示。" /></Pending>
+        <figure className={styles.heroShot}>
+          <a href="/assets/projects/ai-work/draft-preview.webp" aria-label="Open full-size image: AI-Work mail page with a generated draft">
+            <Image src="/assets/projects/ai-work/draft-preview.webp" width={1600} height={834} priority
+              alt="AI-Work’s mail page: on the left, the instruction for the email; on the right, the generated draft with separate buttons to save it as a draft or to save and prepare to send"
+              sizes="(max-width: 700px) 92vw, 640px" />
+          </a>
+          <figcaption><L en="AI-Work’s mail page. I describe the email, it writes a draft, and saving and sending are separate steps. My email address is blurred."
+            zh="AI-Work 的邮件页面：我描述想写的邮件，它生成草稿；保存和发送是分开的两步。截图里我的邮箱地址做了模糊处理。" /></figcaption>
+        </figure>
       </header>
 
       <section className={styles.overview} aria-labelledby="overview">
@@ -91,7 +90,6 @@ export default function AiWorkPage() {
               <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="Files are never overwritten or deleted." zh="文件不会被覆盖，也不会被删除。" /></p></div></li>
               <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses." zh="无法判断一个操作是否安全时，它拒绝执行。" /></p></div></li>
             </ol>
-            <Pending><L en="A screenshot of the draft-then-confirm step will go here." zh="这里之后会放“先存草稿、再确认发送”这一步的截图。" /></Pending>
           </section>
 
           <section id="built">

@@ -88,6 +88,10 @@
 .overview a { font: 19px/1.5 var(--hand); text-decoration-thickness: 1px; }
 .pendingFigure { min-width: 0; margin: 32px 0; }
 .hero .pendingFigure { margin: 0; }
+.heroShot { min-width: 0; margin: 0; }
+.heroShot a { display: block; }
+.heroShot img { display: block; width: 100%; height: auto; border: 1px solid var(--pw-rule); box-shadow: 0 4px 16px rgb(91 67 48 / 10%); }
+.heroShot figcaption { margin-top: 12px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
 .pending { display: grid; place-items: center; aspect-ratio: 16 / 10; border: 1.5px dashed #b4a996; background: #efe9dc; }
 .pending span:not([data-l]) { font: 24px/1.4 var(--hand); color: var(--pw-secondary); }
 .pendingFigure figcaption { margin-top: 12px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
