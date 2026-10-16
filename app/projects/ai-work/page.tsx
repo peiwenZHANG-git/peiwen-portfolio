@@ -101,6 +101,15 @@ export default function AiWorkPage() {
               <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="Files are never overwritten or deleted." zh="文件不会被覆盖，也不会被删除。" /></p></div></li>
               <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses." zh="无法判断一个操作是否安全时，它拒绝执行。" /></p></div></li>
             </ol>
+            <figure className={styles.shot}>
+              <a href="/assets/projects/ai-work/mail-search.webp" aria-label="Open full-size image: AI-Work cross-mailbox search">
+                <Image src="/assets/projects/ai-work/mail-search.webp" width={1600} height={647}
+                  alt="AI-Work’s cross-mailbox search, marked read-only and metadata only, with the option to search the local summary without opening the mailbox websites, showing two school notices"
+                  sizes="(max-width: 700px) 92vw, 850px" />
+              </a>
+              <figcaption><L en="Rule 01 in practice: searching across my mailboxes is read-only. It searches the local summary’s metadata and does not open the mailbox websites."
+                zh="规则 01 的实际样子：跨邮箱搜索是只读的，只搜本地摘要里的元数据，不打开邮箱网站。" /></figcaption>
+            </figure>
             <figure className={styles.diagram} aria-label="Sending an email: the AI writes a draft, the draft is saved, and it is sent only if I confirm">
               <div className={styles.chain}>
                 <div className={styles.node}><span className={styles.nodeTitle}><L en="1 · AI writes" zh="1 · AI 写" /></span><span className={styles.nodeSub}><L en="a draft from my instruction" zh="按我的指令写出草稿" /></span></div>
@@ -143,8 +152,8 @@ export default function AiWorkPage() {
                 <p className={styles.resultLabel}><L en="real-world acceptance scenarios" zh="个真实场景验收" /></p>
               </div>
               <div className={styles.resultInsight}>
-                <strong>631</strong>
-                <p className={styles.resultLabel}><L en="automated tests" zh="项自动化测试" /></p>
+                <strong>694</strong>
+                <p className={styles.resultLabel}><L en="automated tests, all passing" zh="项自动化测试，全部通过" /></p>
               </div>
               <div className={styles.resultInsight}>
                 <strong>3</strong>
@@ -153,6 +162,15 @@ export default function AiWorkPage() {
             </div>
             <p className={styles.small}><L en="These checks verify that the features work and that the rules hold. They are not a user-experience evaluation."
               zh="这些检查验证的是功能能用、规则守得住，不是用户体验评估。" /></p>
+            <figure className={styles.shot}>
+              <a href="/assets/projects/ai-work/system-status.webp" aria-label="Open full-size image: AI-Work status page">
+                <Image src="/assets/projects/ai-work/system-status.webp" width={1600} height={607}
+                  alt="AI-Work’s status page with six checks: MCP, credentials and the mail assistant pass, the daily digest fails, and the browser and Remote checks show unknown"
+                  sizes="(max-width: 700px) 92vw, 850px" />
+              </a>
+              <figcaption><L en="AI-Work’s status page. Each check reports PASS, FAIL or UNKNOWN. When a check can’t be run safely, it says UNKNOWN instead of guessing. The FAIL is real: one mailbox couldn’t be read that day."
+                zh="AI-Work 的系统状态页：每项检查显示 PASS、FAIL 或 UNKNOWN。没法安全检测的项目就显示 UNKNOWN，不去猜。图里的 FAIL 是真实情况：那天有一个邮箱没读取成功。" /></figcaption>
+            </figure>
           </section>
 
           <section id="reflection">
@@ -168,7 +186,7 @@ export default function AiWorkPage() {
             <h2><L en="Where the evidence stops" zh="证据到哪里为止" /></h2>
             <ul>
               <li><L en="This is a personal project. I did no user research or usability testing, so I make no claim that it works for other people." zh="这是个人项目，没有做用户研究或可用性测试，所以不声称它对其他用户有效。" /></li>
-              <li><L en="The 9 acceptance scenarios and 631 tests verify function and safety. They are not a user-experience evaluation." zh="9 个验收场景和 631 项测试验证的是功能和安全，不是用户体验评估。" /></li>
+              <li><L en="The 9 acceptance scenarios and 694 tests verify function and safety. They are not a user-experience evaluation." zh="9 个验收场景和 694 项测试验证的是功能和安全，不是用户体验评估。" /></li>
               <li><L en="Daily use means my own 3 mailboxes." zh="日常使用指的是我自己的 3 个邮箱。" /></li>
             </ul>
           </section>

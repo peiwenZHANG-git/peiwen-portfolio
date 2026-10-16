@@ -89,6 +89,10 @@
 .pendingFigure { min-width: 0; margin: 32px 0; }
 .hero .pendingFigure { margin: 0; }
 .heroShot { min-width: 0; margin: 0; }
+.shot { min-width: 0; margin: 30px 0 0; }
+.shot a { display: block; }
+.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--pw-rule); }
+.shot figcaption { margin-top: 12px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
 .heroShot a { display: block; }
 .heroShot img { display: block; width: 100%; height: auto; border: 1px solid var(--pw-rule); box-shadow: 0 4px 16px rgb(91 67 48 / 10%); }
 .heroShot figcaption { margin-top: 12px; font: 400 14px/1.65 var(--body); color: var(--pw-secondary); }
