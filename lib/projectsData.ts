@@ -16,6 +16,8 @@ export type Project = {
   label: string;
   coverSubtitle: string;
   cover?: string;
+  /** an extra outside link in the preview sheet, next to "View case study" */
+  external?: { href: string; label: string; labelZh: string };
 };
 
 export const projects: Project[] = [
@@ -26,6 +28,7 @@ export const projects: Project[] = [
     titleZh: "AI-Work", subtitleZh: "AI 智能体 · 人在回路中", descriptionZh: "一个运行在 Windows 本地的助手（42 个 MCP 工具），能操作我自己的邮件、文件、应用和浏览器，设计目标是让我始终掌控它。",
     description: "A local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, designed so that I stay in control.",
     href: "/projects/ai-work", image: "", imageAlt: "AI-Work screenshot pending",
+    external: { href: "https://github.com/peiwenZHANG-git/AI-Work", label: "GitHub ↗", labelZh: "GitHub ↗" },
   },
   {
     id: "reso", cover: "/assets/projects/overview-covers/reso-cover.webp", label: "Reso", coverSubtitle: "Making tone visible", title: "Reso", subtitle: "caption design · evaluation", rope: "featured", rotation: -1.8,

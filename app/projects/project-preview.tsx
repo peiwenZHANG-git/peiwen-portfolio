@@ -64,7 +64,10 @@ export default function ProjectPreview({ selection, onClose }: {
         </div>
         <h2 id="project-title"><L en={project.title} zh={project.titleZh} /></h2>
         <p><L en={project.description} zh={project.descriptionZh} /></p>
-        <Link className={styles.caseStudy} href={project.href}><L en="View case study →" zh="看完整项目 →" /></Link>
+        <div className={styles.previewLinks}>
+          <Link className={styles.caseStudy} href={project.href}><L en="View case study →" zh="看完整项目 →" /></Link>
+          {project.external && <a className={styles.caseStudy} href={project.external.href} target="_blank" rel="noopener noreferrer"><L en={project.external.label} zh={project.external.labelZh} /></a>}
+        </div>
       </article>
     </dialog>
   );

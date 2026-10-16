@@ -43,6 +43,7 @@
 .preview h2 { margin: 0 0 12px; font: 400 clamp(32px, 4vw, 48px)/1.1 var(--hand); }
 .preview p { line-height: 1.6; }
 .caseStudy { font: 400 23px var(--hand); color: var(--ink-soft); }
+.previewLinks { display: flex; flex-wrap: wrap; gap: 6px 28px; }
 
 /* ---------- Mobile (below 720px): the room scrolls as before ---------- */
 @media (max-width: 719px) {
