@@ -7,9 +7,9 @@ import styles from "./music-toggle.module.css";
 
 /**
  * The little record in the header (2026-09-25): it spins while the sound is on, and a
- * click opens a small paper panel — play / pause and the playlist. Music is on by
- * default; pausing stops the music only — the snow outside and the little sounds
- * (page turns, footsteps, the cat) stay on.
+ * click opens a small paper panel — play / pause and the playlist. Sound is on by
+ * default; pausing turns ALL of it off — the music, the snow outside and the little
+ * sounds (page turns, footsteps, the cat) — and play brings it all back.
  * State lives in components/music-store.ts.
  *
  * Used by components/site-header.tsx on every page.
@@ -52,7 +52,7 @@ export function MusicToggle({ className }: { className?: string }) {
         className={styles.toggle}
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        aria-label={sound.playing ? `Music: ${current.title} is playing. Open the music panel` : "Music is paused. Open the music panel"}
+        aria-label={sound.playing ? `Music: ${current.title} is playing. Open the music panel` : "Sound is off. Open the music panel"}
         title={sound.playing ? `♪ ${current.title}` : "Music & sounds"}
         onClick={() => setOpen((v) => !v)}
         data-playing={sound.playing || undefined}
@@ -82,7 +82,7 @@ export function MusicToggle({ className }: { className?: string }) {
               type="button"
               className={styles.play}
               onClick={toggleMusic}
-              aria-label={sound.playing ? "Pause the music" : "Play the music"}
+              aria-label={sound.playing ? "Turn all sound off" : "Turn the sound and music on"}
             >
               {sound.playing ? (
                 <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -96,7 +96,7 @@ export function MusicToggle({ className }: { className?: string }) {
               )}
             </button>
             <p className={styles.now}>
-              <span className={styles.label}>{sound.playing ? "now playing" : "music paused"}</span>
+              <span className={styles.label}>{sound.playing ? "now playing" : "sound off"}</span>
               <span className={styles.nowTitle}>{current.title}</span>
             </p>
           </div>
