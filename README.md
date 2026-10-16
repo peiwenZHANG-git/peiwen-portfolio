@@ -19,7 +19,7 @@ I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI pro
 
 ### Projects
 
-- **AI-Work:** a local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, built around four product rules so that I stay in control
+- **AI-Work:** a local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, built around five product rules so that I stay in control
 - **Reso:** emotional captions, with prototypes, an evaluation with hearing participants as proxy users, and iterations based on the results
 - **Arm-Swing VR Locomotion:** controller swing and headset direction mapped to continuous 3D travel
 - **Tangram:** a modular Tangram set, built through connector experiments and 3D printing
