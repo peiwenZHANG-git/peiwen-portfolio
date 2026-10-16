@@ -52,6 +52,8 @@ if (typeof window !== "undefined") {
   (window as SoundWindow).__pwSoundElements = [];
 }
 const fades = new Map<HTMLAudioElement, number>();
+/** timer that finishes a fade if animation frames stall (hidden tab) */
+const backstops = new Map<HTMLAudioElement, number>();
 let armed: (() => void) | null = null;
 const listeners = new Set<() => void>();
 
@@ -104,6 +106,9 @@ function fadeTo(el: HTMLAudioElement, target: number, done?: () => void) {
   const running = fades.get(el);
   if (running !== undefined) cancelAnimationFrame(running);
   fades.delete(el);
+  const backstop = backstops.get(el);
+  if (backstop !== undefined) window.clearTimeout(backstop);
+  backstops.delete(el);
   if (reducedMotion()) {
     el.volume = target;
     done?.();
@@ -111,17 +116,29 @@ function fadeTo(el: HTMLAudioElement, target: number, done?: () => void) {
   }
   const from = el.volume;
   const start = performance.now();
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    const frame = fades.get(el);
+    if (frame !== undefined) cancelAnimationFrame(frame);
+    fades.delete(el);
+    const timer = backstops.get(el);
+    if (timer !== undefined) window.clearTimeout(timer);
+    backstops.delete(el);
+    el.volume = target;
+    done?.();
+  };
   const step = (now: number) => {
     const k = Math.min(1, (now - start) / FADE_MS);
     el.volume = from + (target - from) * k;
-    if (k < 1) {
-      fades.set(el, requestAnimationFrame(step));
-    } else {
-      fades.delete(el);
-      done?.();
-    }
+    if (k < 1) fades.set(el, requestAnimationFrame(step));
+    else finish();
   };
   fades.set(el, requestAnimationFrame(step));
+  // Browsers freeze animation frames in a hidden tab; a timer still lands, so the
+  // fade always finishes (and a pause always pauses) even if no frame ever comes.
+  backstops.set(el, window.setTimeout(finish, FADE_MS + 150));
 }
 
 function disarm() {
@@ -288,6 +305,8 @@ export function resumeStoredChoice() {
 export function teardownMusic() {
   for (const frame of fades.values()) cancelAnimationFrame(frame);
   fades.clear();
+  for (const timer of backstops.values()) window.clearTimeout(timer);
+  backstops.clear();
   disarm();
 }
 

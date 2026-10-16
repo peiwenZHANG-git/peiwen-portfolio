@@ -154,6 +154,9 @@
   labels changed from "music paused" to "sound off". Project-page demo videos keep their
   own native controls and are not affected.
 - Files: `components/music-store.ts`, `components/music-toggle.tsx`, `components/site-audio.tsx`.
+- Follow-up (same day): fades now have a timer backstop, because browsers freeze
+  animation frames in hidden tabs and the off switch could leave the audio at volume 0
+  but never paused. Verified on the Vercel preview that off pauses music + snow.
 - Verified: strict TypeScript check of the audio store and a mocked-audio simulation
   (on → 2 sources, pause → 0, effect while paused → none, play → 2). Unverified in this
   session: `npm run lint` / `typecheck` / `build` (the cloud workspace could not reach the
