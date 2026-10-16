@@ -49,8 +49,8 @@ export default function AiWorkPage() {
         <h2 id="overview"><L en="At a glance" zh="项目概览" /></h2>
         <dl className={styles.facts}>
           <div><dt><L en="Context" zh="背景" /></dt><dd><L en={<>Personal project<br />Aug – Sep 2026</>} zh={<>个人项目<br />2026 年 8 月 – 9 月</>} /></dd></div>
-          <div><dt><L en="My role" zh="我的角色" /></dt><dd><L en="Defined the product, wrote the requirements and acceptance criteria, wrote the remote-access threat model, directed AI coding tools (Codex, Claude Code) to implement it, and reviewed every change against the acceptance criteria."
-            zh="定义产品，写需求和验收标准，写远程访问威胁模型，指挥 AI 编程工具（Codex、Claude Code）实现，并按验收标准逐项审查每一处改动。" /></dd></div>
+          <div><dt><L en="My role" zh="我的角色" /></dt><dd><L en="Defined the goals, scope and safety boundaries. Set the acceptance criteria and worked out the remote-access threat model together with Codex. Approved the scope one stage at a time, tested every iteration on my own computer, and decided what to accept. Codex and Claude Code wrote the code."
+            zh="定义目标、范围和安全边界；制定验收标准，并和 Codex 一起完成远程访问威胁模型；分阶段批准范围，在自己的电脑上测试每一轮迭代，决定接受什么。代码由 Codex 和 Claude Code 编写。" /></dd></div>
           <div><dt><L en="Links" zh="链接" /></dt><dd><a href={GITHUB} target="_blank" rel="noopener noreferrer"><L en="Code on GitHub ↗" zh="GitHub 上的代码 ↗" /></a></dd></div>
         </dl>
         <p className={styles.small}><L en="A personal project, not a team or commercial product. It has not been released, and I am its only user."
@@ -98,8 +98,8 @@ export default function AiWorkPage() {
             <ol className={styles.rules} aria-label="AI-Work product rules">
               <li><span>01</span><div><strong><L en="Read-only by default" zh="默认只读" /></strong><p><L en="By default, it can only read." zh="默认情况下，它只能读取。" /></p></div></li>
               <li><span>02</span><div><strong><L en="Draft first, then confirm" zh="先存草稿，再确认" /></strong><p><L en="An email is saved as a draft and sent only after I explicitly confirm it." zh="邮件先存为草稿，经过我明确的二次确认后才发送。" /></p></div></li>
-              <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="Files are never overwritten or deleted." zh="文件不会被覆盖，也不会被删除。" /></p></div></li>
-              <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses." zh="无法判断一个操作是否安全时，它拒绝执行。" /></p></div></li>
+              <li><span>03</span><div><strong><L en="No overwrite, no delete" zh="不覆盖，不删除" /></strong><p><L en="The file tools stop if the target already exists, and they have no delete." zh="文件工具遇到同名目标就停下，而且没有删除功能。" /></p></div></li>
+              <li><span>04</span><div><strong><L en="Fail closed" zh="拿不准就拒绝" /></strong><p><L en="When it cannot tell whether an action is safe, it refuses. A failed read is reported as a failure, never as “no new mail”." zh="无法判断一个操作是否安全时，它拒绝执行。读取失败就报告失败，绝不显示成“没有新邮件”。" /></p></div></li>
               <li><span>05</span><div><strong><L en="The phone can ask, never decide" zh="手机只能提请求，不能做决定" /></strong><p><L en="A paired device can send a request, but only I, at the computer, can confirm it." zh="配对过的设备可以发来请求，但只有我在电脑前才能确认。" /></p></div></li>
             </ol>
             <figure className={styles.shot}>
@@ -126,12 +126,12 @@ export default function AiWorkPage() {
 
           <section id="built">
             <p className={styles.eyebrow}><L en="03 / How it was built" zh="03 / 怎么做出来的" /></p>
-            <h2><L en="I wrote the rules. AI tools wrote the code." zh="规则我来写，代码交给 AI。" /></h2>
-            <p><L en="I wrote the requirements, the acceptance criteria and the remote-access threat model. Codex and Claude Code worked as my development team, and I reviewed every change they made against the acceptance criteria."
-              zh="需求、验收标准和远程访问威胁模型由我来写。Codex 和 Claude Code 是我的开发团队，它们做的每一处改动，我都按验收标准逐项审查。" /></p>
-            <figure className={styles.diagram} aria-label="The review loop: I write the criteria, the AI tools implement, I review each change; a change that does not meet the criteria goes back">
+            <h2><L en="I set the rules. AI tools wrote the code." zh="规则我来定，代码交给 AI。" /></h2>
+            <p><L en="I set the goals, the scope and the acceptance criteria, and worked out the remote-access threat model together with Codex. Codex and Claude Code worked as my development team: they implemented, diagnosed and tested. I approved the scope one stage at a time, tested each iteration on my own computer, and decided whether to accept each change."
+              zh="目标、范围和验收标准由我来定，远程访问威胁模型是我和 Codex 一起完成的。Codex 和 Claude Code 是我的开发团队，负责实现、排查和测试。我分阶段批准范围，在自己的电脑上测试每一轮迭代，决定每一处改动接不接受。" /></p>
+            <figure className={styles.diagram} aria-label="The review loop: I set the criteria, the AI tools implement, I review each change; a change that does not meet the criteria goes back">
               <div className={styles.chain}>
-                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}><L en="I write the criteria" zh="我写验收标准" /></span></div>
+                <div className={`${styles.node} ${styles.nodeKey}`}><span className={styles.nodeTitle}><L en="I set the criteria" zh="我定验收标准" /></span></div>
                 <span className={styles.arrow} aria-hidden="true">→</span>
                 <div className={styles.node}><span className={styles.nodeTitle}><L en="Codex · Claude Code" zh="Codex · Claude Code" /></span><span className={styles.nodeSub}><L en="implement" zh="实现" /></span></div>
                 <span className={styles.arrow} aria-hidden="true">→</span>
@@ -140,11 +140,11 @@ export default function AiWorkPage() {
               <p className={styles.human}><span aria-hidden="true">↺</span> <L en="Doesn’t meet the criteria? It goes back to the AI tools." zh="不符合标准？退回给 AI 工具重做。" /></p>
               <figcaption><L en="How each change was accepted." zh="每一处改动是怎么被接受的。" /></figcaption>
             </figure>
-            <p className={styles.contribution}><L en={<><strong>My role:</strong> product definition, requirements, acceptance criteria, the threat model, and review. The code was written by AI coding tools.</>}
-              zh={<><strong>我的角色：</strong>定义产品、写需求和验收标准、写威胁模型，以及审查。代码由 AI 编程工具编写。</>} /></p>
+            <p className={styles.contribution}><L en={<><strong>My role:</strong> product definition, scope, acceptance criteria, approvals and acceptance testing on my own computer. The code, and drafts of some documents, were written with AI coding tools.</>}
+              zh={<><strong>我的角色：</strong>定义产品、划定范围、制定验收标准、批准每个阶段，并在自己的电脑上做验收测试。代码和部分文档的初稿由 AI 编程工具完成。</>} /></p>
             <h3><L en="The threat model behind rule 05" zh="规则 05 背后的威胁模型" /></h3>
-            <p><L en="Before any remote access was built, I wrote down who could misuse it: a malicious device on the same Wi-Fi, a paired device that can no longer be trusted, and other programs on the same computer. The conclusion became the rule: a remote device can request, but it can never confirm. Confirmation only exists on the computer itself."
-              zh="在做任何远程访问之前，我先写下了谁可能滥用它：同一个 Wi-Fi 里的恶意设备、已经配对但不再可信的设备，以及同一台电脑上的其他程序。结论就是规则 05：远程设备可以提请求，但永远不能确认，确认只存在于这台电脑本身。" /></p>
+            <p><L en="Before any remote access was built, Codex and I wrote a threat model listing who could misuse it: a malicious device on the same Wi-Fi, a paired device that can no longer be trusted, and other programs on the same computer. The conclusion became the rule: a remote device can request, but it can never confirm. Confirmation only exists on the computer itself."
+              zh="在做任何远程访问之前，我和 Codex 先写了一份威胁模型，列出谁可能滥用它：同一个 Wi-Fi 里的恶意设备、已经配对但不再可信的设备，以及同一台电脑上的其他程序。结论就是规则 05：远程设备可以提请求，但永远不能确认，确认只存在于这台电脑本身。" /></p>
           </section>
 
           <section id="validation">
@@ -167,10 +167,10 @@ export default function AiWorkPage() {
             <p className={styles.small}><L en="These checks verify that the features work and that the rules hold. They are not a user-experience evaluation."
               zh="这些检查验证的是功能能用、规则守得住，不是用户体验评估。" /></p>
             <h3><L en="One scenario failed first" zh="有一个场景一开始没通过" /></h3>
-            <p><L en="Scenario 7 was “draft an email to my mentor”. Its first real attempts failed. In one of them the draft was actually created, but AI-Work could not verify it, so it reported an error instead of success. It did not retry on its own, and nothing was sent."
-              zh="场景 7 是“给导师起草一封邮件”。最开始的几次真实尝试都失败了。其中一次，草稿其实已经建好了，但 AI-Work 没法核实它，于是报告“出错”，而不是“成功”。它没有自己重试，也什么都没发出去。" /></p>
-            <p><L en="The causes were traced to how the request was built and how the new draft was checked. After the fixes, a read-only check confirmed exactly one matching draft, still unsent. Only then was the scenario accepted."
-              zh="原因最后查清楚了：一处出在请求的写法上，一处出在核对新草稿的方式上。修好之后，一次只读检查确认只有一封匹配的草稿，而且仍未发送。这时这个场景才算通过。" /></p>
+            <p><L en="Scenario 7 was “draft an email to my mentor”. Its first real attempts failed. In one of them the draft was actually created, but AI-Work could not verify it, so it reported an error instead of success. It did not retry on its own, did not create a second draft, and nothing was sent."
+              zh="场景 7 是“给导师起草一封邮件”。最开始的几次真实尝试都失败了。其中一次，草稿其实已经建好了，但 AI-Work 没法核实它，于是报告“出错”，而不是“成功”。它没有自己重试，没有再建第二封，也什么都没发出去。" /></p>
+            <p><L en="I kept the scenario marked as failed, even though the draft existed, because AI-Work couldn’t give back a reference I could verify. The causes were traced to how the request was built and how the new draft was checked. After the fixes, a read-only check confirmed exactly one matching draft, still unsent. Only then did I accept the scenario."
+              zh="虽然草稿已经存在，我还是把这个场景记为“未通过”，因为 AI-Work 拿不出一个能核实的草稿凭证。原因最后查清楚了：一处出在请求的写法上，一处出在核对新草稿的方式上。修好之后，一次只读检查确认只有一封匹配的草稿，而且仍未发送。这时我才接受这个场景。" /></p>
             <p className={styles.note}><L en={<><strong>What it taught me:</strong> when a system can’t verify what happened, saying “error” is the right answer, even if the action actually worked.</>}
               zh={<><strong>它让我明白：</strong>当系统无法核实发生了什么时，报告“出错”才是对的，哪怕那个操作其实成功了。</>} /></p>
             <figure className={styles.shot}>
