@@ -21,10 +21,10 @@ export type Project = {
 };
 
 export const projects: Project[] = [
-  // Added 2026-10-16: first on the top rope (Peiwen's call). No watercolor cover yet,
-  // so the card shows a "cover coming soon" placeholder.
+  // Added 2026-10-16: first on the top rope (Peiwen's call). Cover: Peiwen-supplied
+  // watercolor (1122 x 1402, same as the others).
   {
-    id: "ai-work", label: "AI-Work", coverSubtitle: "Keep the human in control", title: "AI-Work", subtitle: "AI agents · human-in-the-loop", rope: "featured", rotation: 1.2,
+    id: "ai-work", cover: "/assets/projects/overview-covers/ai-work-cover.webp", label: "AI-Work", coverSubtitle: "Keep the human in control", title: "AI-Work", subtitle: "AI agents · human-in-the-loop", rope: "featured", rotation: 1.2,
     titleZh: "AI-Work", subtitleZh: "AI 智能体 · 人在回路中", descriptionZh: "一个运行在 Windows 本地的助手（42 个 MCP 工具），能操作我自己的邮件、文件、应用和浏览器，设计目标是让我始终掌控它。",
     description: "A local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, designed so that I stay in control.",
     href: "/projects/ai-work", image: "/assets/projects/ai-work/draft-preview.webp", imageAlt: "AI-Work mail page with a generated draft and separate save and send buttons",
