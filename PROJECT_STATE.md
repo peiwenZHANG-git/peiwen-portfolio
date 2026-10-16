@@ -144,6 +144,21 @@
   844×390 that arrows are mid-screen and dots at the bottom without scrolling.
 - lint, typecheck and build pass.
 
+## One switch for all sound — 2026-10-16
+
+- Implemented: the record panel's play / pause in the header now controls ALL site sound
+  (Peiwen's request). Pause fades out the music, the snow loop and any effect still
+  sounding (page turns, footsteps, the cat), and `playEffect` stays silent while paused;
+  play brings music and snow back. The pause is remembered (`pw-sound` in localStorage),
+  so a visitor who turned sound off gets a silent site on the next visit. Panel copy and
+  labels changed from "music paused" to "sound off". Project-page demo videos keep their
+  own native controls and are not affected.
+- Files: `components/music-store.ts`, `components/music-toggle.tsx`, `components/site-audio.tsx`.
+- Verified: strict TypeScript check of the audio store and a mocked-audio simulation
+  (on → 2 sources, pause → 0, effect while paused → none, play → 2). Unverified in this
+  session: `npm run lint` / `typecheck` / `build` (the cloud workspace could not reach the
+  npm registry) and a real-browser listen on desktop / mobile.
+
 ## Historical goal — Experience v2 (`/experience`)
 
 - **User-approved and merged into `visual-direction-v2` (2026-09-16, merge commit

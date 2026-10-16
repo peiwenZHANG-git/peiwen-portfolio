@@ -15,10 +15,11 @@ import { EFFECTS, SNOW, TRACKS, trackSources, type EffectName } from "./sound-li
  * The controls live in the record panel in the site header (components/music-toggle).
  * Both sides read this module through useSyncExternalStore.
  *
- * Rules (Peiwen, 2026-09-25): sound is ON by default — music, snow and effects.
- * The record panel's play / pause is for the MUSIC only: the snow outside and the
- * little sounds (pages, footsteps, the cat) always stay on. A music pause is
- * remembered in localStorage.
+ * Rules (Peiwen, 2026-09-25, revised 2026-10-16): sound is ON by default — music,
+ * snow and effects. The record panel's play / pause is ONE switch for ALL of it:
+ * pausing silences the music, the snow outside and the little sounds (pages,
+ * footsteps, the cat); playing brings them all back. The pause is remembered in
+ * localStorage, so a visitor who turned the sound off gets a silent site next time.
  * Browsers refuse to autoplay audible media, so on a first visit the sound starts with
  * the visitor's first click or key press (on Home that is opening the window).
  * Volumes are low and fade in/out, unless the visitor asked for reduced motion.
@@ -139,7 +140,8 @@ function playOrWait(el: HTMLAudioElement, volume: number) {
       if (armed) return;
       const onGesture = () => {
         disarm();
-        if (state.playing && music) playOrWait(music, MUSIC_VOLUME);
+        if (!state.playing) return;
+        if (music) playOrWait(music, MUSIC_VOLUME);
         if (snow && snow.paused) playOrWait(snow, SNOW_VOLUME);
       };
       armed = onGesture;
@@ -181,7 +183,7 @@ function loadTrack(index: number) {
 
 /* ---- music ---- */
 
-/** the snow outside the window: always on once the site may make sound */
+/** the snow outside the window: on whenever the sound is on */
 function startSnow() {
   ensureElements();
   if (snow && snow.paused) playOrWait(snow, SNOW_VOLUME);
@@ -196,11 +198,14 @@ export function startMusic() {
   startSnow();
 }
 
-/** pauses the music only; the snow and the little sounds carry on */
+/** turns ALL sound off: the music, the snow, and any little sound still playing */
 export function stopMusic() {
   set({ playing: false });
-  const el = music;
-  if (el) fadeTo(el, 0, () => el.pause());
+  disarm();
+  for (const el of [music, snow, ...liveEffects]) {
+    if (el && !el.paused) fadeTo(el, 0, () => el.pause());
+  }
+  liveEffects.clear();
 }
 
 export function toggleMusic() {
@@ -221,13 +226,15 @@ export function playTrack(index: number) {
 /* ---- effects ---- */
 
 const effectCache = new Map<EffectName, HTMLAudioElement>();
+/** effects currently sounding, so turning the sound off can silence them mid-play */
+const liveEffects = new Set<HTMLAudioElement>();
 
 /** A small sound for something the visitor just did (a page turning, the cat).
-    Always on — pausing the music doesn't silence these.
+    Silent while the sound is off (the record panel's pause covers everything).
     `ms` cuts a longer sound short with a quick fade (footsteps for one walk), and
     `randomStart` starts somewhere inside it so repeated walks don't sound identical. */
 export function playEffect(name: EffectName, opts: { ms?: number; randomStart?: boolean } = {}) {
-  if (typeof Audio === "undefined") return;
+  if (typeof Audio === "undefined" || !state.playing) return;
   let base = effectCache.get(name);
   if (!base) {
     base = new Audio(pick(EFFECTS[name]));
@@ -235,6 +242,8 @@ export function playEffect(name: EffectName, opts: { ms?: number; randomStart?: 
     effectCache.set(name, base);
   }
   const shot = base.cloneNode(true) as HTMLAudioElement;
+  liveEffects.add(shot);
+  shot.addEventListener("ended", () => liveEffects.delete(shot), { once: true });
   shot.volume = EFFECT_VOLUMES[name] ?? EFFECT_VOLUME;
   if (opts.randomStart) {
     const setStart = () => {
@@ -248,7 +257,13 @@ export function playEffect(name: EffectName, opts: { ms?: number; randomStart?: 
     /* blocked or not loaded: an effect is never worth an error */
   });
   if (opts.ms) {
-    window.setTimeout(() => fadeTo(shot, 0, () => shot.pause()), Math.max(0, opts.ms - 450));
+    window.setTimeout(
+      () => fadeTo(shot, 0, () => {
+        shot.pause();
+        liveEffects.delete(shot);
+      }),
+      Math.max(0, opts.ms - 450),
+    );
   }
 }
 
@@ -266,9 +281,8 @@ export function resumeStoredChoice() {
   // shuffle: each visit starts on a random track
   state = { playing: false, track: randomTrack() };
   for (const listener of listeners) listener();
-  // music on by default (only a remembered pause keeps it off); the snow always
+  // sound on by default; a remembered pause keeps everything silent
   if (saved.music !== false) startMusic();
-  else startSnow();
 }
 
 export function teardownMusic() {
