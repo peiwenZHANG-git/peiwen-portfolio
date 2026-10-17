@@ -156,8 +156,8 @@ export default function AiWorkPage() {
                 <p className={styles.resultLabel}><L en="real-world acceptance scenarios" zh="个真实场景验收" /></p>
               </div>
               <div className={styles.resultInsight}>
-                <strong>694</strong>
-                <p className={styles.resultLabel}><L en="automated tests, all passing" zh="项自动化测试，全部通过" /></p>
+                <strong>698</strong>
+                <p className={styles.resultLabel}><L en="automated tests; one concurrency test is intermittent, see the last section" zh="项自动化测试；其中一项并发测试时过时不过，见最后一节" /></p>
               </div>
               <div className={styles.resultInsight}>
                 <strong>3</strong>
@@ -173,6 +173,9 @@ export default function AiWorkPage() {
               zh="虽然草稿已经存在，我还是把这个场景记为“未通过”，因为 AI-Work 拿不出一个能核实的草稿凭证。原因最后查清楚了：一处出在请求的写法上，一处出在核对新草稿的方式上。修好之后，一次只读检查确认只有一封匹配的草稿，而且仍未发送。这时我才接受这个场景。" /></p>
             <p className={styles.note}><L en={<><strong>What it taught me:</strong> when a system can’t verify what happened, saying “error” is the right answer, even if the action actually worked.</>}
               zh={<><strong>它让我明白：</strong>当系统无法核实发生了什么时，报告“出错”才是对的，哪怕那个操作其实成功了。</>} /></p>
+            <h3><L en="Two places that broke a rule" zh="两处违反规则的地方" /></h3>
+            <p><L en="While investigating a mailbox read failure, I found two places that broke rule 04 (“a failed read is reported as a failure, never as no new mail”). A failed fetch was skipped and reported as an empty result, and the HTML summary said no mailbox had new mail even when a read had failed. Both are fixed. The regression tests failed before the fix (3 tests, 6 failures) and pass now. An earlier network timeout on the QQ mailbox has not been traced to a root cause, so I don’t claim it is fixed."
+              zh="在排查一次邮箱读取失败时，我发现有两处违反了规则 04（“读取失败就报告失败，绝不显示成‘没有新邮件’”）：一次失败的读取被跳过，报成了空结果；HTML 摘要在有邮箱读取失败时，仍然写着“所有邮箱都没有新邮件”。两处都已修好。对应的回归测试在修复前会失败（3 项测试，6 处失败），现在都通过。更早一次 QQ 邮箱的网络超时还没查到根本原因，所以我不说它已经修好。" /></p>
             <figure className={styles.shot}>
               <a href="/assets/projects/ai-work/system-status.webp" aria-label="Open full-size image: AI-Work status page">
                 <Image src="/assets/projects/ai-work/system-status.webp" width={1600} height={607}
@@ -197,10 +200,11 @@ export default function AiWorkPage() {
             <h2><L en="Where the evidence stops" zh="证据到哪里为止" /></h2>
             <ul>
               <li><L en="This is a personal project. I did no user research or usability testing, so I make no claim that it works for other people." zh="这是个人项目，没有做用户研究或可用性测试，所以不声称它对其他用户有效。" /></li>
-              <li><L en="The 9 acceptance scenarios and 694 tests verify function and safety. They are not a user-experience evaluation." zh="9 个验收场景和 694 项测试验证的是功能和安全，不是用户体验评估。" /></li>
+              <li><L en="The 9 acceptance scenarios and 698 tests verify function and safety. They are not a user-experience evaluation." zh="9 个验收场景和 698 项测试验证的是功能和安全，不是用户体验评估。" /></li>
               <li><L en="Daily use means my own 3 mailboxes." zh="日常使用指的是我自己的 3 个邮箱。" /></li>
               <li><L en="Remote access only works on the computer itself for now. Access over the local network was designed but not built." zh="远程访问目前只能在这台电脑本机使用。通过局域网访问已经设计过，但还没有实现。" /></li>
-              <li><L en="A known timing issue in the remote-access code is recorded as a remaining risk and has not been fixed yet." zh="远程访问代码里有一个已知的时序问题，记录为残余风险，目前还没修。" /></li>
+              <li><L en="One concurrency test in the remote-access code fails intermittently: 6 of 30 isolated runs on the current version, and 5 of 30 on the previous one, so the problem predates the latest change. The cause: the one-time token is used up before the server checks which task it belongs to. If a request for the wrong task arrives first, the correct request is rejected too. It is not fixed yet."
+                zh="远程访问代码里有一项并发测试时过时不过：在当前版本上单独跑 30 次失败 6 次，上一个版本 30 次失败 5 次，说明问题在最近的改动之前就有。原因是：一次性令牌在核对它属于哪个任务之前就已经被用掉了。如果针对错误任务的请求先到，正确的请求也会被拒绝。目前还没修。" /></li>
               <li><L en="My school (Outlook) mailbox can’t save drafts automatically yet, because that needs approval from the university’s administrators." zh="我的学校邮箱（Outlook）暂时不能自动存草稿，因为这需要学校管理员批准。" /></li>
             </ul>
           </section>
