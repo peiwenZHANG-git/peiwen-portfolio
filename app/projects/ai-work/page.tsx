@@ -174,8 +174,8 @@ export default function AiWorkPage() {
             <p className={styles.note}><L en={<><strong>What it taught me:</strong> when a system can’t verify what happened, saying “error” is the right answer, even if the action actually worked.</>}
               zh={<><strong>它让我明白：</strong>当系统无法核实发生了什么时，报告“出错”才是对的，哪怕那个操作其实成功了。</>} /></p>
             <h3><L en="Two places that broke a rule" zh="两处违反规则的地方" /></h3>
-            <p><L en="While investigating a mailbox read failure, I found two places that broke rule 04 (“a failed read is reported as a failure, never as no new mail”). A failed fetch was skipped and reported as an empty result, and the HTML summary said no mailbox had new mail even when a read had failed. Both are fixed. The regression tests failed before the fix (3 tests, 6 failures) and pass now. An earlier network timeout on the QQ mailbox has not been traced to a root cause, so I don’t claim it is fixed."
-              zh="在排查一次邮箱读取失败时，我发现有两处违反了规则 04（“读取失败就报告失败，绝不显示成‘没有新邮件’”）：一次失败的读取被跳过，报成了空结果；HTML 摘要在有邮箱读取失败时，仍然写着“所有邮箱都没有新邮件”。两处都已修好。对应的回归测试在修复前会失败（3 项测试，6 处失败），现在都通过。更早一次 QQ 邮箱的网络超时还没查到根本原因，所以我不说它已经修好。" /></p>
+            <p><L en="While investigating a mailbox read failure, I found two places that broke rule 04 (“a failed read is reported as a failure, never as no new mail”). A failed fetch was skipped and reported as an empty result, and the HTML summary said no mailbox had new mail even when a read had failed. Both are fixed. The regression tests failed before the fix (3 tests, 6 failures) and pass now."
+              zh="在排查一次邮箱读取失败时，我发现有两处违反了规则 04（“读取失败就报告失败，绝不显示成‘没有新邮件’”）：一次失败的读取被跳过，报成了空结果；HTML 摘要在有邮箱读取失败时，仍然写着“所有邮箱都没有新邮件”。两处都已修好。对应的回归测试在修复前会失败（3 项测试，6 处失败），现在都通过。" /></p>
             <figure className={styles.shot}>
               <a href="/assets/projects/ai-work/system-status.webp" aria-label="Open full-size image: AI-Work status page">
                 <Image src="/assets/projects/ai-work/system-status.webp" width={1600} height={607}
