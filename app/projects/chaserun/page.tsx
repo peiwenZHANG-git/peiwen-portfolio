@@ -196,7 +196,7 @@ export default function ChaseRunPage() {
             <div className={styles.pair}>
               <figure className={`${styles.figure} ${styles.ghostShot}`}>
                 <a href={`${A}/ghost-render.webp`} aria-label="Open full-size image: the ghost rendered in Blender">
-                  <Image src={`${A}/ghost-render.webp`} width={1600} height={1000} alt="The ghost character rendered in Blender: a white, smiling ghost holding a brown coin bag with a dollar sign" sizes="(max-width: 700px) 92vw, 420px" />
+                  <Image src={`${A}/ghost-render.webp`} width={1600} height={900} alt="The ghost character rendered in Blender: a white, smiling ghost holding a brown coin bag with a dollar sign" sizes="(max-width: 700px) 92vw, 420px" />
                 </a>
                 <figcaption><L en="The ghost, rendered in Blender. The 3D assets are script-built, with AI assistance." zh="Blender 里渲染的幽灵。3D 素材由脚本生成，脚本是 AI 辅助编写的。" /></figcaption>
               </figure>
