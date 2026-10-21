@@ -144,6 +144,23 @@
   844×390 that arrows are mid-screen and dots at the bottom without scrolling.
 - lint, typecheck and build pass.
 
+## ChaseRun case study — 2026-10-21
+
+- Implemented: `/projects/chaserun` (bilingual), from Peiwen's `ChaseRun_portfolio_brief.md`
+  and its claim boundaries: a concept previsualization film, not a working AR app; no user
+  testing, safety validation or measured results; glasses are a prop; results-card numbers
+  are illustrative; no 3D camera tracking; AI-assisted compositing / UI / Blender scripts /
+  music stated plainly. Peer-review numbers (6 of 7 rated 5/5, one 4) come from the brief.
+- Attic: 4th on the top rope after Arm-Swing (Claude's call when Peiwen asked for a ranking:
+  below the projects with real evaluation, next to the other body-driven XR project). Featured
+  slots after it moved +328 and the rope width grew to 2826. No watercolor cover yet, so the
+  card shows "cover coming soon" (Peiwen's choice); the preview sheet uses the GO! frame.
+- Media in `public/assets/projects/chaserun/`: 13 film stills + Blender ghost render as WebP;
+  the film re-encoded to 720p H.264 (11.6 MB, faststart). Note the source still file names
+  do not all match their content (e.g. `v5_incoming.jpg` shows JUMP!); captions follow the
+  pixels. `outside-view` and `squat` are frames from the film at 0:29 and 0:43.
+- Also: companion answer "What is ChaseRun?", project count nine → ten, README.
+
 ## One switch for all sound — 2026-10-16
 
 - Implemented: the record panel's play / pause in the header now controls ALL site sound

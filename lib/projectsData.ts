@@ -42,6 +42,14 @@ export const projects: Project[] = [
     description: "Mapping controller movement and headset direction into continuous three-dimensional VR travel.",
     href: "/projects/arm-swing-vr-locomotion", image: "/assets/projects/arm-swing-vr-locomotion/gameplay-flight.webp", imageAlt: "Arm-swing VR locomotion gameplay in flight",
   },
+  // Added 2026-10-21: 4th on the top rope, after Arm-Swing (both are "the body drives
+  // the XR experience"). No watercolor cover yet, so the card shows "cover coming soon".
+  {
+    id: "chaserun", label: "ChaseRun", coverSubtitle: "Make the run the workout", title: "ChaseRun", subtitle: "AR fitness · concept film", rope: "featured", rotation: 1.5,
+    titleZh: "ChaseRun", subtitleZh: "AR 健身 · 概念影片", descriptionZh: "一款为 AR 眼镜设计的健身追逐游戏概念：你在原地跑、跳、蹲，虚拟赛道朝你移动，你追的是一只偷走你金币的懒幽灵。用 60 秒预演影片呈现。",
+    description: "An AR-glasses fitness game concept: jog, jump and squat in place while the track moves toward you, chasing a ghost that stole your coins. Shown as a 60-second previsualization film.",
+    href: "/projects/chaserun", image: "/assets/projects/chaserun/go.webp", imageAlt: "ChaseRun film frame: the ghost waits ahead on a cyan track laid over a real corridor, with the word GO!",
+  },
   {
     id: "tangram", cover: "/assets/projects/overview-covers/tangram-cover.webp", label: "Tangram", coverSubtitle: "Connect · print · play", title: "Tangram", subtitle: "make · connect · play", rope: "featured", rotation: -1.1,
     titleZh: "七巧板", subtitleZh: "制作 · 连接 · 玩", descriptionZh: "通过连接件实验、实物测试和反复打样，搭出一套模块化的七巧板系统。",

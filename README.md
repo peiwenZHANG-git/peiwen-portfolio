@@ -14,7 +14,7 @@ I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI pro
 | --- | --- |
 | **Home** (the desk) | A short opening (open the window, switch on the lamp, with a tiny flower fairy showing the way), then a lit desk where each object opens a page |
 | **Experience** (the path) | My route from Communication University of China, through an exchange in Osaka, to Paris-Saclay, shown as stops along a road |
-| **Projects** (the house) | Nine case studies, from an AI assistant I keep in control to emotional captions, VR locomotion and 3D-printed objects |
+| **Projects** (the house) | Ten case studies, from an AI assistant I keep in control to emotional captions, VR locomotion, an AR fitness concept and 3D-printed objects |
 | **About** (the notebook) | A notebook you can flip through: who I am, my journey and what I like outside of work. CV download (EN / 中文) and a postcard that really sends me a message |
 
 ### Projects
@@ -22,6 +22,7 @@ I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI pro
 - **AI-Work:** a local Windows assistant (42 MCP tools) that acts on my own mail, files, apps and browser, built around five product rules so that I stay in control
 - **Reso:** emotional captions, with prototypes, an evaluation with hearing participants as proxy users, and iterations based on the results
 - **Arm-Swing VR Locomotion:** controller swing and headset direction mapped to continuous 3D travel
+- **ChaseRun:** an AR-glasses fitness game concept (jog, jump and squat in place to chase a ghost), shown as a 60-second previsualization film
 - **Tangram:** a modular Tangram set, built through connector experiments and 3D printing
 - **Multi-Sensory Music VR:** note blocks and a moving scan line linked to sound, particles and controller vibration
 - **Maze of Wishes:** a Java maze you play by tilting your phone (sensor mapping, calibration, collisions)

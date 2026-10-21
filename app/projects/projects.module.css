@@ -65,6 +65,7 @@
 .pair[data-project="ai-work"] { --ar: .87; --wm: 36; --nh: 134px; --note-tilt: -1.2deg; --clip-a: -2deg; --clip-b: 2deg; --image-drop: 13px; --note-drop: 21px; }
 .pair[data-project="reso"] { --ar: .87; --wm: 36; --nh: 134px; --note-tilt: 1.2deg; --clip-a: 2deg; --clip-b: -2deg; --image-drop: 9px; --note-drop: 19px; }
 .pair[data-project="arm-swing"] { --ar: .86; --wm: 38; --nh: 146px; --note-tilt: -1.6deg; --clip-a: -1deg; --clip-b: 2deg; --image-drop: 27px; --note-drop: 33px; }
+.pair[data-project="chaserun"] { --ar: .87; --wm: 36; --nh: 134px; --note-tilt: 1deg; --clip-a: 1deg; --clip-b: -2deg; --image-drop: 21px; --note-drop: 27px; }
 .pair[data-project="tangram"] { --ar: .89; --wm: 34; --nh: 122px; --note-tilt: .8deg; --clip-a: 3deg; --clip-b: -1deg; --image-drop: 35px; --note-drop: 35px; }
 .pair[data-project="music-vr"] { --ar: .9; --wm: 37; --nh: 128px; --note-tilt: -1deg; --clip-a: -2deg; --clip-b: 3deg; --image-drop: 31px; --note-drop: 25px; }
 .pair[data-project="maze"] { --ar: .88; --wm: 35; --nh: 140px; --note-tilt: 1.4deg; --clip-a: 1deg; --clip-b: -3deg; --image-drop: 17px; --note-drop: 7px; }
@@ -102,7 +103,7 @@
 .smallerLine { z-index: 2; }
 .viewport { position: absolute; left: 0; width: 100%; pointer-events: auto; }
 /* Keep in sync with the rope origins in project-clothesline.tsx (165 and 520). */
-.clothesline[data-rope="featured"] { --tw: 2498; } /* 2170 + 328 for AI-Work (2026-10-16) */
+.clothesline[data-rope="featured"] { --tw: 2826; } /* 2170 + 328 for AI-Work (2026-10-16) + 328 for ChaseRun (2026-10-21) */
 .clothesline[data-rope="featured"] .viewport { top: calc(165 * var(--u)); height: calc(385 * var(--u)); -webkit-mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }
 .smallerLine { --tw: 2100; }
 .smallerLine .viewport { top: calc(520 * var(--u)); height: calc(280 * var(--u)); -webkit-mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }

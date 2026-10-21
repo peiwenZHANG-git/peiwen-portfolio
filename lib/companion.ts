@@ -133,6 +133,22 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     keywords: ["ai-work", "ai work", "aiwork", "assistant", "mcp", "agent", "agents", "助手", "智能体"],
   },
   {
+    id: "chaserun",
+    question: "What is ChaseRun?",
+    questionZh: "ChaseRun 是什么？",
+    hidden: true,
+    answer: [
+      "A fitness game concept for AR glasses: you jog, jump and squat in place while the track moves toward you, chasing a lazy ghost that stole your coins.",
+      "It’s a concept, shown as a 60-second film I made from real footage and 3D renders. It isn’t a working app yet.",
+    ],
+    answerZh: [
+      "一个为 AR 眼镜设计的健身游戏概念：你在原地跑、跳、蹲，赛道朝你移动，你追的是一只偷走你金币的懒幽灵。",
+      "它目前是一个概念，我用实拍画面和 3D 渲染做成了 60 秒的影片，还不是能运行的应用。",
+    ],
+    actions: [{ kind: "link", href: "/projects/chaserun", label: "Watch the film →", labelZh: "看看影片 →" }],
+    keywords: ["chaserun", "chase run", "ghost", "ar glasses", "augmented reality", "fitness", "workout", "幽灵", "健身", "ar 眼镜", "增强现实"],
+  },
+  {
     id: "hardest",
     question: "What was the hardest decision in AI-Work?",
     questionZh: "做 AI-Work 最难的决定是什么？",
@@ -560,11 +576,11 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     hidden: true,
     keywords: ["project", "projects", "made", "built", "build", "work", "portfolio", "reso", "tangram", "maze", "music", "flight", "chess", "zoo", "作品", "项目"],
     answer: [
-      "Nine things so far: AI-Work, Reso, Arm-Swing VR, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
+      "Ten things so far: AI-Work, Reso, Arm-Swing VR, ChaseRun, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
       "They’re all hanging in the attic. Come and have a look.",
     ],
     answerZh: [
-      "目前一共九个项目：AI-Work、Reso、Arm-Swing VR、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
+      "目前一共十个项目：AI-Work、Reso、Arm-Swing VR、ChaseRun、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
       "它们都挂在阁楼里——来看看吧。",
     ],
     actions: [{ kind: "link", href: "/projects", label: "Go to Projects →", labelZh: "去项目页 →" }],
