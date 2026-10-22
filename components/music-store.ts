@@ -20,9 +20,13 @@ import { EFFECTS, SNOW, TRACKS, trackSources, type EffectName } from "./sound-li
  * pausing silences the music, the snow outside and the little sounds (pages,
  * footsteps, the cat); playing brings them all back. The pause is remembered in
  * localStorage, so a visitor who turned the sound off gets a silent site next time.
- * Browsers refuse to autoplay audible media, so on a first visit the sound starts with
- * the visitor's first click or key press (on Home that is opening the window).
- * Volumes are low and fade in/out, unless the visitor asked for reduced motion.
+ * Browsers refuse to autoplay audible media, so unless the visitor remembered a pause,
+ * the sound starts on their first gesture (pointerdown, touchstart or keydown anywhere;
+ * on Home that is the click that opens the window) and fades in over ~1.5s from silence.
+ * That trigger happens once per visit; afterwards only the record panel controls sound.
+ * If the browser still refuses, nothing is shown as playing and the next gesture tries
+ * again. Volumes are low and fade in/out; the audio fade stays under reduced motion
+ * (only visual effects are skipped, in CSS).
  */
 
 const STORAGE_KEY = "pw-sound";
@@ -32,6 +36,8 @@ const EFFECT_VOLUME = 0.32;
 /** per-effect overrides: the footsteps sit well under everything (Peiwen, 2026-09-25) */
 const EFFECT_VOLUMES: Partial<Record<EffectName, number>> = { steps: 0.14 };
 const FADE_MS = 700;
+/** the first-gesture start rises slowly from silence */
+const START_FADE_MS = 1500;
 
 export type SoundState = {
   playing: boolean;
@@ -57,9 +63,11 @@ const backstops = new Map<HTMLAudioElement, number>();
 let armed: (() => void) | null = null;
 const listeners = new Set<() => void>();
 
-function set(patch: Partial<SoundState>) {
+/** `remember: false` is for changes the visitor did not choose (a blocked autoplay) */
+function set(patch: Partial<SoundState>, remember = true) {
   state = { ...state, ...patch };
   for (const listener of listeners) listener();
+  if (!remember) return;
   try {
     window.localStorage.setItem(
       STORAGE_KEY,
@@ -98,22 +106,14 @@ function canPlayOgg() {
 function pick(src: { ogg: string; mp3: string }) {
   return canPlayOgg() ? src.ogg : src.mp3;
 }
-function reducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
-function fadeTo(el: HTMLAudioElement, target: number, done?: () => void) {
+function fadeTo(el: HTMLAudioElement, target: number, done?: () => void, ms = FADE_MS) {
   const running = fades.get(el);
   if (running !== undefined) cancelAnimationFrame(running);
   fades.delete(el);
   const backstop = backstops.get(el);
   if (backstop !== undefined) window.clearTimeout(backstop);
   backstops.delete(el);
-  if (reducedMotion()) {
-    el.volume = target;
-    done?.();
-    return;
-  }
   const from = el.volume;
   const start = performance.now();
   let finished = false;
@@ -130,42 +130,79 @@ function fadeTo(el: HTMLAudioElement, target: number, done?: () => void) {
     done?.();
   };
   const step = (now: number) => {
-    const k = Math.min(1, (now - start) / FADE_MS);
-    el.volume = from + (target - from) * k;
+    const k = Math.min(1, (now - start) / ms);
+    // floating-point overshoot (-4e-12) would make the volume setter throw
+    el.volume = Math.min(1, Math.max(0, from + (target - from) * k));
     if (k < 1) fades.set(el, requestAnimationFrame(step));
     else finish();
   };
   fades.set(el, requestAnimationFrame(step));
   // Browsers freeze animation frames in a hidden tab; a timer still lands, so the
   // fade always finishes (and a pause always pauses) even if no frame ever comes.
-  backstops.set(el, window.setTimeout(finish, FADE_MS + 150));
+  backstops.set(el, window.setTimeout(finish, ms + 150));
 }
+
+/** play from silence and fade up; resolves false if the browser refuses */
+function playOrWait(el: HTMLAudioElement, volume: number, ms = FADE_MS): Promise<boolean> {
+  el.volume = 0;
+  return el.play().then(
+    () => {
+      fadeTo(el, volume, undefined, ms);
+      return true;
+    },
+    () => false,
+  );
+}
+
+/** a visitor-requested start that the browser refused: say so, don't pretend */
+function failed() {
+  set({ playing: false }, false);
+}
+
+/* ---- first gesture ---- */
+
+const GESTURES = ["pointerdown", "touchstart", "keydown", "pointerup", "touchend"] as const;
+let attempting = false;
 
 function disarm() {
   if (!armed) return;
-  window.removeEventListener("pointerdown", armed);
-  window.removeEventListener("keydown", armed);
+  for (const type of GESTURES) window.removeEventListener(type, armed, true);
   armed = null;
 }
 
-/** play, or — if the browser blocks it — try again on the visitor's first gesture */
-function playOrWait(el: HTMLAudioElement, volume: number) {
-  el.volume = 0;
-  el.play().then(
-    () => fadeTo(el, volume),
-    () => {
-      if (armed) return;
-      const onGesture = () => {
-        disarm();
-        if (!state.playing) return;
-        if (music) playOrWait(music, MUSIC_VOLUME);
-        if (snow && snow.paused) playOrWait(snow, SNOW_VOLUME);
-      };
-      armed = onGesture;
-      window.addEventListener("pointerdown", onGesture, { once: true });
-      window.addEventListener("keydown", onGesture, { once: true });
-    },
-  );
+/** Waits for the visitor's first gesture, then starts all sound with a slow fade. The
+    listeners are passive and never stop the event, so the click still opens the window
+    or follows its link. Touch only counts as "user activation" for the browser on
+    pointerup/touchend, so those stay armed too: the listeners are removed as soon as a
+    start succeeds, not before. */
+function armFirstGesture() {
+  if (armed) return;
+  const onGesture = () => {
+    if (attempting) return;
+    if (state.playing) {
+      disarm();
+      return;
+    }
+    ensureElements();
+    if (!music) return;
+    if (!music.src) loadTrack(state.track);
+    attempting = true;
+    void playOrWait(music, MUSIC_VOLUME, START_FADE_MS).then((ok) => {
+      attempting = false;
+      if (!ok) return;
+      if (!armed) {
+        // paused from the record panel while the browser was still deciding
+        if (music) fadeTo(music, 0, () => music?.pause());
+        return;
+      }
+      disarm();
+      if (state.playing) return;
+      set({ playing: true }, false);
+      if (snow) void playOrWait(snow, SNOW_VOLUME, START_FADE_MS);
+    });
+  };
+  armed = onGesture;
+  for (const type of GESTURES) window.addEventListener(type, onGesture, { capture: true, passive: true });
 }
 
 function ensureElements() {
@@ -177,7 +214,7 @@ function ensureElements() {
     const next = randomTrack(state.track);
     set({ track: next });
     loadTrack(next);
-    if (music) playOrWait(music, MUSIC_VOLUME);
+    if (music && state.playing) void playOrWait(music, MUSIC_VOLUME).then((ok) => ok || failed());
   });
   snow = new Audio();
   snow.preload = "none";
@@ -203,15 +240,16 @@ function loadTrack(index: number) {
 /** the snow outside the window: on whenever the sound is on */
 function startSnow() {
   ensureElements();
-  if (snow && snow.paused) playOrWait(snow, SNOW_VOLUME);
+  if (snow && snow.paused) void playOrWait(snow, SNOW_VOLUME);
 }
 
 export function startMusic() {
   ensureElements();
   if (!music) return;
   if (!music.src) loadTrack(state.track);
+  disarm();
   set({ playing: true });
-  playOrWait(music, MUSIC_VOLUME);
+  void playOrWait(music, MUSIC_VOLUME).then((ok) => ok || failed());
   startSnow();
 }
 
@@ -236,7 +274,8 @@ export function playTrack(index: number) {
   if (!music) return;
   set({ track: index, playing: true });
   loadTrack(index);
-  playOrWait(music, MUSIC_VOLUME);
+  disarm();
+  void playOrWait(music, MUSIC_VOLUME).then((ok) => ok || failed());
   startSnow();
 }
 
@@ -298,8 +337,9 @@ export function resumeStoredChoice() {
   // shuffle: each visit starts on a random track
   state = { playing: false, track: randomTrack() };
   for (const listener of listeners) listener();
-  // sound on by default; a remembered pause keeps everything silent
-  if (saved.music !== false) startMusic();
+  // sound on by default, starting at the first gesture; a remembered pause keeps
+  // everything silent
+  if (saved.music !== false) armFirstGesture();
 }
 
 export function teardownMusic() {

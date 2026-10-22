@@ -23,6 +23,10 @@
 - Shared chrome: `PageTransitionProvider`, `WorldLink`, and `SiteAudio` are mounted once
   in the root layout; the Projects header target is `/projects`; the About label is
   "About me".
+- Site sound: `components/music-store.ts` waits for the first gesture (pointerdown, touchstart, keydown;
+  pointerup/touchend stay armed so touch can succeed), then fades music and snow in over ~1.5s;
+  nothing starts after a remembered pause (`pw-sound` in localStorage). A refused play leaves the record
+  panel on "sound off" and is not remembered as a pause. Verified in Edge (headless, CDP) against `next start`.
 - Home opening: room lighting/window reveal timing is slower, window and lamp hints are
   clearer, post-lamp text appears faster, and the entrance glow loops. The Projects
   entrance remains `/projects`.
