@@ -66,8 +66,8 @@ export default function ChaseRunPage() {
           <div><dt><L en="My role" zh="我的角色" /></dt><dd><L en="Concept and interaction design, story and storyboard, filming (behind and in front of the camera), art direction, and reviewing and accepting every shot, version by version."
             zh="概念与交互设计、故事与分镜、实拍（拍摄和出镜）、美术方向，以及每个镜头的逐版评审与验收。" /></dd></div>
         </dl>
-        <p className={styles.small}><L en="Tools: Blender (Eevee), Python with OpenCV for floor registration and compositing, and AI coding assistants (Codex, Claude), which wrote the compositing, interface and Blender scripts. See 05 for who did what."
-          zh="工具：Blender（Eevee 渲染）、Python 和 OpenCV（地面配准与合成），以及 AI 编程助手（Codex、Claude），合成、界面和 Blender 脚本由它们编写。分工详见第 05 节。" /></p>
+        <p className={styles.small}><L en="Tools: Blender (Eevee), Python with OpenCV for floor registration and compositing, and AI coding assistants (Codex and Claude), which wrote the compositing, interface and Blender scripts and generated the music, working to my direction. See 05 for who did what."
+          zh="工具：Blender（Eevee 渲染）、Python 和 OpenCV（地面配准与合成），以及 AI 编程助手（Codex 和 Claude），合成、界面、Blender 脚本和配乐生成由它们按我的要求编写。分工详见第 05 节。" /></p>
       </section>
 
       <div className={styles.layout}>
@@ -79,7 +79,7 @@ export default function ChaseRunPage() {
             <a href="#iteration"><L en="03 · Design iteration" zh="03 · 设计迭代" /></a>
             <a href="#run"><L en="04 · One run, shot by shot" zh="04 · 一次奔跑，逐个镜头" /></a>
             <a href="#made"><L en="05 · How the film was made" zh="05 · 影片怎么做出来的" /></a>
-            <a href="#evidence"><L en="06 · Where the evidence stops" zh="06 · 证据到哪里为止" /></a>
+            <a href="#evidence"><L en="06 · Reflection and limits" zh="06 · 反思与局限" /></a>
           </nav>
         </aside>
         <article className={styles.story} aria-label="ChaseRun case study">
@@ -88,7 +88,7 @@ export default function ChaseRunPage() {
             <h2><L en="Cardio at home is boring. Runner games are played sitting down." zh="在家做有氧很无聊，跑酷游戏却是坐着玩的。" /></h2>
             <ul>
               <li><L en="Running in place at home has no goal and no story." zh="在家原地跑，没有目标，也没有故事。" /></li>
-              <li><L en="Endless-runner phone games like Temple Run and Subway Surfers are fun, but you play them sitting down." zh="Temple Run、Subway Surfers 这样的跑酷手游很好玩，但玩的时候是坐着的。" /></li>
+              <li><L en="Endless-runner phone games like Temple Run and Subway Surfers are fun, but you usually play them sitting down." zh="Temple Run、Subway Surfers 这样的跑酷手游很好玩，但通常是坐着玩的。" /></li>
             </ul>
             <p className={styles.note}><L en={<><strong>Design question:</strong> could the runner game itself be the workout?</>}
               zh={<><strong>设计问题：</strong>能不能让跑酷游戏本身成为锻炼？</>} /></p>
@@ -100,7 +100,7 @@ export default function ChaseRunPage() {
             <ol className={styles.rules} aria-label="ChaseRun core design">
               <li><span>01</span><div><strong><L en="Move in place" zh="原地运动" /></strong><p><L en="You only jog, jump and squat on the spot. The virtual track moves toward you, which creates the feeling of moving forward." zh="你只在原地慢跑、跳、蹲，虚拟赛道朝你移动，营造前进的感觉。" /></p></div></li>
               <li><span>02</span><div><strong>SafeZone</strong><p><L en="The AR glasses find a safe area on the floor, and you stay inside it the whole time." zh="AR 眼镜识别地面上的一块安全区域，你始终留在里面。" /></p></div></li>
-              <li><span>03</span><div><strong><L en="AR, not VR" zh="用 AR，而不是 VR" /></strong><p><L en="You can still see your own room, so jumping and squatting feel safer, and your hands are free: no phone to hold." zh="你仍然看得到自己的房间，所以跳和蹲更安全；双手是空的，不用拿手机。" /></p></div></li>
+              <li><span>03</span><div><strong><L en="AR, not VR" zh="用 AR，而不是 VR" /></strong><p><L en="You can still see your own room, so jumping and squatting should feel safer, and your hands are free: no phone to hold." zh="你仍然看得到自己的房间，所以跳和蹲应该更安全；双手是空的，不用拿手机。" /></p></div></li>
               <li><span>04</span><div><strong><L en="The chase" zh="追逐机制" /></strong><p><L en="Run fast enough to close the distance to the ghost. It throws hurdles (jump over them) and gates (squat under them). Catch it and you get your coins back." zh="跑得够快才能缩短和幽灵的距离。幽灵会扔出栏杆（要跳过）和门（要蹲过）。抓住它，就能拿回金币。" /></p></div></li>
             </ol>
             <h3><L en="Two colours, two meanings" zh="两种颜色，两种意思" /></h3>
@@ -141,7 +141,7 @@ export default function ChaseRunPage() {
               <li><span><L en="A third-person shot" zh="加一个第三人称镜头" /></span>
                 <p><L en="An outside view shows that the player really does stay in one place." zh="从外部视角证明，玩家确实一直留在原地。" /></p></li>
               <li><span><L en="Music that speeds up with you, after a classmate’s suggestion" zh="根据同学的建议，让音乐跟着你加速" /></span>
-                <p><L en="A classmate suggested that the faster you run, the faster the music should be. In the final film, the music’s tempo follows the running speed." zh="有同学建议“跑得越快，音乐越快”。终版影片里，配乐的节奏会随跑速变化。" /></p></li>
+                <p><L en="A classmate suggested that the faster you run, the faster the music should be. In the final film, the music’s tempo follows the running speed. In the film this is a scripted effect, not driven by real running data." zh="有同学建议“跑得越快，音乐越快”。终版影片里，配乐的节奏会随跑速变化。在影片里这是预先做好的效果，不是由真实跑步数据驱动的。" /></p></li>
               <li><span><L en="One set of obstacles" zh="统一障碍物" /></span>
                 <p><L en="The hurdles and gates the ghost throws are the same Blender models the player then jumps over and squats under." zh="幽灵扔出的栏杆和门，和玩家后来跳过、蹲过的，是同一个 Blender 模型。" /></p></li>
             </ol>
@@ -198,7 +198,7 @@ export default function ChaseRunPage() {
                 <a href={`${A}/ghost-render.webp`} aria-label="Open full-size image: the ghost rendered in Blender">
                   <Image src={`${A}/ghost-render.webp`} width={1600} height={900} alt="The ghost character rendered in Blender: a white, smiling ghost holding a brown coin bag with a dollar sign" sizes="(max-width: 700px) 92vw, 420px" />
                 </a>
-                <figcaption><L en="The ghost, rendered in Blender. The 3D assets are script-built, with AI assistance." zh="Blender 里渲染的幽灵。3D 素材由脚本生成，脚本是 AI 辅助编写的。" /></figcaption>
+                <figcaption><L en="The ghost, rendered in Blender. The 3D assets are built by Blender scripts that AI coding assistants (Codex and Claude) wrote to my direction." zh="Blender 里渲染的幽灵。3D 素材由 Blender 脚本生成，脚本由 AI 编程助手（Codex 和 Claude）按我的要求编写。" /></figcaption>
               </figure>
               <figure className={styles.figure}>
                 <a href={`${A}/outside-view.webp`} aria-label="Open full-size image: the third-person outside view">
@@ -216,15 +216,18 @@ export default function ChaseRunPage() {
 
           <section id="evidence">
             <p className={styles.eyebrow}><L en="06 / Reflection and next steps" zh="06 / 反思与下一步" /></p>
-            <h2><L en="Where the evidence stops" zh="证据到哪里为止" /></h2>
+            <h2><L en="Reflection, and where the evidence stops" zh="反思，以及证据到哪里为止" /></h2>
+            <h3><L en="What I took from this" zh="我从中学到的" /></h3>
+            <p><L en="The course did not ask us to build on real AR glasses. It asked us to turn the film into something that could make money. That changed how I looked at the design. After my teacher’s feedback, I moved the ghost from behind the player to in front of them to increase motivation: you can see what you are chasing. It also made me start asking what users fear and want from exercising at home, what would make the experience comfortable, and how that could turn into revenue. I have only begun to look into these questions, and the answers in the pitch are still hypotheses."
+              zh="这门课没有要求在真正的 AR 眼镜上开发，而是要把成品视频包装成一个能盈利的产品。这改变了我看设计的方式。根据老师的反馈，我把鬼从玩家身后移到身前，是为了增加动力：看得见才有追的目标。它也让我开始思考：用户在家锻炼时害怕什么、想要什么，怎样让体验舒适，以及这些怎么变成收入。我刚刚开始研究这些问题，宣讲里的答案目前还只是假设。" /></p>
             <ul>
               <li><L en="ChaseRun is a concept shown as a previsualization film. It is not a working AR prototype or app." zh="ChaseRun 是一个用预演影片呈现的概念，不是可运行的 AR 原型或应用。" /></li>
               <li><L en="I have not tested it with users. There is no safety validation and no measured effect on fitness." zh="还没做过用户测试，没有安全性验证，也没有测量过任何健身效果。" /></li>
               <li><L en="The glasses in the film are an ordinary pair used as a prop, and the numbers on the results card are illustrative." zh="片中的眼镜是普通眼镜作道具，结算卡上的数字是示意值。" /></li>
               <li><L en="The business model in the pitch is still a hypothesis." zh="pitch 里的商业模式仍然只是假设。" /></li>
             </ul>
-            <p className={styles.note}><L en={<><strong>Next step:</strong> build a prototype on real AR glasses, then test it with users.</>}
-              zh={<><strong>下一步：</strong>在真实的 AR 眼镜上做原型，再找用户来测试。</>} /></p>
+            <p className={styles.note}><L en={<><strong>Next step:</strong> test the assumptions behind the design with real users, namely that seeing the ghost ahead keeps people motivated and that jumping and squatting in place with glasses on feels comfortable, before building a prototype on real AR glasses.</>}
+              zh={<><strong>下一步：</strong>先找真实用户验证设计背后的假设，也就是看得见前方的幽灵能让人保持动力、戴着眼镜原地跳和蹲让人感觉舒适，然后再在真实 AR 眼镜上做原型。</>} /></p>
           </section>
           <footer className={styles.footer}><p><L en="ChaseRun · Individual course project · Université Paris-Saclay · 2026" zh="ChaseRun · 个人课程项目 · 巴黎萨克雷大学 · 2026" /></p><Link href="/projects"><L en="← Back to projects" zh="← 回到项目" /></Link><a href="#chaserun-content"><L en="Back to top ↑" zh="回到顶部 ↑" /></a></footer>
         </article>
