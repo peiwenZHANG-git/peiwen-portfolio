@@ -131,8 +131,8 @@ export default function ChaseRunPage() {
             <h2><L en="What changed, and why." zh="改了什么，为什么改。" /></h2>
             <ol className={styles.iteration}>
               <li><span><L en="From running outdoors to running in place" zh="从户外跑改成原地跑" /></span>
-                <p><L en="The first idea was running forward outdoors. But suddenly jumping or dodging while running forward risks collisions and falls, so I moved all movement into the SafeZone, on the spot. This is a design rationale; it has not been safety-tested."
-                  zh="最初的设想是在户外向前跑。但边跑边突然跳或躲，有碰撞和摔倒的风险，所以我把所有动作都改成在 SafeZone 里原地完成。这是设计上的理由，没有经过安全测试。" /></p></li>
+                <p><L en="The first idea was running forward outdoors. In feedback on the first draft, one classmate said they would worry about hitting something when jumping with glasses on. Suddenly jumping or dodging while running forward also risks collisions and falls, so I moved all movement into the SafeZone, on the spot. This has not been safety-tested."
+                  zh="最初的设想是在户外向前跑。初稿之后的反馈里，有同学说戴着眼镜跳起来会担心撞到东西。边跑边突然跳或躲，本来也有碰撞和摔倒的风险，所以我把所有动作都改成在 SafeZone 里原地完成。这一点没有经过安全测试。" /></p></li>
               <li><span><L en="Turning the chase around, after my teacher’s feedback" zh="根据老师的反馈，把追逐方向反过来" /></span>
                 <p><L en="In the first draft a monster chased you from behind, and all you saw was a distance bar, never the monster. The feedback: you can’t chase something you can’t see. In the final version the ghost is ahead of you. You can see it, it throws obstacles at you, and in the end you catch it."
                   zh="初稿里是怪兽在身后追你，你只看得到一个距离条，从来看不到怪兽本身。老师的反馈是：看不见的东西没法追。终版改成幽灵在你前方：你看得见它，它朝你扔障碍物，最后你抓住它。" /></p></li>
@@ -160,6 +160,9 @@ export default function ChaseRunPage() {
             <p><L en="In the peer review after the first draft, 6 of 7 ratings were 5 out of 5 and one was 4. Praise centred on the visuals, the sound and the mix of fun and fitness; one classmate compared it to Subway Surfers. One comment pointed out that similar ideas already exist."
               zh="初稿之后的同学互评里，7 份评分中有 6 份是 5 分（满分 5 分），1 份是 4 分。好评集中在画面、音效和“有趣 + 健身”；有人把它比作 Subway Surfers。也有一条意见指出，类似的点子已经存在。" /></p>
             <p className={styles.small}><L en="These are classmates’ ratings of a 15-second draft, not a user test of the game." zh="这些是同学对一段 15 秒初稿的评分，不是对游戏的用户测试。" /></p>
+            <h3><L en="Asking classmates who exercise" zh="请有健身习惯的同学看" /></h3>
+            <p><L en="After the first draft I also asked five or six classmates who exercise regularly to watch the 15-second film. I asked them whether exercising at home feels boring and whether they would want to play this game. One of them said they would worry about hitting something when jumping with glasses on. That is why I moved the game from outdoors to moving in place, and it fed into the later changes: the game-style interface, the sound effects and the music that changes speed. This was informal feedback from a small group, not a user test."
+              zh="初稿之后，我还请五六位有健身习惯的同学看了那段 15 秒影片，问了他们：在家锻炼会不会觉得无聊，以及会不会想玩这个游戏。其中有人说，戴着眼镜跳起来会担心撞到东西。所以我把游戏从户外改成了原地运动，后来加上的游戏风格界面、各种音效和会变速的音乐也和这些反馈有关。这是小范围的非正式反馈，不是用户测试。" /></p>
           </section>
 
           <section id="run">
@@ -222,7 +225,7 @@ export default function ChaseRunPage() {
               zh="这门课没有要求在真正的 AR 眼镜上开发，而是要把成品视频包装成一个能盈利的产品。这改变了我看设计的方式。根据老师的反馈，我把鬼从玩家身后移到身前，是为了增加动力：看得见才有追的目标。它也让我开始思考：用户在家锻炼时害怕什么、想要什么，怎样让体验舒适，以及这些怎么变成收入。我刚刚开始研究这些问题，宣讲里的答案目前还只是假设。" /></p>
             <ul>
               <li><L en="ChaseRun is a concept shown as a previsualization film. It is not a working AR prototype or app." zh="ChaseRun 是一个用预演影片呈现的概念，不是可运行的 AR 原型或应用。" /></li>
-              <li><L en="I have not tested it with users. There is no safety validation and no measured effect on fitness." zh="还没做过用户测试，没有安全性验证，也没有测量过任何健身效果。" /></li>
+              <li><L en="I have not run a user test of the game. The feedback came from my teacher, classmates’ ratings of a 15-second draft, and informal conversations with five or six classmates who exercise regularly. There is no safety validation and no measured effect on fitness." zh="我没有对这个游戏做过用户测试。反馈来自老师、同学对 15 秒初稿的评分，以及和五六位有健身习惯的同学的非正式交流。没有安全性验证，也没有测量过任何健身效果。" /></li>
               <li><L en="The glasses in the film are an ordinary pair used as a prop, and the numbers on the results card are illustrative." zh="片中的眼镜是普通眼镜作道具，结算卡上的数字是示意值。" /></li>
               <li><L en="The business model in the pitch is still a hypothesis." zh="pitch 里的商业模式仍然只是假设。" /></li>
             </ul>
