@@ -27,6 +27,12 @@ import { EFFECTS, SNOW, TRACKS, trackSources, type EffectName } from "./sound-li
  * If the browser still refuses, nothing is shown as playing and the next gesture tries
  * again. Volumes are low and fade in/out; the audio fade stays under reduced motion
  * (only visual effects are skipped, in CSS).
+ *
+ * Videos (any <video> on the site): while one plays, the music, snow and effects fade
+ * out with the same fade as the switch; when the last one pauses or ends they fade back
+ * in, but only if the sound was on before. The record panel shows the true state, so
+ * while a video silences the sound it shows "sound off". Pressing the panel meanwhile is
+ * the visitor's choice and wins: the video's end then restores nothing.
  */
 
 const STORAGE_KEY = "pw-sound";
@@ -60,8 +66,12 @@ if (typeof window !== "undefined") {
 const fades = new Map<HTMLAudioElement, number>();
 /** timer that finishes a fade if animation frames stall (hidden tab) */
 const backstops = new Map<HTMLAudioElement, number>();
-let armed: (() => void) | null = null;
+let armed: ((e: Event) => void) | null = null;
 const listeners = new Set<() => void>();
+/** videos playing right now, and whether WE silenced the sound for them (see below) */
+const playingVideos = new Set<HTMLVideoElement>();
+let ducked = false;
+let videoWatch = 0;
 
 /** `remember: false` is for changes the visitor did not choose (a blocked autoplay) */
 function set(patch: Partial<SoundState>, remember = true) {
@@ -177,8 +187,10 @@ function disarm() {
     start succeeds, not before. */
 function armFirstGesture() {
   if (armed) return;
-  const onGesture = () => {
+  const onGesture = (e: Event) => {
     if (attempting) return;
+    // pressing play on a video: its own sound takes over; stay armed for the next gesture
+    if (e.target instanceof Element && e.target.closest("video")) return;
     if (state.playing) {
       disarm();
       return;
@@ -248,6 +260,7 @@ export function startMusic() {
   if (!music) return;
   if (!music.src) loadTrack(state.track);
   disarm();
+  ducked = false;
   set({ playing: true });
   void playOrWait(music, MUSIC_VOLUME).then((ok) => ok || failed());
   startSnow();
@@ -255,12 +268,65 @@ export function startMusic() {
 
 /** turns ALL sound off: the music, the snow, and any little sound still playing */
 export function stopMusic() {
-  set({ playing: false });
+  ducked = false;
   disarm();
+  silence(true);
+}
+
+/** the fade-out itself; `remember: false` when it is not the visitor's choice */
+function silence(remember: boolean) {
+  set({ playing: false }, remember);
   for (const el of [music, snow, ...liveEffects]) {
     if (el && !el.paused) fadeTo(el, 0, () => el.pause());
   }
   liveEffects.clear();
+}
+
+/* ---- videos ---- */
+
+/** the last video stopped: bring the sound back, unless the visitor took over meanwhile */
+function videosDone() {
+  window.clearInterval(videoWatch);
+  videoWatch = 0;
+  if (ducked) {
+    ducked = false;
+    if (!state.playing) startMusic();
+  }
+}
+
+function pruneVideos() {
+  for (const v of playingVideos) if (!v.isConnected || v.paused || v.ended) playingVideos.delete(v);
+  if (playingVideos.size === 0) videosDone();
+}
+
+function onVideoEvent(e: Event) {
+  if (!(e.target instanceof HTMLVideoElement)) return;
+  if (e.type === "play" || e.type === "playing") {
+    const first = playingVideos.size === 0;
+    playingVideos.add(e.target);
+    // only the moment a video starts silences the sound; after that the panel decides
+    if (first && state.playing) {
+      ducked = true;
+      silence(false);
+    }
+    // a video removed mid-play (navigation) fires no pause we can hear: poll until gone
+    if (!videoWatch) videoWatch = window.setInterval(pruneVideos, 500);
+  } else {
+    playingVideos.delete(e.target);
+    if (playingVideos.size === 0) videosDone();
+  }
+}
+
+const VIDEO_EVENTS = ["play", "playing", "pause", "ended"] as const;
+function watchVideos() {
+  for (const type of VIDEO_EVENTS) document.addEventListener(type, onVideoEvent, true);
+}
+function unwatchVideos() {
+  for (const type of VIDEO_EVENTS) document.removeEventListener(type, onVideoEvent, true);
+  window.clearInterval(videoWatch);
+  videoWatch = 0;
+  playingVideos.clear();
+  ducked = false;
 }
 
 export function toggleMusic() {
@@ -272,6 +338,7 @@ export function toggleMusic() {
 export function playTrack(index: number) {
   ensureElements();
   if (!music) return;
+  ducked = false;
   set({ track: index, playing: true });
   loadTrack(index);
   disarm();
@@ -340,6 +407,7 @@ export function resumeStoredChoice() {
   // sound on by default, starting at the first gesture; a remembered pause keeps
   // everything silent
   if (saved.music !== false) armFirstGesture();
+  watchVideos();
 }
 
 export function teardownMusic() {
@@ -348,6 +416,7 @@ export function teardownMusic() {
   for (const timer of backstops.values()) window.clearTimeout(timer);
   backstops.clear();
   disarm();
+  unwatchVideos();
 }
 
 /** kept for older callers; the elements are created here now */
