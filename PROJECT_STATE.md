@@ -18,7 +18,7 @@
   Home desk and visual-direction work, without changing the approved visual system.
 - Routing: `/` defaults to `HomeDesk`; `?hub=1` preserves `HomeHub`; all historical
   `peiwen-phase1…5` and `static-reconstruction` HomeMaster flags remain available.
-  `/projects` and its eight case-study routes are live routes. `/experience` and
+  `/projects` and its ten case-study routes are live routes. `/experience` and
   `/about` remain illustrated destinations.
 - Shared chrome: `PageTransitionProvider`, `WorldLink`, and `SiteAudio` are mounted once
   in the root layout; the Projects header target is `/projects`; the About label is
