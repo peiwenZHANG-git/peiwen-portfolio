@@ -107,11 +107,11 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     hidden: true,
     answer: [
       "A 6-month AI product manager internship in Paris, as the final internship of my master’s. I can start in March 2027.",
-      "If your team is building AI products, I’d love to talk!",
+      "If your team is building AI products, I’d love to talk! UX research roles are my second direction.",
     ],
     answerZh: [
       "我在找一份 6 个月的 AI 产品经理实习，地点在巴黎，作为硕士第二年的毕业实习，2027 年 3 月可以开始。",
-      "如果你们团队在做 AI 产品，很想聊聊！",
+      "如果你们团队在做 AI 产品，很想聊聊！用户体验研究是我的第二个方向。",
     ],
     actions: [{ kind: "copy-email", label: "Copy my email", labelZh: "复制我的邮箱" }],
     keywords: ["looking for", "what role", "which role", "kind of role", "internship", "position", "when can you", "start date", "available from", "march", "找什么", "求职", "实习", "入职", "几月"],

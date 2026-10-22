@@ -368,7 +368,7 @@ const introLeft: SpreadItem[] = [
   node(
     "intro-sub",
     <div style={{ ...cssVars({ "--sub-fs": "5.4cqw" }), textAlign: "center" }}>
-      <L en={<>AI product &middot; HCI &middot; in Paris</>} zh={<>AI 产品 &middot; 人机交互 &middot; 常驻巴黎</>} />
+      <L en={<>AI product &middot; UX research &middot; in Paris</>} zh={<>AI 产品 &middot; 用户体验研究 &middot; 常驻巴黎</>} />
     </div>,
     "-0.4%",
     "63.2%",
@@ -381,12 +381,12 @@ const introLeft: SpreadItem[] = [
       <L
         en={
           <>
-            I&rsquo;m working toward AI product roles. I studied computing and machine learning, and
+            I&rsquo;m working toward AI product and UX research roles. I studied computing and machine learning, and
             I like using research and quick prototypes to turn complicated AI features into products
             people can actually use.
           </>
         }
-        zh="我在朝 AI 产品方向努力。我学过计算机和机器学习，喜欢用研究和快速原型，把复杂的 AI 功能变成人们真正用得上的产品。"
+        zh="我在朝 AI 产品和用户体验研究方向努力。我学过计算机和机器学习，喜欢用研究和快速原型，把复杂的 AI 功能变成人们真正用得上的产品。"
       />
     </p>,
     "2.7%",
