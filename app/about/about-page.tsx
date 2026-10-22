@@ -368,7 +368,7 @@ const introLeft: SpreadItem[] = [
   node(
     "intro-sub",
     <div style={{ ...cssVars({ "--sub-fs": "5.4cqw" }), textAlign: "center" }}>
-      <L en={<>AI product &middot; UX research &middot; in Paris</>} zh={<>AI 产品 &middot; 用户体验研究 &middot; 常驻巴黎</>} />
+      <L en={<>AI product &middot; UX research</>} zh={<>AI 产品 &middot; 用户体验研究</>} />
     </div>,
     "-0.4%",
     "63.2%",
