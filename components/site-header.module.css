@@ -182,6 +182,15 @@
   }
 }
 
+/* the longer "HCI × AI PRODUCT & UX RESEARCH" tag must stay on one line on a phone */
+@media (max-width: 480px) {
+  .brandRole {
+    white-space: nowrap;
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+  }
+}
+
 /* Landscape phones (design-assets/about/MOBILE.md): one thin row, so the header doesn't
    eat a third of a ~340px-tall viewport. Must come after the 860px block above. */
 @media (orientation: landscape) and (max-height: 500px) {

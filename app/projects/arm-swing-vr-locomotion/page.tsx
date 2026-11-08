@@ -216,6 +216,7 @@ export default function ArmSwingPage() {
               <div><strong>7.7/10</strong><span><L en="reported presence" zh="自评临场感" /></span></div>
               <div><strong>8.7/10</strong><span><L en="reported enjoyment" zh="自评乐趣" /></span></div>
             </div>
+            <p className={styles.small}><L en="3 runs, including my own. Exploratory, no statistics." zh="3 次试玩，包括我自己的一次。探索性测试，没有做统计检验。" /></p>
             <p><L en="All three runs finished the course. The fastest run collected the fewest coins, suggesting a precision question worth studying further, but three observations cannot validate a general speed–accuracy trade-off."
               zh="三次测试都跑完了赛道。最快的那次收集的金币最少，这提示了一个值得继续研究的精度问题——但三次观察并不足以证明普遍存在的速度–准确度权衡。" /></p>
             <Figure name="participant-results" width={1400} height={280} alt="Participant-level table showing three segment times, total completion time and coins collected for Peiwen and two classmates"><L en="Participant-level evidence. Peiwen’s 132.1-second run collected 68/69 coins; the two classmates completed in 149.2 and 121.0 seconds." zh="每位参与者的数据。佩文用 132.1 秒跑完，收集了 68/69 枚金币；两位同学分别用了 149.2 秒和 121.0 秒。" /></Figure>

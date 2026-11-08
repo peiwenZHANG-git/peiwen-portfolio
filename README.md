@@ -6,7 +6,7 @@
 
 ![The attic desk at night, the home scene of Peiwen's Little World](public/assets/home-desk/master.webp)
 
-I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI products people can understand and control, drawing on product work and a technical background in AI. Instead of a grid of project cards, this portfolio is a hand-drawn attic room: the postcards on the desk lead to my experience, the notebook to who I am, and the pinned card to my projects.
+I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI products people can understand and control, and I do UX research to check that they are, drawing on product work and a technical background in AI. Instead of a grid of project cards, this portfolio is a hand-drawn attic room: the postcards on the desk lead to my experience, the notebook to who I am, and the pinned card to my projects.
 
 ## What's inside
 

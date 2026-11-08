@@ -4,7 +4,7 @@ import AboutPage from "./about-page";
 export const metadata: Metadata = {
   title: "About me · Peiwen Zhang",
   description:
-    "Peiwen Zhang, HCI master's student at Université Paris-Saclay. Building AI products people can understand and control, with product thinking and a technical AI background.",
+    "HCI M.Sc. @ Université Paris-Saclay | AI Product & UX Research | Building AI products people can understand and control | Seeking a 6-month internship",
 };
 
 export default function About() {

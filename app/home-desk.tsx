@@ -436,6 +436,8 @@ export default function HomeDesk() {
               I&rsquo;m Peiwen, an HCI student in Paris.
               <br />
               I build AI products people can understand, and sometimes small worlds like this one.
+              <br />
+              I also run small user studies to check that they really are.
             </p>
           </div>
 
