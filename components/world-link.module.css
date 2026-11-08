@@ -236,3 +236,25 @@
     transition: none;
   }
 }
+
+/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): the
+   tag stops taking its own row under the header (world-link.tsx no longer reserves the
+   space) and floats, smaller, in the bottom-left corner. Still always labelled
+   "← back to the desk", still the next Tab stop after the header. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .keepsake {
+    top: auto;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: max(10px, env(safe-area-inset-left));
+    gap: 6px;
+    padding: 4px 10px 4px 6px;
+  }
+
+  .object svg {
+    height: 24px;
+  }
+
+  .caption {
+    font-size: 14px;
+  }
+}

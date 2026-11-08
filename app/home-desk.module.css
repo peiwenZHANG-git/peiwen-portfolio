@@ -1064,3 +1064,27 @@
     animation: none;
   }
 }
+
+/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): the
+   heading scales with the painting, which left the intro at ~8.6px and the subtitle at
+   ~9px on an 844px-wide phone. Floors keep them readable; the intro wraps inside the
+   window glass instead of running over the frame and the lamp. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .title {
+    font-size: max(24px, calc(var(--W) * 0.026));
+  }
+
+  .subtitle {
+    font-size: max(12px, 0.42em);
+  }
+
+  .intro {
+    width: 22em;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: max(11px, calc(var(--W) * 0.0102));
+    white-space: normal;
+    /* pretty, not balance: balance left "are." alone on the last line */
+    text-wrap: pretty;
+  }
+}

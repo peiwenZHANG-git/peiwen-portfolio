@@ -196,3 +196,11 @@
   .piece:hover, .arrow, .close, .hotspot, .root header a, .root header button { cursor: url('/assets/ui/cursor-hand.png') 15 4, pointer; cursor: image-set(url('/assets/ui/cursor-hand.png') 1x, url('/assets/ui/cursor-hand@2x.png') 2x) 15 4, pointer; }
   .viewport[data-dragging], .viewport[data-dragging] * { cursor: url('/assets/ui/cursor-grab.png') 16 12, grabbing; cursor: image-set(url('/assets/ui/cursor-grab.png') 1x, url('/assets/ui/cursor-grab@2x.png') 2x) 16 12, grabbing; }
 }
+
+/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): fitting
+   the whole attic to the ~350px of height left it ~400px wide, with card text overflowing
+   its paper. Here it fills the width instead: the top rope and the arrows sit in the first
+   screen, and the scene (already a vertical scroller) scrolls to the lower rope. */
+@media (min-width: 720px) and (orientation: landscape) and (max-height: 500px) {
+  .stage { width: 100cqw; }
+}

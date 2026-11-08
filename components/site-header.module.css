@@ -75,9 +75,19 @@
 }
 
 .nav a {
+  position: relative;
   padding-bottom: 3px;
   color: var(--pw-ink);
   text-decoration: none;
+}
+
+/* Invisible hit area (2026-11-08), same idea as .langBtn::after: the links are ~27px
+   tall, short of a comfortable ~44px touch target on phones. Nothing visible changes;
+   the horizontal inset stays smaller than half the narrowest nav gap (14px). */
+.nav a::after {
+  position: absolute;
+  inset: -8px -6px;
+  content: "";
 }
 
 .nav a[aria-current] {

@@ -511,3 +511,44 @@
     transition: none;
   }
 }
+
+/* Landscape phones (2026-11-08): at the desktop size (112px) she covered ~30% of a
+   ~390px-tall screen, the Projects right arrow and the end of Experience/About lines.
+   Smaller, like the narrow-phone size above; the chat panel itself is unchanged. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .root {
+    --h: 76px;
+  }
+
+  .tag {
+    padding: 2px 7px 3px;
+    font-size: 14px;
+  }
+
+  /* her first-visit hint covered the right column of /experience and /about for its
+     full 20s here: narrower, and gone after 8s (the script still clears it at 20s) */
+  .hint {
+    max-width: min(210px, calc(100vw - var(--h) * 0.663 - 40px));
+    font-size: 14px;
+  }
+}
+
+@keyframes hintGone {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
+  .hint {
+    animation: hintPop 420ms ease-out both, hintGone 400ms ease 8s forwards;
+  }
+}
+
+/* no movement for reduced motion: it simply isn't there any more after 8s */
+@media (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: reduce) {
+  .hint {
+    animation: hintGone 1ms 8s forwards;
+  }
+}

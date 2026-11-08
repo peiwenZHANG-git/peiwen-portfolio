@@ -150,6 +150,34 @@
   844×390 that arrows are mid-screen and dots at the bottom without scrolling.
 - lint, typecheck and build pass.
 
+## Landscape-phone pass — 2026-11-08
+
+- Decision (Peiwen): phones stay landscape-only (the rotate guard is unchanged); this pass
+  fixes the landscape layouts. Approved from before/after captures of the live site at
+  844×390, made by injecting the proposed CSS in a real browser.
+- Implemented, all under `(orientation: landscape) and (max-height: 500px)` (desktop and
+  tablet layouts unchanged):
+  - Desk keepsake: no row reserved under the header (`world-link.tsx`); the tag floats
+    smaller in the bottom-left corner (`world-link.module.css`).
+  - Companion: `--h` 112px → 76px, smaller tag; the first-visit hint is narrower and
+    fades out after 8s (instantly, without motion, under reduced motion).
+  - `/projects` (≥720px wide): the attic fills the width (`.stage { width: 100cqw }`); the
+    top rope and arrows are in the first screen, the scene scrolls to the lower rope.
+  - `/experience` (≥720px wide): compact intro, facts line hidden, desktop two-column grid
+    (road left, city page right); left column not sticky; city heading 24px so
+    "巴黎萨克雷大学" stays on one line.
+  - `/about`: heading only above the notebook (tags and stats hidden), with bottom padding
+    so the notebook's crop margin doesn't cover it; notebook layout as before.
+  - Home: title ≥24px, subtitle ≥12px, intro ≥11px and wrapped inside the window glass.
+- All widths: header nav links get an invisible ~44px hit area (`.nav a::after`).
+- Verified (first patch): lint, typecheck and build pass; local dev server checked at
+  844×390 on `/`, `/projects`, `/experience`, `/about` (EN and 中). The follow-up fixes
+  (hint, Experience heading, About heading padding, home intro wrap) were checked by
+  injecting the same CSS into the local dev build.
+- Not verified yet: lint / typecheck / build after the follow-up fixes, real-device touch,
+  reduced motion, and landscape phones narrower than 720px (e.g. 667×375), which still
+  use the phone layouts.
+
 ## ChaseRun case study — 2026-10-21
 
 - Implemented: `/projects/chaserun` (bilingual), from Peiwen's `ChaseRun_portfolio_brief.md`

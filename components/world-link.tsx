@@ -91,6 +91,10 @@ export function WorldLink() {
     if (!tag) return;
     const header = document.querySelector<HTMLElement>("header");
     const narrow = window.matchMedia("(max-width: 999px)");
+    // Landscape phones (2026-11-08): the tag floats small in the bottom-left corner
+    // instead (world-link.module.css), so no row is reserved for it under the header:
+    // that row cost ~70px of a ~390px-tall screen on every inner page.
+    const shortLandscape = window.matchMedia("(orientation: landscape) and (max-height: 500px)");
     let spaced: HTMLElement | null = null;
     let prevMargin = "";
 
@@ -117,7 +121,7 @@ export function WorldLink() {
       const stickyTop = header ? parseFloat(getComputedStyle(header).top) || 0 : 0;
       const headerBottom = header ? stickyTop + header.offsetHeight : 80;
       tag.style.setProperty("--kt", `${Math.round(headerBottom + 10)}px`);
-      if (narrow.matches) {
+      if (narrow.matches && !shortLandscape.matches) {
         const target = nextAfterHeader();
         if (target !== spaced) {
           release();
@@ -136,10 +140,12 @@ export function WorldLink() {
     ro.observe(tag);
     window.addEventListener("resize", place);
     narrow.addEventListener("change", place);
+    shortLandscape.addEventListener("change", place);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", place);
       narrow.removeEventListener("change", place);
+      shortLandscape.removeEventListener("change", place);
       release();
     };
   }, [pathname, mounted]);
