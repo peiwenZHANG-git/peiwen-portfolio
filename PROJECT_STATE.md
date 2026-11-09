@@ -178,7 +178,16 @@
   `--sub-fs` (`.introSub`, capped at the 16px it always had), so it no longer wraps onto
   the body text on smaller notebooks. Desktop size unchanged.
   - Home: title ≥24px, subtitle ≥12px, intro ≥11px and wrapped inside the window glass.
-- All widths: header nav links get an invisible ~44px hit area (`.nav a::after`).
+- All widths: header nav links get an invisible ~44px hit area (`.nav a::after`), and the
+  "Peiwen Zhang" home link one too (`.brand::after`).
+- Small landscape phones (2026-11-09): `/projects` uses the attic layout from 600px wide
+  in landscape (CSS and the clothesline's `wide` query), not only from 720px, so e.g.
+  iPhone SE (667×375) no longer gets the portrait layout with its first card under the
+  screen. The `/about` landscape notebook stops shrinking at 780px
+  (`clamp(94.09%, 780px, 121.951%)`), keeping ~11–12px body text on small phones (the
+  leather's left edge is slightly cut at 667px).
+- Touch screens: case-study outbound links (`target="_blank"`) get a ~36px target via
+  padding cancelled by negative margin (`shell.module.css`, `pointer: coarse`).
 - Verified (first patch): lint, typecheck and build pass; local dev server checked at
   844×390 on `/`, `/projects`, `/experience`, `/about` (EN and 中). The follow-up fixes
   (hint, Experience heading, About heading padding, home intro wrap) were checked by

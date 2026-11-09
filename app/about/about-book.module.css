@@ -1094,11 +1094,17 @@
      of it. Top/bottom crop margins scale with it (-3.742% × 0.7715). Horizontal place
      set by eye with Peiwen (2026-11-09): the leather cover centred on the page, rings
      on the centre line; the desktop 1.6% nudge (left) is dropped here. */
+  /* Small landscape phones (2026-11-09): at 94.09% a 667px-wide iPhone SE got a ~613px
+     notebook with ~9.5px body text, so it now stops shrinking at 780px (the approved size
+     at 844×390) and only grows past that with the screen, never beyond the old
+     fill-the-width 121.951%. 0.4687 keeps the eyeballed centring (5.9% at 844×390). */
   .book {
+    --bw: clamp(94.09%, 780px, 121.951%);
     left: 0;
-    width: 94.09%;
+    width: var(--bw);
     max-width: none;
-    margin: -2.887% 0 -2.887% 5.9%;
+    /* top/bottom crop: the original -3.742% at 121.951% wide, scaled with the notebook */
+    margin: calc(var(--bw) * -0.03068) 0 calc(var(--bw) * -0.03068) calc(50% - var(--bw) * 0.4687);
   }
 
   /* The prev/next arrows and the dots below are `position: fixed`, meant to stay on

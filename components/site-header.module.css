@@ -36,11 +36,20 @@
 }
 
 .brand {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
   color: var(--pw-ink);
   text-decoration: none;
+}
+
+/* Invisible hit area (2026-11-09): on landscape phones the home link is only the name,
+   ~19px tall. Nothing visible changes. */
+.brand::after {
+  position: absolute;
+  inset: -12px -6px;
+  content: "";
 }
 
 .brand svg {

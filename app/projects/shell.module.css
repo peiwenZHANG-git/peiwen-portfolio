@@ -1300,3 +1300,15 @@ a.cvLabel:focus-visible {
     transform: none;
   }
 }
+
+/* Touch screens (2026-11-09): the case studies' outbound links ("GitHub ↗", "Watch demo ↗",
+   reports…) are ~26px tall. 5px of vertical padding, cancelled by a negative margin,
+   makes each one a ~36px target without moving anything: rows of links sit 10px apart,
+   so neighbouring targets meet but don't overlap. Low specificity (:where) so no page's
+   own link styles are overridden. */
+@media (pointer: coarse) {
+  .shell :where(a[target="_blank"]) {
+    padding-block: 5px;
+    margin-block: -5px;
+  }
+}
