@@ -163,11 +163,16 @@
     fades out after 8s (instantly, without motion, under reduced motion).
   - `/projects` (≥720px wide): the attic fills the width (`.stage { width: 100cqw }`); the
     top rope and arrows are in the first screen, the scene scrolls to the lower rope.
-  - `/experience` (≥720px wide): compact intro, facts line hidden, desktop two-column grid
-    (road left, city page right); left column not sticky; city heading 24px so
-    "巴黎萨克雷大学" stays on one line.
+  - `/experience`: a two-column landscape layout was tried and reverted at Peiwen's
+    request (she wants the original single-column page); only the shared keepsake and
+    companion changes apply there.
   - `/about`: heading only above the notebook (tags and stats hidden), with bottom padding
-    so the notebook's crop margin doesn't cover it; notebook layout as before.
+    so the notebook's crop margin doesn't cover it. The notebook is ~77% of its old
+    fill-the-width size (Peiwen picked the middle of three sizes): body text ~11px, a
+    short scroll shows the whole spread.
+- About, all widths: the "AI product · UX research" line under the name now reads its
+  `--sub-fs` (`.introSub`, capped at the 16px it always had), so it no longer wraps onto
+  the body text on smaller notebooks. Desktop size unchanged.
   - Home: title ≥24px, subtitle ≥12px, intro ≥11px and wrapped inside the window glass.
 - All widths: header nav links get an invisible ~44px hit area (`.nav a::after`).
 - Verified (first patch): lint, typecheck and build pass; local dev server checked at

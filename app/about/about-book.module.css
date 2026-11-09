@@ -303,6 +303,14 @@
   color: var(--ink-soft);
 }
 
+/* "AI product · UX research" under the name (2026-11-09). It set --sub-fs but had no
+   class reading it, so it stayed at the inherited 16px at every notebook size: on a
+   smaller notebook it wrapped onto the body text. It now shrinks with the page, and
+   never grows past the 16px it has always had on desktop. */
+.introSub {
+  font-size: min(16px, var(--sub-fs, 5.4cqw));
+}
+
 .bodyText {
   margin: 0;
   font-size: var(--body-fs, 3.3cqw);
@@ -1080,10 +1088,15 @@
     overflow-x: clip;
   }
 
+  /* 2026-11-09 (Peiwen chose the middle of three sizes from captures at 844×390): the
+     cropped notebook used to fill the width (121.951%, body text ~12–13px) and needed a
+     long scroll. It is now ~77% of that (body text ~11px), a short scroll shows all of
+     it, and it is centred on its content (x 3.5%–85.5% of the illustration, centre
+     44.5%). Top/bottom crop margins scale with it (-3.742% × 0.7715). */
   .book {
-    width: 121.951%;
+    width: 94.09%;
     max-width: none;
-    margin: -3.742% 0 -3.742% -4.268%;
+    margin: -2.887% 0 -2.887% calc(50% - 94.09% * 0.445);
   }
 
   /* The prev/next arrows and the dots below are `position: fixed`, meant to stay on
