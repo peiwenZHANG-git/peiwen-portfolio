@@ -197,10 +197,38 @@
   .viewport[data-dragging], .viewport[data-dragging] * { cursor: url('/assets/ui/cursor-grab.png') 16 12, grabbing; cursor: image-set(url('/assets/ui/cursor-grab.png') 1x, url('/assets/ui/cursor-grab@2x.png') 2x) 16 12, grabbing; }
 }
 
-/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): fitting
-   the whole attic to the ~350px of height left it ~400px wide, with card text overflowing
-   its paper. Here it fills the width instead: the top rope and the arrows sit in the first
-   screen, and the scene (already a vertical scroller) scrolls to the lower rope. */
+/* Landscape phones (2026-11-08/09, approved from before/after captures at 844×390).
+   Fitting the whole attic to the ~350px of height left it ~400px wide, card text spilling
+   off the paper; filling the width (first pass) pushed the lower rope below the screen, so
+   reaching it took a vertical swipe of the scene and then a horizontal swipe of the rope,
+   two gestures that fight on a phone. The attic is now as wide as it can be while both
+   ropes stay in the first screen (the lower rope ends ~730 art units down), so only
+   sideways swipes are needed; card titles keep their 14px floor. */
 @media (min-width: 720px) and (orientation: landscape) and (max-height: 500px) {
-  .stage { width: 100cqw; }
+  .stage { width: min(100cqw, calc((100cqh - 10px) * 1448 / 730)); }
+
+  /* ~46px touch target around the 34px arrows; nothing visible changes */
+  .arrow::after { position: absolute; inset: -6px; border-radius: 50%; content: ""; }
+}
+
+/* Landscape phones: the project preview put the image on top, so the title, the summary
+   and "View case study →" were all below the screen. Side by side here: image left, words
+   right, everything in one screen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .dialog { padding: 10px; }
+
+  .preview {
+    display: grid;
+    grid-template-columns: 46% minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 26px;
+    padding: 14px 26px 18px;
+  }
+
+  .preview > .close { grid-column: 1 / -1; grid-row: 1; padding: 2px 6px; }
+  .previewImage { grid-column: 1; grid-row: 2 / 6; height: auto; min-height: 190px; margin: 0; }
+  .previewLabel { grid-column: 2; grid-row: 2; font-size: 15px; }
+  .preview h2 { grid-column: 2; grid-row: 3; margin: 4px 0 6px; font-size: 30px; }
+  .preview > p:not(.previewLabel) { grid-column: 2; grid-row: 4; margin: 0; font-size: 14px; line-height: 1.5; }
+  .previewLinks { grid-column: 2; grid-row: 5; margin-top: 8px; }
 }

@@ -161,8 +161,12 @@
     smaller in the bottom-left corner (`world-link.module.css`).
   - Companion: `--h` 112px → 76px, smaller tag; the first-visit hint is narrower and
     fades out after 8s (instantly, without motion, under reduced motion).
-  - `/projects` (≥720px wide): the attic fills the width (`.stage { width: 100cqw }`); the
-    top rope and arrows are in the first screen, the scene scrolls to the lower rope.
+  - `/projects` (≥720px wide): the attic is as wide as it can be with both ropes in the
+    first screen (`min(100cqw, (100cqh - 10px) × 1448 / 730)`, ~677px at 844×390), so
+    only sideways swipes are needed (filling the width, the first pass, needed a vertical
+    then a horizontal swipe to reach the lower rope). Arrows get an invisible ~46px hit
+    area. The project preview is side by side (image left; label, title, summary and
+    links right), so "View case study →" is on screen without scrolling the dialog.
   - `/experience`: a two-column landscape layout was tried and reverted at Peiwen's
     request (she wants the original single-column page); only the shared keepsake and
     companion changes apply there.
