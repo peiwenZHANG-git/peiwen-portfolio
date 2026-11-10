@@ -511,3 +511,49 @@
     transition: none;
   }
 }
+
+/* Landscape phones (2026-11-08): at the desktop size (112px) she covered ~30% of a
+   ~390px-tall screen, the Projects right arrow and the end of Experience/About lines.
+   Smaller, like the narrow-phone size above; the chat panel itself is unchanged. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .root {
+    --h: 76px;
+  }
+
+  .tag {
+    padding: 2px 7px 3px;
+    font-size: 14px;
+  }
+
+  /* her written first-visit hint: hidden on landscape phones (2026-11-09, real-phone
+     test: three or four lines took a third of a ~294px-tall screen). The places to
+     swipe show a small hand instead (components/swipe-hint.tsx) and the arrows to tap
+     nudge; she is still there to tap for help. */
+  .hint {
+    display: none;
+  }
+}
+
+/* Landscape phones, real-phone test (2026-11-09): the bubble opened above her and was
+   capped at the screen height minus her height minus 110px, which in a ~285px-tall
+   in-app browser left ~100px: the greeting and one cut-off row of chips. Here it opens
+   to her left instead, as tall as the screen, with its tail pointing at her. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .root {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .bubble {
+    width: min(440px, calc(100vw - var(--h) * 0.663 - 48px));
+    max-height: calc(100dvh - 16px);
+    margin: 0 10px 0 0;
+    transform-origin: 100% calc(100% - var(--h) * 0.55);
+  }
+
+  .bubble::after {
+    right: -9px;
+    bottom: calc(var(--h) * 0.55);
+    transform: rotate(-45deg) skew(6deg, 6deg);
+  }
+}

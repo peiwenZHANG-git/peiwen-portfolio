@@ -45,8 +45,10 @@
 .caseStudy { font: 400 23px var(--hand); color: var(--ink-soft); }
 .previewLinks { display: flex; flex-wrap: wrap; gap: 6px 28px; }
 
-/* ---------- Mobile (below 720px): the room scrolls as before ---------- */
-@media (max-width: 719px) {
+/* ---------- Mobile (below 720px): the room scrolls as before ----------
+   Landscape phones 600–719px wide (e.g. iPhone SE at 667×375) use the attic layout below
+   instead (2026-11-09): this portrait layout put its first card under the screen there. */
+@media (max-width: 599px), (max-width: 719px) and (orientation: portrait), (max-width: 719px) and (min-height: 501px) {
 .scene { min-height: calc(100svh - 110px); background: url('/assets/projects/attic-layered.webp') 33% center / cover no-repeat; }
 .title { top: 20px; left: 5%; width: min(460px, 90%); padding: 15px 18px; }
 .title h1 { font-size: 48px; }
@@ -86,10 +88,10 @@
 .dialog { padding: 14px; }
 .preview { padding: 18px; }
 }
-@media (max-width: 719px) and (hover: hover) { .piece:hover { transform: translateY(-2px) rotate(0); } }
+@media (max-width: 599px) and (hover: hover), (max-width: 719px) and (orientation: portrait) and (hover: hover), (max-width: 719px) and (min-height: 501px) and (hover: hover) { .piece:hover { transform: translateY(-2px) rotate(0); } }
 
-/* ---------- Desktop (720px and up): the whole attic picture, scaled to fit the window ---------- */
-@media (min-width: 720px) {
+/* ---------- Desktop (720px and up, and landscape phones from 600px): the whole attic picture, scaled to fit the window ---------- */
+@media (min-width: 720px), (min-width: 600px) and (orientation: landscape) and (max-height: 500px) {
 .header { flex-direction: row; justify-content: space-between; padding: 13px 5vw; }
 .scene { display: flex; align-items: flex-start; justify-content: center; flex: 1 1 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; container-type: size; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .25 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") #f7f1e7; }
 .scene::before { content: none; }
@@ -148,7 +150,7 @@
 @keyframes glowBreathe { 0%, 100% { opacity: .05; } 50% { opacity: .3; } }
 @keyframes bubbleLife { 0% { opacity: 0; translate: 0 calc(6 * var(--u)); } 12% { opacity: 1; translate: 0 0; } 86% { opacity: 1; } 100% { opacity: 0; translate: 0 calc(-4 * var(--u)); } }
 @keyframes subtitleIn { from { opacity: 0; } to { opacity: .92; } }
-@media (min-width: 720px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 720px) and (prefers-reduced-motion: no-preference), (min-width: 600px) and (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
 .stage::before { animation: fadeIn 1200ms ease both, breathe 9s ease-in-out 1300ms infinite; }
 .clothesline { animation: fadeIn 900ms ease 750ms both; }
 .arrow { animation: fadeIn 800ms ease 1100ms both; }
@@ -159,7 +161,7 @@
 
 /* Signs of life (desktop stage only). */
 .life { display: none; }
-@media (min-width: 720px) {
+@media (min-width: 720px), (min-width: 600px) and (orientation: landscape) and (max-height: 500px) {
 .life { display: block; position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .glow { position: absolute; left: calc(470 * var(--u)); top: calc(90 * var(--u)); width: calc(640 * var(--u)); height: calc(560 * var(--u)); z-index: -1; opacity: .12; border-radius: 50%; background: radial-gradient(ellipse at 50% 42%, #fff6dc 0%, #fff6dc00 68%); mix-blend-mode: screen; }
 .hotspot { position: absolute; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: pointer; border-radius: 40%; }
@@ -180,7 +182,7 @@
 .bubbleCat::after { right: calc(38 * var(--u)); bottom: calc(-17 * var(--u)); }
 .bubbleCat::before { right: calc(28 * var(--u)); bottom: calc(-30 * var(--u)); }
 }
-@media (min-width: 720px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 720px) and (prefers-reduced-motion: no-preference), (min-width: 600px) and (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
 .glow { animation: glowBreathe 9s ease-in-out 1300ms infinite; }
 }
 @media (prefers-reduced-motion: reduce) { .bubble { animation: none; } }
@@ -195,4 +197,76 @@
   .viewport { cursor: inherit; }
   .piece:hover, .arrow, .close, .hotspot, .root header a, .root header button { cursor: url('/assets/ui/cursor-hand.png') 15 4, pointer; cursor: image-set(url('/assets/ui/cursor-hand.png') 1x, url('/assets/ui/cursor-hand@2x.png') 2x) 15 4, pointer; }
   .viewport[data-dragging], .viewport[data-dragging] * { cursor: url('/assets/ui/cursor-grab.png') 16 12, grabbing; cursor: image-set(url('/assets/ui/cursor-grab.png') 1x, url('/assets/ui/cursor-grab@2x.png') 2x) 16 12, grabbing; }
+}
+
+/* Landscape phones (2026-11-08/09, approved from before/after captures at 844×390).
+   Fitting the whole attic to the ~350px of height left it ~400px wide, card text spilling
+   off the paper; filling the width (first pass) pushed the lower rope below the screen, so
+   reaching it took a vertical swipe of the scene and then a horizontal swipe of the rope,
+   two gestures that fight on a phone. The attic is now as wide as it can be while both
+   ropes stay in the first screen (the lower rope ends ~730 art units down), so only
+   sideways swipes are needed; card titles keep their 14px floor. */
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 500px) {
+  .stage { width: min(100cqw, calc((100cqh - 10px) * 1448 / 730)); }
+
+  /* ~46px touch target around the 34px arrows; nothing visible changes */
+  .arrow::after { position: absolute; inset: -6px; border-radius: 50%; content: ""; }
+}
+
+/* Landscape phones: the project preview put the image on top, so the title, the summary
+   and "View case study →" were all below the screen. Side by side here: image left, words
+   right, everything in one screen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .dialog { padding: 10px; }
+
+  .preview {
+    display: grid;
+    grid-template-columns: 46% minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 26px;
+    padding: 14px 26px 18px;
+  }
+
+  .preview > .close { grid-column: 1 / -1; grid-row: 1; padding: 2px 6px; }
+  .previewImage { grid-column: 1; grid-row: 2 / 6; height: auto; min-height: 190px; margin: 0; }
+  .previewLabel { grid-column: 2; grid-row: 2; font-size: 15px; }
+  .preview h2 { grid-column: 2; grid-row: 3; margin: 4px 0 6px; font-size: 30px; }
+  .preview > p:not(.previewLabel) { grid-column: 2; grid-row: 4; margin: 0; font-size: 14px; line-height: 1.5; }
+  .previewLinks { grid-column: 2; grid-row: 5; margin-top: 8px; }
+}
+
+/* The shortest landscape phones (2026-11-09, real-phone test in Safari, ~294px of
+   height): with both ropes in one screen the attic is only ~490px wide, and the text
+   floors (14px titles, 12px subtitles, 13px page subtitle) are about twice the scaled
+   size there, so notes wrapped into four lines and spilled off the paper. Here the
+   notes keep just the project name, which fits; the one-line pitch is still in each
+   project's preview. The slanted "discover this way" note goes too: at its floor size
+   it lay across the Arm-Swing card. */
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 340px) {
+  .coverSubtitle { display: none; }
+  .hint { display: none; }
+  .cardTitle { font-size: max(12px, calc(30 * var(--u))); }
+  .title p { font-size: max(11px, calc(24 * var(--u))); }
+}
+
+/* Landscape phones (2026-11-09): instead of the companion's written hint, a line-drawn
+   hand sweeps once across the top rope (components/swipe-hint.tsx), and the right arrow
+   nudges a few times, the same way the About notebook's arrow does. */
+.swipeHint { left: calc(760 * var(--u)); top: calc(350 * var(--u)); }
+
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
+  .arrowRight { animation: arrowNudge 1400ms ease-in-out 3200ms 3; }
+}
+
+@keyframes arrowNudge {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 5px 0; }
+}
+
+/* Landscape phones (2026-11-09, real-phone test): "Things I've made, tested, and
+   explored." wrapped at its 13px floor and its second line sat on the top rope. On one
+   line it ends above the rope. */
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 500px) {
+  .title { width: auto; }
+  .title p { max-width: none; white-space: nowrap; }
 }

@@ -148,7 +148,8 @@ export default function ProjectClothesline({ rope }: { rope: "featured" | "small
     const papers = [...element.querySelectorAll<HTMLElement>("[data-piece]")];
     const items = [...element.querySelectorAll<HTMLElement>("[data-slot]")];
     const stage = element.closest<HTMLElement>("[data-stage]");
-    const wide = matchMedia("(min-width: 720px)");
+    // Same breakpoint as the attic layout in projects.module.css (incl. landscape phones from 600px).
+    const wide = matchMedia("(min-width: 720px), (min-width: 600px) and (orientation: landscape) and (max-height: 500px)");
     // Desktop: papers ride the rope in illustration units. The viewport's top edge is 165 / 520 (see CSS).
     const ropeY = rope === "featured" ? upperRope : lowerRope;
     const ropeSlope = rope === "featured" ? upperSlope : lowerSlope;

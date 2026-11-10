@@ -303,6 +303,14 @@
   color: var(--ink-soft);
 }
 
+/* "AI product · UX research" under the name (2026-11-09). It set --sub-fs but had no
+   class reading it, so it stayed at the inherited 16px at every notebook size: on a
+   smaller notebook it wrapped onto the body text. It now shrinks with the page, and
+   never grows past the 16px it has always had on desktop. */
+.introSub {
+  font-size: min(16px, var(--sub-fs, 5.4cqw));
+}
+
 .bodyText {
   margin: 0;
   font-size: var(--body-fs, 3.3cqw);
@@ -1075,15 +1083,31 @@
    -0.05/0.82 × 853/1390. The shell (about.module.css) is the vertical scroller. */
 @media (orientation: landscape) and (max-height: 500px) {
   .stageWrap {
+    /* notebook width, read by .book and by the arrows that sit beside it */
+    --bw: clamp(76.5%, 640px, 121.951%);
+
     display: block;
     padding: 0 0 44px;
     overflow-x: clip;
   }
 
+  /* 2026-11-09 (Peiwen chose the middle of three sizes from captures at 844×390): the
+     cropped notebook used to fill the width (121.951%, body text ~12–13px) and needed a
+     long scroll. It is now ~77% of that (body text ~11px) and a short scroll shows all
+     of it. Top/bottom crop margins scale with it (-3.742% × 0.7715). Horizontal place
+     set by eye with Peiwen (2026-11-09): the leather cover centred on the page, rings
+     on the centre line; the desktop 1.6% nudge (left) is dropped here. */
+  /* Size (2026-11-09, after the real-phone test): Peiwen picked the middle of three
+     sizes captured at Safari's landscape height (852×294): 640px wide, body text
+     ~9.7px, most of the spread in one screen. It is 640px on most landscape phones,
+     76.5% of the width on wider ones, never beyond the old fill-the-width 121.951%.
+     0.4687 keeps the eyeballed centring on the leather. */
   .book {
-    width: 121.951%;
+    left: 0;
+    width: var(--bw);
     max-width: none;
-    margin: -3.742% 0 -3.742% -4.268%;
+    /* top/bottom crop: the original -3.742% at 121.951% wide, scaled with the notebook */
+    margin: calc(var(--bw) * -0.03068) 0 calc(var(--bw) * -0.03068) calc(50% - var(--bw) * 0.4687);
   }
 
   /* The prev/next arrows and the dots below are `position: fixed`, meant to stay on
@@ -1116,12 +1140,16 @@
     transform: translateY(-50%);
   }
 
+  /* 2026-11-09 (real-phone test): pinned to the screen edges they ended up ~80px from
+     the smaller notebook. Now just outside its leather: the box starts at
+     50% - 0.4687 × bw (see .book) and the cover with its clasp ends ~1.0 × bw later;
+     46px buttons, 6px and 4px gaps, never off screen. */
   .navPrev {
-    left: max(8px, env(safe-area-inset-left));
+    left: max(8px, env(safe-area-inset-left), calc(50% - var(--bw) * 0.4687 - 52px));
   }
 
   .navNext {
-    right: max(8px, env(safe-area-inset-right));
+    left: min(calc(100% - 54px - env(safe-area-inset-right)), calc(50% + var(--bw) * 0.5313 + 4px));
   }
 
   .dots {

@@ -867,3 +867,39 @@ button:focus-visible .drawU {
     padding-right: 72px;
   }
 }
+
+/* Landscape phones (2026-11-09, real-phone test in Safari, ~294px of height): the
+   postcard filled the column width (~780px wide, ~470px tall), so it never fit on screen
+   at once. It is now capped so the whole postcard fits below the header, centred. The
+   page stays the original single column (Peiwen's call). */
+@media (orientation: landscape) and (max-height: 500px) {
+  .stage {
+    max-width: calc((100svh - 60px) * 10 / 6);
+    margin-inline: auto;
+  }
+}
+
+/* Landscape phones (2026-11-09): instead of the companion's written hint, a line-drawn
+   hand sweeps once along the road on the postcard (components/swipe-hint.tsx), and the
+   "next place" arrow nudges a few times. */
+.swipeHint {
+  left: 58%;
+  top: 70%;
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
+  .arrows button[data-next]:not(:disabled) {
+    animation: nextNudge 1400ms ease-in-out 3200ms 3;
+  }
+}
+
+@keyframes nextNudge {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  45% {
+    translate: 5px 0;
+  }
+}

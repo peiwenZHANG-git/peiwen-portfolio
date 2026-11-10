@@ -192,9 +192,40 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     prevPathname.current = pathname;
   }, [pathname, phase]);
 
+  // Watchdog (2026-10-23): the departure is driven by ONE transitionend from the stage.
+  // If that event never arrives (a cancelled transition, a background tab, a child's
+  // opacity transition racing it), phase used to stay "departing"/"departed" forever:
+  // the full-screen paper overlay below stayed up and the page sat at opacity 0 — the
+  // blank page users reported, where every later click was silently ignored. Force the
+  // departure to finish on a timer if the event didn't come.
+  useEffect(() => {
+    if (phase !== "departing") return;
+    const t = setTimeout(handleDeparted, DEPART_MS + 150);
+    return () => clearTimeout(t);
+  }, [phase, handleDeparted]);
+
+  // Last-resort recovery: if the departed state outlives any reasonable route switch
+  // (slow chunk, failed prefetch), push the pending route ourselves, and after that
+  // drop the overlay so the user is never left on a blank paper page.
+  useEffect(() => {
+    if (phase !== "departed") return;
+    const t = setTimeout(() => {
+      if (pendingHref.current) {
+        router.push(pendingHref.current, pendingScroll.current === undefined ? undefined : { scroll: pendingScroll.current });
+        pendingHref.current = null;
+      }
+    }, 1500);
+    const reset = setTimeout(() => setPhase("idle"), 4000);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(reset);
+    };
+  }, [phase, router]);
+
   const onStageTransitionEnd = useCallback(
     (e: TransitionEvent<HTMLElement>) => {
-      if (e.propertyName !== "opacity") return;
+      // Ignore transitionend bubbling up from children (cards, bubbles, companion, etc.).
+      if (e.target !== e.currentTarget || e.propertyName !== "opacity") return;
       if (phase === "departing") handleDeparted();
     },
     [phase, handleDeparted],

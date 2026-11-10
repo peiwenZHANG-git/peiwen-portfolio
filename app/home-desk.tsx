@@ -100,8 +100,15 @@ function makeFlakes() {
 const FLAKES = makeFlakes();
 
 /* ---- external state read without setState-in-effect ---- */
-function subscribeNothing() {
-  return () => {};
+// 2026-11-09 (real-phone test): phones usually open the link in portrait, where the
+// rotate guard is showing and the aspect check below says "lit"; the visitor then turns
+// the phone and never got the dark room or the fairy. Re-read the start phase when the
+// screen crosses that aspect ratio, so turning to landscape still starts the opening.
+// (Once the intro has started, `progress` holds the phase and this no longer matters.)
+function subscribeAspect(onChange: () => void) {
+  const mq = window.matchMedia("(min-aspect-ratio: 115/100)");
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
 }
 function readStartPhase(): Phase {
   try {
@@ -129,7 +136,7 @@ export default function HomeDesk() {
   const { navigate, stageClassName, onStageTransitionEnd } = usePageTransition();
   // null on the server / first hydration pass: render nothing visible until we know
   // whether this visitor gets the intro, so returning visitors never see a dark flash.
-  const startPhase = useSyncExternalStore<Phase | null>(subscribeNothing, readStartPhase, () => null);
+  const startPhase = useSyncExternalStore<Phase | null>(subscribeAspect, readStartPhase, () => null);
   const [progress, setProgress] = useState<Phase | null>(null);
   const [played, setPlayed] = useState(false);
   // Once the visitor has pointed at (or tabbed to) anything on the desk, the

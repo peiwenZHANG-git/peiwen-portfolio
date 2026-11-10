@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { SwipeHint } from "@/components/swipe-hint";
 import { SiteHeader } from "@/components/site-header";
 import { usePageTransition } from "@/components/page-transition";
 import { playEffect } from "@/components/music-store";
@@ -574,6 +575,7 @@ export default function ExperiencePage() {
           <div data-leftcol className={`${styles.leftcol} ${styles.revealLeft}`}>
             <div data-found className={styles.found} aria-hidden="true" />
             <div data-stage className={styles.stage}>
+              <SwipeHint id="experience" className={styles.swipeHint} />
               <div
                 data-scene="a"
                 className={`${styles.scene} ${styles.sceneFinal}`}

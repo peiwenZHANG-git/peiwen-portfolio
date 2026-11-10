@@ -232,3 +232,26 @@
     cursor: image-set(url("/assets/ui/cursor-pencil.png") 1x, url("/assets/ui/cursor-pencil@2x.png") 2x) 3 3, pointer;
   }
 }
+
+/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): the
+   notebook keeps its fill-the-width, scroll-to-read layout (about-book.module.css), and
+   the block above it shrinks to the heading alone so the notebook starts in the first
+   screen. The tags were half covered by the notebook here anyway; stats are small print. */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* bottom padding: the notebook is pulled up by its crop margin (about-book.module.css,
+     ~-3.7% of the width), which would otherwise slide it over the heading */
+  .intro {
+    padding-top: 6px;
+    padding-bottom: 30px;
+  }
+
+  .introHeading {
+    font-size: 22px;
+    margin: 0;
+  }
+
+  .tags,
+  .stats {
+    display: none;
+  }
+}

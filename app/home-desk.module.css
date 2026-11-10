@@ -1064,3 +1064,60 @@
     animation: none;
   }
 }
+
+/* Landscape phones (2026-11-08, approved from before/after captures at 844×390): the
+   heading scales with the painting, which left the intro at ~8.6px and the subtitle at
+   ~9px on an 844px-wide phone. Floors keep them readable; the intro wraps inside the
+   window glass instead of running over the frame and the lamp. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .title {
+    font-size: max(24px, calc(var(--W) * 0.026));
+  }
+
+  .subtitle {
+    font-size: max(12px, 0.42em);
+  }
+
+  .intro {
+    width: 22em;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: max(11px, calc(var(--W) * 0.0102));
+    white-space: normal;
+    /* pretty, not balance: balance left "are." alone on the last line */
+    text-wrap: pretty;
+  }
+}
+
+/* Landscape phones, real-phone test (2026-11-09). In an in-app browser (WeChat and the
+   like) a landscape phone leaves ~285–350px of height, and the painting (cover-fitted,
+   ~422px tall at 844px wide) was cut 40% from the top: the title sat under the site
+   header and, at the shortest heights, the desk labels fell off the bottom. Crop more
+   of the sky and less of the desk (0.65 instead of 0.4 of the overflow), and pin the
+   heading just below the header whatever the crop. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .stage {
+    top: calc((100svh - var(--H)) * 0.65);
+  }
+
+  .heading {
+    top: max(5%, calc(44px - (100svh - var(--H)) * 0.65));
+  }
+}
+
+/* the shortest of those (~300px): a tighter heading so the intro stays on the window
+   glass; the "A small world of curiosity." line goes, the name and intro stay */
+@media (orientation: landscape) and (max-height: 340px) {
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    display: none;
+  }
+
+  .intro {
+    margin-top: 4px;
+    line-height: 1.32;
+  }
+}
