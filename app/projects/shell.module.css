@@ -1312,3 +1312,64 @@ a.cvLabel:focus-visible {
     margin-block: -5px;
   }
 }
+
+/* Landscape phones, real-phone test (2026-11-09): in a ~285px-tall in-app browser the
+   case-study hero (68–80px title, 25px lead, 50px+ of padding, a picture taller than the
+   screen) took two or three screens before the story started. A tighter reading scale
+   here: the title, lead and picture share the first screen, and body text is 15px.
+   Each case study has its own module, so this targets them by structure: the tripled
+   class outranks their `.root h1` / `.hero h1`, :where() keeps the rest at zero, and
+   [class*="__hero"] / "__lead" / "__back" / "__main" match their local class names. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .shell.shell.shell main:where([class*="__main"]) {
+    padding-top: 6px;
+  }
+
+  .shell.shell.shell main :where([class*="__back"]) {
+    min-height: 0;
+    padding-block: 6px;
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .shell.shell.shell main :where(h1) {
+    margin: 6px 0 10px;
+    font-size: 34px;
+    line-height: 1.05;
+  }
+
+  .shell.shell.shell main :where(h2) {
+    margin: 6px 0 14px;
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .shell.shell.shell main :where(h3) {
+    margin: 18px 0 8px;
+    font-size: 21px;
+  }
+
+  .shell.shell.shell main :where(p, li, dd) {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .shell.shell.shell main :where([class*="__lead"]) {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .shell.shell.shell main :where([class*="__hero"]) {
+    align-items: start;
+    gap: 28px;
+    padding: 10px 0 24px;
+  }
+
+  .shell.shell.shell main :where([class*="__hero"]) :where(img, video) {
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100svh - 64px);
+    margin-inline: auto;
+    object-fit: contain;
+  }
+}

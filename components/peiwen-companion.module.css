@@ -525,30 +525,35 @@
     font-size: 14px;
   }
 
-  /* her first-visit hint covered the right column of /experience and /about for its
-     full 20s here: narrower, and gone after 8s (the script still clears it at 20s) */
+  /* her written first-visit hint: hidden on landscape phones (2026-11-09, real-phone
+     test: three or four lines took a third of a ~294px-tall screen). The places to
+     swipe show a small hand instead (components/swipe-hint.tsx) and the arrows to tap
+     nudge; she is still there to tap for help. */
   .hint {
-    max-width: min(210px, calc(100vw - var(--h) * 0.663 - 40px));
-    font-size: 14px;
+    display: none;
   }
 }
 
-@keyframes hintGone {
-  to {
-    opacity: 0;
-    visibility: hidden;
+/* Landscape phones, real-phone test (2026-11-09): the bubble opened above her and was
+   capped at the screen height minus her height minus 110px, which in a ~285px-tall
+   in-app browser left ~100px: the greeting and one cut-off row of chips. Here it opens
+   to her left instead, as tall as the screen, with its tail pointing at her. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .root {
+    flex-direction: row;
+    align-items: flex-end;
   }
-}
 
-@media (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
-  .hint {
-    animation: hintPop 420ms ease-out both, hintGone 400ms ease 8s forwards;
+  .bubble {
+    width: min(440px, calc(100vw - var(--h) * 0.663 - 48px));
+    max-height: calc(100dvh - 16px);
+    margin: 0 10px 0 0;
+    transform-origin: 100% calc(100% - var(--h) * 0.55);
   }
-}
 
-/* no movement for reduced motion: it simply isn't there any more after 8s */
-@media (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: reduce) {
-  .hint {
-    animation: hintGone 1ms 8s forwards;
+  .bubble::after {
+    right: -9px;
+    bottom: calc(var(--h) * 0.55);
+    transform: rotate(-45deg) skew(6deg, 6deg);
   }
 }

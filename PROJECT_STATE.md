@@ -186,6 +186,40 @@
   screen. The `/about` landscape notebook stops shrinking at 780px
   (`clamp(94.09%, 780px, 121.951%)`), keeping ~11–12px body text on small phones (the
   leather's left edge is slightly cut at 667px).
+- Real-phone test (2026-11-09, landscape in an in-app browser, ~285–350px tall):
+  - Home opening: the start phase is re-read when the screen crosses the 1.15 aspect
+    ratio (`subscribeAspect` in `home-desk.tsx`), so a phone opened in portrait and then
+    turned still gets the dark room and the fairy on a first visit.
+  - Home: in short landscape the painting crops 0.65 (not 0.4) of its overflow from the
+    top and the heading is pinned ~44px from the top, below the header; at ≤340px tall
+    the title is 22px and the subtitle line is hidden so the intro stays on the glass.
+  - Companion: in short landscape the chat bubble opens to her left at full screen height
+    (it was capped to ~100px there).
+  - Case studies: a compact reading scale in short landscape (`shell.module.css`: h1 34px,
+    h2 26px, body 15px, lead 18px, tighter hero, hero picture ≤ screen height), applied
+    across the ten per-page modules by structure.
+- Second real-phone round (2026-11-09, Safari landscape, ~294px of height):
+  - Experience: the postcard is capped to fit below the header in one screen, centred
+    (page otherwise the original single column).
+  - Projects (≤340px tall): notes show only the project name (subtitles hidden; the
+    one-line pitch stays in the preview), "discover this way" hidden, card titles ≥12px,
+    page subtitle ≥11px — the 14px/12px/13px floors had wrapped notes into four lines.
+  - About: landscape notebook now `clamp(76.5%, 640px, 121.951%)` (Peiwen picked the
+    middle of three sizes; body ~9.7px).
+  - The "back to the desk" tag is hidden on landscape phones (Peiwen: it took too much
+    room); the header's Home / name links go back to the desk.
+  - Hints on landscape phones (Peiwen chose "gesture animation" + "objects hint
+    themselves" over written bubbles): the companion's written first-visit hint is
+    hidden there; `components/swipe-hint.tsx` draws a line hand that sweeps twice across
+    the Projects top rope and the Experience road, once per page per visit
+    (sessionStorage), never with reduced motion; the Projects right arrow and the
+    Experience "next place" arrow nudge three times (the About "next" arrow already did).
+  - Projects: the page subtitle stays on one line on landscape phones (wrapped, its
+    second line sat on the top rope). About: the prev/next arrows sit just outside the
+    notebook's leather instead of at the screen edges (`--bw` now lives on
+    `.stageWrap` so the arrows can read it).
+  - The row of tabs above the page in her screenshots is Safari's own tab bar, not the
+    site.
 - Touch screens: case-study outbound links (`target="_blank"`) get a ~36px target via
   padding cancelled by negative margin (`shell.module.css`, `pointer: coarse`).
 - Verified (first patch): lint, typecheck and build pass; local dev server checked at

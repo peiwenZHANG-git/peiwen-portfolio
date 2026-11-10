@@ -258,3 +258,12 @@
     font-size: 14px;
   }
 }
+
+/* 2026-11-09 (real-phone test): on landscape phones the tag still took a corner of a
+   ~294px-tall screen; Peiwen asked for it to go. The header's "Home" and "Peiwen
+   Zhang" links lead back to the desk there. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .keepsake {
+    display: none;
+  }
+}

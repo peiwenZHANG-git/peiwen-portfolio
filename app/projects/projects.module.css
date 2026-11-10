@@ -234,3 +234,39 @@
   .preview > p:not(.previewLabel) { grid-column: 2; grid-row: 4; margin: 0; font-size: 14px; line-height: 1.5; }
   .previewLinks { grid-column: 2; grid-row: 5; margin-top: 8px; }
 }
+
+/* The shortest landscape phones (2026-11-09, real-phone test in Safari, ~294px of
+   height): with both ropes in one screen the attic is only ~490px wide, and the text
+   floors (14px titles, 12px subtitles, 13px page subtitle) are about twice the scaled
+   size there, so notes wrapped into four lines and spilled off the paper. Here the
+   notes keep just the project name, which fits; the one-line pitch is still in each
+   project's preview. The slanted "discover this way" note goes too: at its floor size
+   it lay across the Arm-Swing card. */
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 340px) {
+  .coverSubtitle { display: none; }
+  .hint { display: none; }
+  .cardTitle { font-size: max(12px, calc(30 * var(--u))); }
+  .title p { font-size: max(11px, calc(24 * var(--u))); }
+}
+
+/* Landscape phones (2026-11-09): instead of the companion's written hint, a line-drawn
+   hand sweeps once across the top rope (components/swipe-hint.tsx), and the right arrow
+   nudges a few times, the same way the About notebook's arrow does. */
+.swipeHint { left: calc(760 * var(--u)); top: calc(350 * var(--u)); }
+
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 500px) and (prefers-reduced-motion: no-preference) {
+  .arrowRight { animation: arrowNudge 1400ms ease-in-out 3200ms 3; }
+}
+
+@keyframes arrowNudge {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 5px 0; }
+}
+
+/* Landscape phones (2026-11-09, real-phone test): "Things I've made, tested, and
+   explored." wrapped at its 13px floor and its second line sat on the top rope. On one
+   line it ends above the rope. */
+@media (min-width: 600px) and (orientation: landscape) and (max-height: 500px) {
+  .title { width: auto; }
+  .title p { max-width: none; white-space: nowrap; }
+}

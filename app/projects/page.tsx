@@ -6,6 +6,7 @@ import ProjectLife from "./project-life";
 import ProjectsStage from "./projects-stage";
 import ProjectArrows from "./project-arrows";
 import ProjectClothesline from "./project-clothesline";
+import { SwipeHint } from "@/components/swipe-hint";
 import styles from "./projects.module.css";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function ProjectsPage() {
         <ProjectClothesline rope="featured" />
         <p className={styles.hint}><span className={styles.hintMobile}>drag to explore →</span><span className={styles.hintDesktop}><span>More</span><span>to discover</span><span>this way →</span></span></p>
         <ProjectClothesline rope="smaller" />
+        <SwipeHint id="projects" className={styles.swipeHint} />
         <ProjectArrows />
         <ProjectLife />
         </div>
