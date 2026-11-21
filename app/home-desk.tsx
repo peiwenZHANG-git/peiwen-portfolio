@@ -108,7 +108,13 @@ const FLAKES = makeFlakes();
 function subscribeAspect(onChange: () => void) {
   const mq = window.matchMedia("(min-aspect-ratio: 115/100)");
   mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
+  // also on resize: a window that starts at 0×0 (in-app browsers, preloaded tabs) gets
+  // its real size later without the query ever reporting a change
+  window.addEventListener("resize", onChange);
+  return () => {
+    mq.removeEventListener("change", onChange);
+    window.removeEventListener("resize", onChange);
+  };
 }
 function readStartPhase(): Phase {
   try {
@@ -116,9 +122,16 @@ function readStartPhase(): Phase {
     // Portrait / narrow screens: the 4:3 cover crop cuts the lamp off, so there would be
     // nothing to click for Stage 2. Mobile composition is a later pass; until then these
     // screens start on the lit room.
-    if (window.innerWidth / window.innerHeight < 1.15) return "lit";
-    if (new URLSearchParams(window.location.search).get("intro") === "1") return "sleep";
-    if (window.localStorage.getItem(SEEN_KEY) === "1") return "lit";
+    // Ask the media query, not innerWidth / innerHeight (2026-11-21: a friend's phone
+    // got no opening on her first visit). In-app browsers and preloaded tabs can report
+    // a 0×0 window at this moment, and 0 / height read as "portrait" — then nothing
+    // re-checked, because the media query below never changes on a phone already held
+    // sideways. subscribeAspect listens to the same query.
+    const forced = new URLSearchParams(window.location.search).get("intro") === "1";
+    if (!forced && window.localStorage.getItem(SEEN_KEY) === "1") return "lit";
+    // no size yet: hold the dark room; the resize listener re-reads once it is known
+    if (window.innerWidth === 0 || window.innerHeight === 0) return "sleep";
+    if (!window.matchMedia("(min-aspect-ratio: 115/100)").matches) return "lit";
   } catch {
     /* storage blocked: just play the intro */
   }
