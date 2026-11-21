@@ -175,14 +175,38 @@ export function FairyGuide({ phase, stageRef, onDone }: Props) {
   useEffect(() => {
     const list = timers.current;
     if (phase === "sleep") {
-      const target = stagePoint(WINDOW_SPOT.x, WINDOW_SPOT.y);
-      if (!spot.current) place(-80, target.y - 40);
-      later(() => {
-        flyTo(target.x, target.y, 1, 1800, () => {
-          setPose("hover");
-          later(() => setSayFor("sleep"), 250);
-        });
-      }, 500);
+      // 2026-11-21 (Peiwen: "she is already by the window when I open the site"): the
+      // flight used to start 500ms after mount and last 1.8s, so on a phone, while the
+      // room and her sprites were still loading, it was over before anyone saw it. Now
+      // she waits off-screen until the page and her own pictures have loaded, then
+      // takes a slower, clearly visible flight in from the lower left.
+      const start = stagePoint(WINDOW_SPOT.x, WINDOW_SPOT.y);
+      if (!spot.current) place(-120, start.y + Math.min(160, window.innerHeight * 0.18));
+      let cancelled = false;
+      const go = () => {
+        if (cancelled) return;
+        later(() => {
+          const target = stagePoint(WINDOW_SPOT.x, WINDOW_SPOT.y);
+          flyTo(target.x, target.y, 1, 2600, () => {
+            setPose("hover");
+            later(() => setSayFor("sleep"), 250);
+          });
+        }, 700);
+      };
+      const sprites = Array.from(flyerRef.current?.querySelectorAll("img") ?? []);
+      const ready = Promise.all([
+        document.readyState === "complete"
+          ? Promise.resolve()
+          : new Promise<void>((res) => window.addEventListener("load", () => res(), { once: true })),
+        ...sprites.map((img) => img.decode().catch(() => undefined)),
+      ]);
+      // never wait forever: a slow network still gets the flight after 4s
+      Promise.race([ready, new Promise((res) => window.setTimeout(res, 4000))]).then(go);
+      return () => {
+        cancelled = true;
+        list.forEach((t) => window.clearTimeout(t));
+        list.length = 0;
+      };
     } else if (phase === "window") {
       later(() => {
         setPose("fly");
