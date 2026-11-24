@@ -247,6 +247,22 @@
   pixels. `outside-view` and `squat` are frames from the film at 0:29 and 0:43.
 - Also: companion answer "What is ChaseRun?", project count nine → ten, README.
 
+## Visual Search case study — 2026-11-24
+
+- Implemented: `/projects/visual-search` (bilingual; Chinese is Claude's draft, for Peiwen to review), from the
+  Group 3 course project (Experimental Design & Analysis, Paris-Saclay M1 HCI, Jan–Feb 2026, team of 3).
+  Peiwen's role: experiment design, data analysis, report writing. No teammate names on the page.
+  Numbers are recomputed from `log_merge.csv` and the notebook, not copied from the report: the
+  report's H3 r = 0.87 is not reproducible (0.29 over the 90 trials, 0.48 on participant means), and
+  "supports H1/H2" is written as "no significant effect" (n = 6). The chart is inline SVG (`search-chart.tsx`).
+- Attic: 8th on the top rope, appended after Maze of Wishes (no existing slot moved); rope width 2826 → 3170.
+  Cover supplied by Peiwen. Companion's project list and the README count updated (ten → eleven).
+- Numbered notes (2026-11-24, Peiwen's request): every project's title note now shows a small "01"–"11" above its
+  name (position along the ropes, top rope first); `.noteNumber` in `projects.module.css`, hidden on landscape phones ≤340px tall
+  where only the name shows.
+- Verified (before the numbers): eslint, `tsc --noEmit`, `git diff --check`. NOT verified: `npm run build` and the
+  desktop / mobile / reduced-motion / keyboard / touch check of `/projects` and `/projects/visual-search`.
+
 ## One switch for all sound — 2026-10-16
 
 - Implemented: the record panel's play / pause in the header now controls ALL site sound

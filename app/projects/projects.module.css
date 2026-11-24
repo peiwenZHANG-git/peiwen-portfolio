@@ -26,6 +26,8 @@
 .cover img { object-fit: contain; pointer-events: none; filter: brightness(.9) saturate(.86) contrast(.92) sepia(.1) blur(.6px); }
 .cardTitle { display: block; color: #54483c; opacity: 1; font-family: var(--hand); font-weight: 400; line-height: 1.15; text-wrap: pretty; }
 .coverSubtitle { display: block; font-family: var(--hand); font-weight: 400; line-height: 1.35; color: #4a4036; opacity: .92; text-wrap: balance; }
+/* Project number on the note (2026-11-24): small, quiet, above the name. */
+.noteNumber { display: block; margin-bottom: 4px; font-family: var(--hand); font-weight: 400; line-height: 1; letter-spacing: .08em; color: #8a7a66; font-size: 11px; }
 .nowrap { white-space: nowrap; }
 .decoration { position: relative; flex: none; }
 .decoration img { object-fit: contain; }
@@ -83,6 +85,7 @@
 .smallerLine .titleNote { width: 22vw; min-height: 92px; margin-top: var(--rope-drop, 7px); padding: 20px 5px 12px; }
 .smallerLine .cardTitle { font-size: 15px; }
 .smallerLine .coverSubtitle { margin-top: 7px; font-size: 9px; }
+.smallerLine .noteNumber { margin-bottom: 3px; font-size: 9px; }
 .decoration { width: 105px; height: 140px; margin-top: -18px; }
 .desktopOnly { display: none; }
 .dialog { padding: 14px; }
@@ -105,7 +108,7 @@
 .smallerLine { z-index: 2; }
 .viewport { position: absolute; left: 0; width: 100%; pointer-events: auto; }
 /* Keep in sync with the rope origins in project-clothesline.tsx (165 and 520). */
-.clothesline[data-rope="featured"] { --tw: 2826; } /* 2170 + 328 for AI-Work (2026-10-16) + 328 for ChaseRun (2026-10-21) */
+.clothesline[data-rope="featured"] { --tw: 3170; } /* 2170 + 328 for AI-Work (2026-10-16) + 328 for ChaseRun (2026-10-21) + 344 for Visual Search (2026-11-24) */
 .clothesline[data-rope="featured"] .viewport { top: calc(165 * var(--u)); height: calc(385 * var(--u)); -webkit-mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, transparent calc(30 * var(--u)), #000 calc(150 * var(--u)), #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }
 .smallerLine { --tw: 2100; }
 .smallerLine .viewport { top: calc(520 * var(--u)); height: calc(280 * var(--u)); -webkit-mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); mask-image: linear-gradient(90deg, #000 calc(1290 * var(--u)), transparent calc(1385 * var(--u))); }
@@ -129,6 +132,8 @@
 .coverSubtitle { margin-top: calc(9 * var(--u)); font-size: max(12px, calc(19 * var(--u))); }
 .smallerLine .cardTitle { font-size: max(13px, calc(23 * var(--u))); }
 .smallerLine .coverSubtitle { margin-top: calc(7 * var(--u)); font-size: max(8px, calc(11.5 * var(--u))); white-space: nowrap; }
+.noteNumber { margin-bottom: calc(5 * var(--u)); font-size: max(10px, calc(18 * var(--u))); }
+.smallerLine .noteNumber { margin-bottom: calc(3 * var(--u)); font-size: max(8px, calc(13 * var(--u))); }
 .decoration { pointer-events: none; }
 .hint { position: absolute; z-index: 1; top: calc(126 * var(--u)); left: calc(1290 * var(--u)); width: calc(120 * var(--u)); margin: 0; color: #86776a; font: 400 max(11px, calc(20 * var(--u)))/1.3 var(--hand); transform: rotate(-14deg); transform-origin: 0 100%; pointer-events: none; }
 .hintMobile { display: none; }
@@ -156,7 +161,7 @@
 .arrow { animation: fadeIn 800ms ease 1100ms both; }
 .title h1, .title p, .hint { animation: fadeIn 1000ms ease 1600ms both; }
 .cardTitle { animation: cardTitleIn 1000ms ease 1600ms both; }
-.coverSubtitle { animation: subtitleIn 1000ms ease 1600ms both; }
+.coverSubtitle, .noteNumber { animation: subtitleIn 1000ms ease 1600ms both; }
 }
 
 /* Signs of life (desktop stage only). */
@@ -243,7 +248,7 @@
    project's preview. The slanted "discover this way" note goes too: at its floor size
    it lay across the Arm-Swing card. */
 @media (min-width: 600px) and (orientation: landscape) and (max-height: 340px) {
-  .coverSubtitle { display: none; }
+  .coverSubtitle, .noteNumber { display: none; }
   .hint { display: none; }
   .cardTitle { font-size: max(12px, calc(30 * var(--u))); }
   .title p { font-size: max(11px, calc(24 * var(--u))); }

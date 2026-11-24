@@ -302,7 +302,7 @@ export default function ProjectClothesline({ rope }: { rope: "featured" | "small
             {rope === "featured" && <Decor name="sprig" src="botanical" only="desktop" />}
             {rope === "featured" && <Decor name="edge" src="botanical" only="desktop" />}
             {projects.filter((project) => project.rope === rope).map((project, index) => <Fragment key={project.id}>
-              <ProjectCard project={project} onOpen={(project, source) => { stop.current(); setSelection({ project, source }); }} />
+              <ProjectCard project={project} number={projects.indexOf(project) + 1} onOpen={(project, source) => { stop.current(); setSelection({ project, source }); }} />
               {rope === "smaller" && <Decor name={["botanical", "flowers", "peiwen"][index]} src={["botanical", "flowers", "peiwen"][index]} />}
               {rope === "featured" && project.id === "tangram" && <Decor name="cat" src="cat" only="desktop" />}
             </Fragment>)}

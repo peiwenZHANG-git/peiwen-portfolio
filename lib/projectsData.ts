@@ -68,6 +68,14 @@ export const projects: Project[] = [
     description: "Turning phone tilt into a playable Java maze through sensor mapping, calibration, and collision handling.",
     href: "/projects/maze-of-wishes", image: "/assets/projects/maze-of-wishes/gameplay-overview.webp", imageAlt: "Maze of Wishes game scene",
   },
+  // Added 2026-11-24: 8th on the top rope, after Maze of Wishes (Peiwen's call to hang it there;
+  // the position is easy to move). Cover: Peiwen-supplied watercolor (1122 x 1402, same as the others).
+  {
+    id: "visual-search", cover: "/assets/projects/overview-covers/visual-search-cover.webp", label: "Visual Search", coverSubtitle: "Does the crowd matter?", title: "Visual Search Experiment", subtitle: "preattentive search · experiment", rope: "featured", rotation: -1.3,
+    titleZh: "视觉搜索实验", subtitleZh: "前注意搜索 · 实验", descriptionZh: "一个被试内实验：亮度对比、加边框，或两者叠加，能不能让人一眼找到目标，不管屏幕上有多少个物体。我负责实验设计、数据分析和报告撰写。",
+    description: "A within-subject experiment on whether contrast, an added border, or both let people find a target at a glance, however many items are on screen. I designed the experiment, analysed the data and wrote the report.",
+    href: "/projects/visual-search", image: "/assets/projects/visual-search/conditions.webp", imageAlt: "Nine experimental displays of grey squares: contrast, addition, and both, at 9, 25 and 49 items",
+  },
   {
     id: "flight", cover: "/assets/projects/overview-covers/flight-cover.webp", label: "Flight Booking", coverSubtitle: "A clearer journey", title: "Flight Booking Experience", subtitle: "a clearer journey", rope: "smaller", rotation: -1.7,
     titleZh: "机票预订体验", subtitleZh: "一段更清楚的旅程", descriptionZh: "把 Story Interview（故事访谈）里拆解出的问题，转化成更清楚的手机订票和行程流程。",

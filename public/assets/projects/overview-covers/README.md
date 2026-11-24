@@ -14,6 +14,8 @@ duplicate Flight attachment. All eight are integrated with the original paper ge
 | zoo-cover.webp | 1122 x 1402 | WebP quality 90 |
 | chess-cover.webp | 1122 x 1402 | WebP quality 90 |
 
+`visual-search-cover.webp` (1122 x 1402, WebP quality 90) was added 2026-11-24, converted from Peiwen's PNG with no other change.
+
 No crop, resize, upscaling, sharpening, filters or generated changes. CSS contain-fit
 preserves full compositions. Set `cover` on each project for overview art; `image` stays
 the authentic modal visual. Title notes and clips are DOM elements outside these images.

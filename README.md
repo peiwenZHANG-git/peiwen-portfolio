@@ -14,7 +14,7 @@ I'm Peiwen Zhang, an MSc HCI student at Université Paris-Saclay. I build AI pro
 | --- | --- |
 | **Home** (the desk) | A short opening (open the window, switch on the lamp, with a tiny flower fairy showing the way), then a lit desk where each object opens a page |
 | **Experience** (the path) | My route from Communication University of China, through an exchange in Osaka, to Paris-Saclay, shown as stops along a road |
-| **Projects** (the house) | Ten case studies, from an AI assistant I keep in control to emotional captions, VR locomotion, an AR fitness concept and 3D-printed objects |
+| **Projects** (the house) | Eleven case studies, from an AI assistant I keep in control to emotional captions, VR locomotion, an AR fitness concept, a visual-search experiment and 3D-printed objects |
 | **About** (the notebook) | A notebook you can flip through: who I am, my journey and what I like outside of work. CV download (EN / 中文) and a postcard that really sends me a message |
 
 ### Projects

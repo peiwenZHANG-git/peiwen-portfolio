@@ -15,8 +15,10 @@ export function ProjectClip() {
   );
 }
 
-export default function ProjectCard({ project, onOpen }: {
+export default function ProjectCard({ project, number, onOpen }: {
   project: Project;
+  /** 1-based position among all projects, left to right along the ropes (top rope first) */
+  number: number;
   onOpen: (project: Project, button: HTMLButtonElement) => void;
 }) {
   const ill = slotProps(`${project.id}:ill`);
@@ -40,6 +42,7 @@ export default function ProjectCard({ project, onOpen }: {
         <ProjectClip />
         {/* keep hyphenated words whole ("Arm-Swing" never breaks into "Arm- / Swing") and
             keep each " · " with the word before it, so a wrapped line never starts with a dot */}
+        <span className={styles.noteNumber} aria-hidden="true">{String(number).padStart(2, "0")}</span>
         <span className={styles.cardTitle}>
           {project.label.split(" ").map((word, i) => (
             <Fragment key={i}>

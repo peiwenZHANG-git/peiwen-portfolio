@@ -576,11 +576,11 @@ export const COMPANION_ANSWERS: CompanionAnswer[] = [
     hidden: true,
     keywords: ["project", "projects", "made", "built", "build", "work", "portfolio", "reso", "tangram", "maze", "music", "flight", "chess", "zoo", "作品", "项目"],
     answer: [
-      "Ten things so far: AI-Work, Reso, Arm-Swing VR, ChaseRun, Tangram, Music VR, Maze of Wishes, Flight Booking, Chess and the ZOO Organizer.",
+      "Eleven things so far: AI-Work, Reso, Arm-Swing VR, ChaseRun, Tangram, Music VR, Maze of Wishes, the Visual Search experiment, Flight Booking, Chess and the ZOO Organizer.",
       "They’re all hanging in the attic. Come and have a look.",
     ],
     answerZh: [
-      "目前一共十个项目：AI-Work、Reso、Arm-Swing VR、ChaseRun、七巧板、Music VR、愿望迷宫、机票预订、国际象棋，还有 ZOO Organizer。",
+      "目前一共十一个项目：AI-Work、Reso、Arm-Swing VR、ChaseRun、七巧板、Music VR、愿望迷宫、视觉搜索实验、机票预订、国际象棋，还有 ZOO Organizer。",
       "它们都挂在阁楼里——来看看吧。",
     ],
     actions: [{ kind: "link", href: "/projects", label: "Go to Projects →", labelZh: "去项目页 →" }],

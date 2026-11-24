@@ -28,6 +28,9 @@ export const slots: Record<string, Slot> = {
   "maze:ill": { x: 2514, w: 160, h: 205, cx: 0.3, dy: 8, rot: 1 },
   "decor:edge": { x: 2076, w: 50, h: 84, cx: 0.55, dy: -10, rot: 0 },
   "maze:note": { x: 2690, w: 139, h: 190, cx: 0.4, dy: 10, rot: 3 },
+  // 2026-11-24: Visual Search hangs 8th, after Maze (appended at the end, so no slot moved).
+  "visual-search:ill": { x: 2870, w: 161, h: 214, cx: 0.3, dy: 9, rot: -2 },
+  "visual-search:note": { x: 3041, w: 139, h: 186, cx: 0.38, dy: 13, rot: 3 },
 
   "decor:botanical": { x: 891, w: 84, h: 140, cx: 0.55, dy: -15, rot: 0 },
   "flight:ill": { x: 1002, w: 118, h: 148, cx: 0.5, dy: 8, rot: -2 },
